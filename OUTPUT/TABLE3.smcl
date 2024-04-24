@@ -1,0 +1,785 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\TABLE3.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 2 Nov 2022, 10:19:04
+{txt}
+{com}. 
+. 
+. use finaldata_imputed,clear
+{txt}
+{com}. 
+. 
+. mi stset AGE_DEATH  [pweight = WTSSNH2Y], failure(MORTSTAT==1) enter(AGE) id(SEQN) scale(1)
+{res}
+{txt}Survival-time data settings
+
+{col 12}ID variable: {res}SEQN
+{col 10}{txt}Failure event: {res}MORTSTAT==1
+{col 1}{txt}Observed time interval: {res}(AGE_DEATH[_n-1], AGE_DEATH]
+{col 6}{txt}Enter on or after: {res}time AGE
+{col 6}{txt}Exit on or before: {res}failure
+{col 17}{txt}Weight: {res}[pweight=WTSSNH2Y]
+
+{txt}{hline 74}
+{res}     10,175{txt}  total observations
+{res}      4,262{txt}  event time missing (AGE_DEATH>=.){col 61}PROBABLE ERROR
+{res}          1{txt}  observation ends on or before {bf:enter()}
+{res}      3,842{txt}  weights invalid {col 61}PROBABLE ERROR
+{hline 74}
+{res}      2,070{txt}  observations remaining, representing
+{res}      2,070{txt}  subjects
+{res}         84{txt}  failures in single-failure-per-subject data
+{res} 12,191.917{txt}  total analysis time at risk and under observation
+                                                At risk from t = {res}        0
+                                     {txt}Earliest observed entry t = {res}       20
+                                          {txt}Last observed exit t = {res} 81.83334
+{txt}
+{com}. 
+. capture drop RACE_ETHNg* PIRg* EDUCATIONg* SMOKEg* ALCOHOLg* 
+{txt}
+{com}. 
+. tab RACE_ETHN,generate(RACE_ETHNg)
+
+  {txt}RACE_ETHN {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}     22,044       36.11       36.11
+{txt}          1 {c |}{res}     13,602       22.28       58.39
+{txt}          2 {c |}{res}     16,140       26.44       84.83
+{txt}          3 {c |}{res}      9,264       15.17      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     61,050      100.00
+{txt}
+{com}. 
+. tab PIR, generate(PIRg)
+
+        {txt}PIR {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}     16,866       28.79       28.79
+{txt}          2 {c |}{res}     15,128       25.82       54.61
+{txt}          3 {c |}{res}     26,596       45.39      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     58,590      100.00
+{txt}
+{com}. 
+. tab EDUCATION, generate(EDUCATIONg)
+
+  {txt}EDUCATION {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      2,732        7.89        7.89
+{txt}          2 {c |}{res}      4,750       13.73       21.62
+{txt}          3 {c |}{res}      7,829       22.62       44.24
+{txt}          4 {c |}{res}     10,631       30.72       74.96
+{txt}          5 {c |}{res}      8,665       25.04      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     34,607      100.00
+{txt}
+{com}. 
+. tab SMOKE, generate(SMOKEg)
+
+      {txt}SMOKE {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}     21,194       57.79       57.79
+{txt}          2 {c |}{res}      8,088       22.05       79.84
+{txt}          3 {c |}{res}      7,394       20.16      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     36,676      100.00
+{txt}
+{com}. 
+. tab ALCOHOL, generate(ALCOHOLg)
+
+    {txt}ALCOHOL {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}     24,739       69.05       69.05
+{txt}          2 {c |}{res}     11,089       30.95      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     35,828      100.00
+{txt}
+{com}. 
+. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+finaldata_imputed.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. ***************************TABLE 3: MODEL 2*********************************
+. 
+. *****************************OVERALL*******************************
+. 
+. 
+. *********BMI***********
+. capture drop zBMI
+{txt}
+{com}. mi passive: egen zBMI=std(BMI) if SAMPLE_FINAL==1
+{res}{txt}{it:m}=0:
+(8,120 missing values generated)
+{it:m}=1:
+(8,104 missing values generated)
+{it:m}=2:
+(8,104 missing values generated)
+{it:m}=3:
+(8,104 missing values generated)
+{it:m}=4:
+(8,104 missing values generated)
+{it:m}=5:
+(8,104 missing values generated)
+{p}
+(6710 values of passive variable
+{res}zBMI
+{txt}in {it:m}>0 updated to
+match values in {it:m}=0)
+{p_end}
+
+{com}. 
+. 
+. mi estimate, cmdok esampvaryok: med4way ZLNNFL zBMI  SEX  RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills if SAMPLE_FINAL==1 , a0(0) a1(1) m(0) yreg(cox) mreg(linear) 
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}{p}
+type mismatch:
+exp.exp:
+transmorphic
+found where
+struct
+expected
+{p_end}
+{txt}{search r(3000), local:r(3000);}
+
+end of do-file
+
+{search r(3000), local:r(3000);}
+
+{com}. do "C:\Users\baydounm\AppData\Local\Temp\STD4b74_000000.tmp"
+{txt}
+{com}. 
+. ***************************TABLE 3: MODEL 2*********************************
+. 
+. *****************************OVERALL*******************************
+. 
+. 
+. *********BMI***********
+. capture drop zBMI
+{txt}
+{com}. mi passive: egen zBMI=std(BMI) if SAMPLE_FINAL==1
+{res}{txt}{p}
+(passive variable
+{res}zBMI
+{txt}unregistered because not in {it:m}=0)
+{p_end}
+{it:m}=0:
+(8,120 missing values generated)
+{it:m}=1:
+(8,104 missing values generated)
+{it:m}=2:
+(8,104 missing values generated)
+{it:m}=3:
+(8,104 missing values generated)
+{it:m}=4:
+(8,104 missing values generated)
+{it:m}=5:
+(8,104 missing values generated)
+{p}
+(6710 values of passive variable
+{res}zBMI
+{txt}in {it:m}>0 updated to
+match values in {it:m}=0)
+{p_end}
+
+{com}. 
+. 
+. mi estimate, cmdok esampvaryok: med4way ZLNNFL zBMI  SEX  RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills if SAMPLE_FINAL==1 , a0(0) a1(1) m(0) yreg(cox) mreg(linear) 
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}
+{txt}Multiple-imputation estimates{col 49}Imputations{col 67}= {res}         5
+{txt}{col 49}Number of obs{col 67}= {res}     2,071
+{txt}{col 49}Average RVI{col 67}= {res}    0.0499
+{txt}{col 49}Largest FMI{col 67}= {res}    0.1078
+{txt}DF adjustment:{ralign 15: {res:Large sample}}{col 49}DF:     min{col 67}= {res}    376.53
+{txt}{col 49}        avg{col 67}= {res}  4,742.87
+{txt}{col 49}        max{col 67}= {res}  8,834.23
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}tereri {c |}{col 14}{res}{space 2} .6122456{col 26}{space 2} .1944516{col 37}{space 1}    3.15{col 46}{space 3}0.002{col 54}{space 4} .2310754{col 67}{space 3} .9934159
+{txt}{space 3}ereri_cde {c |}{col 14}{res}{space 2} .6284088{col 26}{space 2} .1912132{col 37}{space 1}    3.29{col 46}{space 3}0.001{col 54}{space 4} .2535808{col 67}{space 3} 1.003237
+{txt}ereri_intref {c |}{col 14}{res}{space 2}-.0177588{col 26}{space 2} .0258707{col 37}{space 1}   -0.69{col 46}{space 3}0.492{col 54}{space 4} -.068487{col 67}{space 3} .0329694
+{txt}ereri_intmed {c |}{col 14}{res}{space 2}-.0145708{col 26}{space 2} .0169486{col 37}{space 1}   -0.86{col 46}{space 3}0.390{col 54}{space 4}-.0478965{col 67}{space 3} .0187549
+{txt}{space 3}ereri_pie {c |}{col 14}{res}{space 2} .0161664{col 26}{space 2} .0120249{col 37}{space 1}    1.34{col 46}{space 3}0.179{col 54}{space 4}-.0074094{col 67}{space 3} .0397422
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. *********SBP***********
+. capture drop zSBP
+{txt}
+{com}. mi passive: egen zSBP=std(SBP) if SAMPLE_FINAL==1
+{res}{txt}{it:m}=0:
+(8,302 missing values generated)
+{it:m}=1:
+(8,104 missing values generated)
+{it:m}=2:
+(8,104 missing values generated)
+{it:m}=3:
+(8,104 missing values generated)
+{it:m}=4:
+(8,104 missing values generated)
+{it:m}=5:
+(8,104 missing values generated)
+{p}
+(6710 values of passive variable
+{res}zSBP
+{txt}in {it:m}>0 updated to
+match values in {it:m}=0)
+{p_end}
+
+{com}. 
+. mi estimate, cmdok: med4way ZLNNFL zSBP  SEX  RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE  EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills if SAMPLE_FINAL==1 , a0(0) a1(1) m(0) yreg(cox) mreg(linear) 
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}
+{txt}Multiple-imputation estimates{col 49}Imputations{col 67}= {res}         5
+{txt}{col 49}Number of obs{col 67}= {res}     2,071
+{txt}{col 49}Average RVI{col 67}= {res}    0.0360
+{txt}{col 49}Largest FMI{col 67}= {res}    0.1084
+{txt}DF adjustment:{ralign 15: {res:Large sample}}{col 49}DF:     min{col 67}= {res}    372.47
+{txt}{col 49}        avg{col 67}= {res}  4,044.05
+{txt}{col 49}        max{col 67}= {res}  9,519.77
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}tereri {c |}{col 14}{res}{space 2} .6184182{col 26}{space 2} .1834854{col 37}{space 1}    3.37{col 46}{space 3}0.001{col 54}{space 4} .2587477{col 67}{space 3} .9780887
+{txt}{space 3}ereri_cde {c |}{col 14}{res}{space 2} .6642309{col 26}{space 2} .1912462{col 37}{space 1}    3.47{col 46}{space 3}0.001{col 54}{space 4} .2892904{col 67}{space 3} 1.039171
+{txt}ereri_intref {c |}{col 14}{res}{space 2}-.0015218{col 26}{space 2}  .013565{col 37}{space 1}   -0.11{col 46}{space 3}0.911{col 54}{space 4}-.0281383{col 67}{space 3} .0250948
+{txt}ereri_intmed {c |}{col 14}{res}{space 2}-.0096827{col 26}{space 2} .0116449{col 37}{space 1}   -0.83{col 46}{space 3}0.406{col 54}{space 4} -.032512{col 67}{space 3} .0131466
+{txt}{space 3}ereri_pie {c |}{col 14}{res}{space 2}-.0346082{col 26}{space 2} .0332963{col 37}{space 1}   -1.04{col 46}{space 3}0.299{col 54}{space 4}-.1000805{col 67}{space 3} .0308641
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. ********DBP***************
+. capture drop zDBP
+{txt}
+{com}. mi passive: egen zDBP=std(DBP) if SAMPLE_FINAL==1
+{res}{txt}{it:m}=0:
+(8,302 missing values generated)
+{it:m}=1:
+(8,104 missing values generated)
+{it:m}=2:
+(8,104 missing values generated)
+{it:m}=3:
+(8,104 missing values generated)
+{it:m}=4:
+(8,104 missing values generated)
+{it:m}=5:
+(8,104 missing values generated)
+{p}
+(6710 values of passive variable
+{res}zDBP
+{txt}in {it:m}>0 updated to
+match values in {it:m}=0)
+{p_end}
+
+{com}. 
+. mi estimate, cmdok: med4way ZLNNFL zDBP  SEX  RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE  EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  invmills if SAMPLE_FINAL==1 , a0(0) a1(1) m(0) yreg(cox) mreg(linear) 
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}
+{txt}Multiple-imputation estimates{col 49}Imputations{col 67}= {res}         5
+{txt}{col 49}Number of obs{col 67}= {res}     2,071
+{txt}{col 49}Average RVI{col 67}= {res}    0.1868
+{txt}{col 49}Largest FMI{col 67}= {res}    0.3469
+{txt}DF adjustment:{ralign 15: {res:Large sample}}{col 49}DF:     min{col 67}= {res}     40.26
+{txt}{col 49}        avg{col 67}= {res}  1,184.96
+{txt}{col 49}        max{col 67}= {res}  3,055.70
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}tereri {c |}{col 14}{res}{space 2}  .671619{col 26}{space 2}  .197163{col 37}{space 1}    3.41{col 46}{space 3}0.001{col 54}{space 4} .2850334{col 67}{space 3} 1.058204
+{txt}{space 3}ereri_cde {c |}{col 14}{res}{space 2} .6722679{col 26}{space 2} .1971503{col 37}{space 1}    3.41{col 46}{space 3}0.001{col 54}{space 4}  .285682{col 67}{space 3} 1.058854
+{txt}ereri_intref {c |}{col 14}{res}{space 2} .0073877{col 26}{space 2} .0200599{col 37}{space 1}    0.37{col 46}{space 3}0.714{col 54}{space 4}-.0330695{col 67}{space 3} .0478449
+{txt}ereri_intmed {c |}{col 14}{res}{space 2}-.0073178{col 26}{space 2} .0076214{col 37}{space 1}   -0.96{col 46}{space 3}0.338{col 54}{space 4}-.0223663{col 67}{space 3} .0077306
+{txt}{space 3}ereri_pie {c |}{col 14}{res}{space 2}-.0007188{col 26}{space 2} .0113147{col 37}{space 1}   -0.06{col 46}{space 3}0.950{col 54}{space 4}-.0235821{col 67}{space 3} .0221445
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. *******TOTAL CHOLESTEROL************
+. 
+. 
+. capture drop zTOTALCHOLESTEROLSI
+{txt}
+{com}. mi passive: egen zTOTALCHOLESTEROLSIP=std(TOTALCHOLESTEROLSI) if SAMPLE_FINAL==1
+{res}{txt}{it:m}=0:
+(8,104 missing values generated)
+{it:m}=1:
+(8,104 missing values generated)
+{it:m}=2:
+(8,104 missing values generated)
+{it:m}=3:
+(8,104 missing values generated)
+{it:m}=4:
+(8,104 missing values generated)
+{it:m}=5:
+(8,104 missing values generated)
+
+{com}. 
+. mi estimate, cmdok: med4way ZLNNFL zTOTALCHOLESTEROLSI  SEX  RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE  EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills if SAMPLE_FINAL==1 , a0(0) a1(1) m(0) yreg(cox) mreg(linear) 
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}
+{txt}Multiple-imputation estimates{col 49}Imputations{col 67}= {res}         5
+{txt}{col 49}Number of obs{col 67}= {res}     2,071
+{txt}{col 49}Average RVI{col 67}= {res}    0.0337
+{txt}{col 49}Largest FMI{col 67}= {res}    0.0400
+{txt}DF adjustment:{ralign 15: {res:Large sample}}{col 49}DF:     min{col 67}= {res}  2,597.96
+{txt}{col 49}        avg{col 67}= {res} 17,163.38
+{txt}{col 49}        max{col 67}= {res} 73,563.18
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}tereri {c |}{col 14}{res}{space 2} .6974164{col 26}{space 2} .2127349{col 37}{space 1}    3.28{col 46}{space 3}0.001{col 54}{space 4} .2803107{col 67}{space 3} 1.114522
+{txt}{space 3}ereri_cde {c |}{col 14}{res}{space 2} .7108776{col 26}{space 2} .2189899{col 37}{space 1}    3.25{col 46}{space 3}0.001{col 54}{space 4} .2814801{col 67}{space 3} 1.140275
+{txt}ereri_intref {c |}{col 14}{res}{space 2}-.0073968{col 26}{space 2} .0287514{col 37}{space 1}   -0.26{col 46}{space 3}0.797{col 54}{space 4}-.0637678{col 67}{space 3} .0489742
+{txt}ereri_intmed {c |}{col 14}{res}{space 2}-.0009369{col 26}{space 2}  .002583{col 37}{space 1}   -0.36{col 46}{space 3}0.717{col 54}{space 4}-.0060018{col 67}{space 3} .0041281
+{txt}{space 3}ereri_pie {c |}{col 14}{res}{space 2}-.0051275{col 26}{space 2} .0082788{col 37}{space 1}   -0.62{col 46}{space 3}0.536{col 54}{space 4}-.0213539{col 67}{space 3} .0110988
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. **********HBA1C************************
+. 
+. capture drop zHBA1C
+{txt}
+{com}. mi passive: egen zHBA1C=std(HBA1C) if SAMPLE_FINAL==1
+{res}{txt}{it:m}=0:
+(8,105 missing values generated)
+{it:m}=1:
+(8,104 missing values generated)
+{it:m}=2:
+(8,104 missing values generated)
+{it:m}=3:
+(8,104 missing values generated)
+{it:m}=4:
+(8,104 missing values generated)
+{it:m}=5:
+(8,104 missing values generated)
+{p}
+(6710 values of passive variable
+{res}zHBA1C
+{txt}in {it:m}>0 updated to
+match values in {it:m}=0)
+{p_end}
+
+{com}. 
+. mi estimate, cmdok: med4way ZLNNFL zHBA1C  SEX  RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4  PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE  EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills  if SAMPLE_FINAL==1 , a0(0) a1(1) m(0) yreg(cox) mreg(linear) 
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}
+{txt}Multiple-imputation estimates{col 49}Imputations{col 67}= {res}         5
+{txt}{col 49}Number of obs{col 67}= {res}     2,071
+{txt}{col 49}Average RVI{col 67}= {res}    0.0279
+{txt}{col 49}Largest FMI{col 67}= {res}    0.0571
+{txt}DF adjustment:{ralign 15: {res:Large sample}}{col 49}DF:     min{col 67}= {res}  1,290.44
+{txt}{col 49}        avg{col 67}= {res}  3,680.67
+{txt}{col 49}        max{col 67}= {res}  5,023.61
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}tereri {c |}{col 14}{res}{space 2} .5123431{col 26}{space 2} .2205372{col 37}{space 1}    2.32{col 46}{space 3}0.020{col 54}{space 4} .0799164{col 67}{space 3} .9447699
+{txt}{space 3}ereri_cde {c |}{col 14}{res}{space 2} .5253468{col 26}{space 2} .1993408{col 37}{space 1}    2.64{col 46}{space 3}0.008{col 54}{space 4}  .134536{col 67}{space 3} .9161576
+{txt}ereri_intref {c |}{col 14}{res}{space 2}-.0116259{col 26}{space 2} .0215244{col 37}{space 1}   -0.54{col 46}{space 3}0.589{col 54}{space 4} -.053823{col 67}{space 3} .0305713
+{txt}ereri_intmed {c |}{col 14}{res}{space 2} .0316727{col 26}{space 2} .0142887{col 37}{space 1}    2.22{col 46}{space 3}0.027{col 54}{space 4} .0036411{col 67}{space 3} .0597043
+{txt}{space 3}ereri_pie {c |}{col 14}{res}{space 2}-.0330505{col 26}{space 2} .0307667{col 37}{space 1}   -1.07{col 46}{space 3}0.283{col 54}{space 4} -.093367{col 67}{space 3} .0272659
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. **********ACR*************************
+. 
+. 
+. capture drop zLnACR
+{txt}
+{com}. mi passive: egen zLnACR=std(LnACR) if SAMPLE_FINAL==1
+{res}{txt}{it:m}=0:
+(8,139 missing values generated)
+{it:m}=1:
+(8,104 missing values generated)
+{it:m}=2:
+(8,104 missing values generated)
+{it:m}=3:
+(8,104 missing values generated)
+{it:m}=4:
+(8,104 missing values generated)
+{it:m}=5:
+(8,104 missing values generated)
+{p}
+(6710 values of passive variable
+{res}zLnACR
+{txt}in {it:m}>0 updated to
+match values in {it:m}=0)
+{p_end}
+
+{com}. 
+. mi estimate, cmdok: med4way ZLNNFL zLnACR  SEX  RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4  PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE  EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills  if SAMPLE_FINAL==1 , a0(0) a1(1) m(0) yreg(cox) mreg(linear) 
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}
+{txt}Multiple-imputation estimates{col 49}Imputations{col 67}= {res}         5
+{txt}{col 49}Number of obs{col 67}= {res}     2,071
+{txt}{col 49}Average RVI{col 67}= {res}    0.0953
+{txt}{col 49}Largest FMI{col 67}= {res}    0.1147
+{txt}DF adjustment:{ralign 15: {res:Large sample}}{col 49}DF:     min{col 67}= {res}    334.39
+{txt}{col 49}        avg{col 67}= {res}    817.30
+{txt}{col 49}        max{col 67}= {res}  1,190.32
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}tereri {c |}{col 14}{res}{space 2} .6116842{col 26}{space 2} .2120297{col 37}{space 1}    2.88{col 46}{space 3}0.004{col 54}{space 4} .1953587{col 67}{space 3}  1.02801
+{txt}{space 3}ereri_cde {c |}{col 14}{res}{space 2} .5319557{col 26}{space 2} .2087046{col 37}{space 1}    2.55{col 46}{space 3}0.011{col 54}{space 4} .1214162{col 67}{space 3} .9424951
+{txt}ereri_intref {c |}{col 14}{res}{space 2} .0524016{col 26}{space 2} .0312469{col 37}{space 1}    1.68{col 46}{space 3}0.094{col 54}{space 4}-.0089137{col 67}{space 3} .1137168
+{txt}ereri_intmed {c |}{col 14}{res}{space 2} .0172149{col 26}{space 2} .0099458{col 37}{space 1}    1.73{col 46}{space 3}0.084{col 54}{space 4}-.0022984{col 67}{space 3} .0367282
+{txt}{space 3}ereri_pie {c |}{col 14}{res}{space 2}  .010112{col 26}{space 2} .0131153{col 37}{space 1}    0.77{col 46}{space 3}0.441{col 54}{space 4}-.0156293{col 67}{space 3} .0358534
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. ***********VITAMIN D*******************
+. 
+. 
+. capture drop zVitaminD_serum
+{txt}
+{com}. mi passive: egen zVitaminD_serum=std(VitaminD_serum) if SAMPLE_FINAL==1
+{res}{txt}{it:m}=0:
+(8,104 missing values generated)
+{it:m}=1:
+(8,104 missing values generated)
+{it:m}=2:
+(8,104 missing values generated)
+{it:m}=3:
+(8,104 missing values generated)
+{it:m}=4:
+(8,104 missing values generated)
+{it:m}=5:
+(8,104 missing values generated)
+
+{com}. 
+. mi estimate, cmdok: med4way ZLNNFL zVitaminD_serum  SEX  RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4  PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE  EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR folate_RBCSI vitaminb12_serumsi invmills  if SAMPLE_FINAL==1 , a0(0) a1(1) m(0) yreg(cox) mreg(linear) 
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}
+{txt}Multiple-imputation estimates{col 49}Imputations{col 67}= {res}         5
+{txt}{col 49}Number of obs{col 67}= {res}     2,071
+{txt}{col 49}Average RVI{col 67}= {res}    0.0157
+{txt}{col 49}Largest FMI{col 67}= {res}    0.0338
+{txt}DF adjustment:{ralign 15: {res:Large sample}}{col 49}DF:     min{col 67}= {res}  3,618.94
+{txt}{col 49}        avg{col 67}= {res} 14,614.87
+{txt}{col 49}        max{col 67}= {res} 55,499.82
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}tereri {c |}{col 14}{res}{space 2} .6114397{col 26}{space 2} .1968077{col 37}{space 1}    3.11{col 46}{space 3}0.002{col 54}{space 4} .2255747{col 67}{space 3} .9973046
+{txt}{space 3}ereri_cde {c |}{col 14}{res}{space 2} .6353589{col 26}{space 2} .1907856{col 37}{space 1}    3.33{col 46}{space 3}0.001{col 54}{space 4}  .261326{col 67}{space 3} 1.009392
+{txt}ereri_intref {c |}{col 14}{res}{space 2} .0364856{col 26}{space 2} .0369408{col 37}{space 1}    0.99{col 46}{space 3}0.323{col 54}{space 4}-.0359341{col 67}{space 3} .1089054
+{txt}ereri_intmed {c |}{col 14}{res}{space 2}-.0246549{col 26}{space 2} .0155086{col 37}{space 1}   -1.59{col 46}{space 3}0.112{col 54}{space 4}-.0550597{col 67}{space 3} .0057499
+{txt}{space 3}ereri_pie {c |}{col 14}{res}{space 2}  -.03575{col 26}{space 2} .0165436{col 37}{space 1}   -2.16{col 46}{space 3}0.031{col 54}{space 4}-.0681755{col 67}{space 3}-.0033245
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. ************RBC folate**************
+. 
+. 
+. capture drop zfolate_RBCSI
+{txt}
+{com}. mi passive: egen zfolate_RBCSI=std(folate_RBCSI) if SAMPLE_FINAL==1
+{res}{txt}{it:m}=0:
+(8,130 missing values generated)
+{it:m}=1:
+(8,104 missing values generated)
+{it:m}=2:
+(8,104 missing values generated)
+{it:m}=3:
+(8,104 missing values generated)
+{it:m}=4:
+(8,104 missing values generated)
+{it:m}=5:
+(8,104 missing values generated)
+{p}
+(6710 values of passive variable
+{res}zfolate_RBCSI
+{txt}in {it:m}>0 updated to
+match values in {it:m}=0)
+{p_end}
+
+{com}. 
+. mi estimate, cmdok: med4way ZLNNFL zfolate_RBCSI  SEX  RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4  PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE  EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum vitaminb12_serumsi invmills  if SAMPLE_FINAL==1 , a0(0) a1(1) m(0) yreg(cox) mreg(linear) 
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}
+{txt}Multiple-imputation estimates{col 49}Imputations{col 67}= {res}         5
+{txt}{col 49}Number of obs{col 67}= {res}     2,071
+{txt}{col 49}Average RVI{col 67}= {res}    0.0325
+{txt}{col 49}Largest FMI{col 67}= {res}    0.0450
+{txt}DF adjustment:{ralign 15: {res:Large sample}}{col 49}DF:     min{col 67}= {res}  2,061.74
+{txt}{col 49}        avg{col 67}= {res}  6,174.44
+{txt}{col 49}        max{col 67}= {res} 12,226.49
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}tereri {c |}{col 14}{res}{space 2} .7460759{col 26}{space 2} .2022314{col 37}{space 1}    3.69{col 46}{space 3}0.000{col 54}{space 4} .3495785{col 67}{space 3} 1.142573
+{txt}{space 3}ereri_cde {c |}{col 14}{res}{space 2} .7558874{col 26}{space 2} .2036246{col 37}{space 1}    3.71{col 46}{space 3}0.000{col 54}{space 4} .3566812{col 67}{space 3} 1.155094
+{txt}ereri_intref {c |}{col 14}{res}{space 2} -.020083{col 26}{space 2} .0150424{col 37}{space 1}   -1.34{col 46}{space 3}0.182{col 54}{space 4}-.0495699{col 67}{space 3} .0094038
+{txt}ereri_intmed {c |}{col 14}{res}{space 2} -.005054{col 26}{space 2} .0068776{col 37}{space 1}   -0.73{col 46}{space 3}0.463{col 54}{space 4}-.0185418{col 67}{space 3} .0084337
+{txt}{space 3}ereri_pie {c |}{col 14}{res}{space 2} .0153256{col 26}{space 2} .0082905{col 37}{space 1}    1.85{col 46}{space 3}0.065{col 54}{space 4}-.0009252{col 67}{space 3} .0315764
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. ***********Vitamin B-12****************
+. 
+. capture drop zvitaminb12_serumsi
+{txt}
+{com}. mi passive: egen zvitaminb12_serumsi=std(vitaminb12_serumsi) if SAMPLE_FINAL==1
+{res}{txt}{it:m}=0:
+(8,107 missing values generated)
+{it:m}=1:
+(8,104 missing values generated)
+{it:m}=2:
+(8,104 missing values generated)
+{it:m}=3:
+(8,104 missing values generated)
+{it:m}=4:
+(8,104 missing values generated)
+{it:m}=5:
+(8,104 missing values generated)
+{p}
+(6710 values of passive variable
+{res}zvitaminb12_serumsi
+{txt}in {it:m}>0 updated to
+match values in {it:m}=0)
+{p_end}
+
+{com}. 
+. mi estimate, cmdok: med4way ZLNNFL zvitaminb12_serumsi  SEX  RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4  PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE  EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI  invmills  if SAMPLE_FINAL==1 , a0(0) a1(1) m(0) yreg(cox) mreg(linear) 
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI invmills were not provided. All covariates are fixed at their respective mean.
+{res}
+{txt}Multiple-imputation estimates{col 49}Imputations{col 67}= {res}         5
+{txt}{col 49}Number of obs{col 67}= {res}     2,071
+{txt}{col 49}Average RVI{col 67}= {res}    0.0439
+{txt}{col 49}Largest FMI{col 67}= {res}    0.0598
+{txt}DF adjustment:{ralign 15: {res:Large sample}}{col 49}DF:     min{col 67}= {res}  1,180.75
+{txt}{col 49}        avg{col 67}= {res}  3,879.05
+{txt}{col 49}        max{col 67}= {res}  9,027.99
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}tereri {c |}{col 14}{res}{space 2} .6469915{col 26}{space 2} .2083684{col 37}{space 1}    3.11{col 46}{space 3}0.002{col 54}{space 4} .2384457{col 67}{space 3} 1.055537
+{txt}{space 3}ereri_cde {c |}{col 14}{res}{space 2} .6142321{col 26}{space 2} .2044242{col 37}{space 1}    3.00{col 46}{space 3}0.003{col 54}{space 4} .2134547{col 67}{space 3}  1.01501
+{txt}ereri_intref {c |}{col 14}{res}{space 2} .0243534{col 26}{space 2}  .012787{col 37}{space 1}    1.90{col 46}{space 3}0.057{col 54}{space 4}-.0007343{col 67}{space 3} .0494412
+{txt}ereri_intmed {c |}{col 14}{res}{space 2} .0064132{col 26}{space 2} .0061535{col 37}{space 1}    1.04{col 46}{space 3}0.297{col 54}{space 4} -.005649{col 67}{space 3} .0184754
+{txt}{space 3}ereri_pie {c |}{col 14}{res}{space 2} .0019927{col 26}{space 2} .0031078{col 37}{space 1}    0.64{col 46}{space 3}0.521{col 54}{space 4} -.004103{col 67}{space 3} .0080884
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. *************CO-MORBIDITY****************
+. 
+. mi estimate, cmdok: med4way ZLNNFL CVD_CANCER_HISTORY  SEX  RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4  PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE  EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH  BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills  if SAMPLE_FINAL==1 , a0(0) a1(1) m(0) yreg(cox) mreg(logistic) 
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}
+{txt}Multiple-imputation estimates{col 49}Imputations{col 67}= {res}         5
+{txt}{col 49}Number of obs{col 67}= {res}     2,071
+{txt}{col 49}Average RVI{col 67}= {res}    0.0146
+{txt}{col 49}Largest FMI{col 67}= {res}    0.0172
+{txt}DF adjustment:{ralign 15: {res:Large sample}}{col 49}DF:     min{col 67}= {res} 13,751.32
+{txt}{col 49}        avg{col 67}= {res}121,775.69
+{txt}{col 49}        max{col 67}= {res}500,530.39
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}tereri {c |}{col 14}{res}{space 2} .8227002{col 26}{space 2} .2352082{col 37}{space 1}    3.50{col 46}{space 3}0.000{col 54}{space 4} .3616668{col 67}{space 3} 1.283734
+{txt}{space 3}ereri_cde {c |}{col 14}{res}{space 2} .8927248{col 26}{space 2} .2393758{col 37}{space 1}    3.73{col 46}{space 3}0.000{col 54}{space 4} .4235428{col 67}{space 3} 1.361907
+{txt}ereri_intref {c |}{col 14}{res}{space 2} -.073737{col 26}{space 2} .0383006{col 37}{space 1}   -1.93{col 46}{space 3}0.054{col 54}{space 4}-.1488114{col 67}{space 3} .0013375
+{txt}ereri_intmed {c |}{col 14}{res}{space 2}-.0224779{col 26}{space 2} .0130798{col 37}{space 1}   -1.72{col 46}{space 3}0.086{col 54}{space 4}-.0481147{col 67}{space 3}  .003159
+{txt}{space 3}ereri_pie {c |}{col 14}{res}{space 2} .0261903{col 26}{space 2} .0210688{col 37}{space 1}    1.24{col 46}{space 3}0.214{col 54}{space 4}-.0151039{col 67}{space 3} .0674845
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. ************SELF-RATED HEALTH****************
+. capture drop SELF_RATED_HEALTHg
+{txt}
+{com}. gen SELF_RATED_HEALTHg=SELF_RATED_HEALTH
+{txt}(19,049 missing values generated)
+
+{com}. replace SELF_RATED_HEALTHg=0 if SELF_RATED_HEALTH==1
+{txt}(32,809 real changes made)
+
+{com}. replace SELF_RATED_HEALTHg=1 if SELF_RATED_HEALTH==2
+{txt}(9,192 real changes made)
+
+{com}. 
+. 
+. 
+. mi estimate, cmdok: med4way ZLNNFL SELF_RATED_HEALTHg   SEX  RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4  PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE  EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average CVD_CANCER_HISTORY  BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills  if SAMPLE_FINAL==1 , a0(0) a1(1) m(0) yreg(cox) mreg(logistic) 
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}{err}Warning: this analysis assumes a rare outcome.
+Warning: fixed values for the covariates SEX RACE_ETHNg2 RACE_ETHNg3 RACE_ETHNg4 PIRg2 PIRg3 MARRIED_LIVP HOUSEHOLDSIZE EDUCATIONg2 EDUCATIONg3 EDUCATIONg4 EDUCATIONg5 SMOKEg2 SMOKEg3 ALCOHOLg2 DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills were not provided. All covariates are fixed at their respective mean.
+{res}
+{txt}Multiple-imputation estimates{col 49}Imputations{col 67}= {res}         5
+{txt}{col 49}Number of obs{col 67}= {res}     2,071
+{txt}{col 49}Average RVI{col 67}= {res}    0.0340
+{txt}{col 49}Largest FMI{col 67}= {res}    0.0446
+{txt}DF adjustment:{ralign 15: {res:Large sample}}{col 49}DF:     min{col 67}= {res}  2,097.20
+{txt}{col 49}        avg{col 67}= {res}  4,849.13
+{txt}{col 49}        max{col 67}= {res} 11,858.37
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}tereri {c |}{col 14}{res}{space 2} .6912033{col 26}{space 2} .2165825{col 37}{space 1}    3.19{col 46}{space 3}0.001{col 54}{space 4} .2666059{col 67}{space 3} 1.115801
+{txt}{space 3}ereri_cde {c |}{col 14}{res}{space 2} .5769049{col 26}{space 2} .2223227{col 37}{space 1}    2.59{col 46}{space 3}0.010{col 54}{space 4} .1409088{col 67}{space 3} 1.012901
+{txt}ereri_intref {c |}{col 14}{res}{space 2} .0819428{col 26}{space 2} .0610682{col 37}{space 1}    1.34{col 46}{space 3}0.180{col 54}{space 4}-.0377609{col 67}{space 3} .2016465
+{txt}ereri_intmed {c |}{col 14}{res}{space 2} .0138609{col 26}{space 2} .0115011{col 37}{space 1}    1.21{col 46}{space 3}0.228{col 54}{space 4}-.0086937{col 67}{space 3} .0364156
+{txt}{space 3}ereri_pie {c |}{col 14}{res}{space 2} .0184946{col 26}{space 2} .0187852{col 37}{space 1}    0.98{col 46}{space 3}0.325{col 54}{space 4}-.0183375{col 67}{space 3} .0553268
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. save, replace
+{txt}{p 0 4 2}
+(file {bf}
+C:\Users\baydounm\AppData\Local\Temp\ST_4b74_000002.tmp{rm}
+not found)
+{p_end}
+{p 0 4 2}
+file {bf}
+C:\Users\baydounm\AppData\Local\Temp\ST_4b74_000002.tmp{rm}
+saved
+as .dta format
+{p_end}
+
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\baydounm\AppData\Local\Temp\STD4b74_000000.tmp"
+{txt}
+{com}. 
+. save finaldata_imputed, replace
+{txt}{p 0 4 2}
+file {bf}
+finaldata_imputed.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. capture log close
+{smcl}
+{com}{sf}{ul off}

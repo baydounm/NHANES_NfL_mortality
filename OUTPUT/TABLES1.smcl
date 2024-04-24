@@ -1,0 +1,1975 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\TABLES1.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 6 Nov 2022, 06:18:55
+{txt}
+{com}. 
+. 
+. use finaldata_imputed,clear
+{txt}
+{com}. 
+. 
+. **************************TABLE S1**********************************
+. 
+. mi svyset SDMVPSU [pweight=WTSSNH2Y], strata(SDMVSTRA) vce(linearized) singleunit(missing)
+{res}
+{txt}Sampling weights:{col 19}{res}WTSSNH2Y
+             {txt}VCE:{col 19}{res}linearized
+     {txt}Single unit:{col 19}{res}missing
+        {txt}Strata 1:{col 19}{res}SDMVSTRA
+ {txt}Sampling unit 1:{col 19}{res}SDMVPSU
+           {txt}FPC 1:{col 19}<zero>
+{p2colreset}{...}
+{res}{txt}
+{com}. 
+. **AGE SEX RACE_ETHN PIR MARRIED_LIVP HOUSEHOLDSIZE  EDUCATION SMOKE ALCOHOL DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  
+. 
+. **LNNFL  LNNFLMEDIAN
+. 
+. **MORTSTAT
+. 
+. **AGE_DEATH**
+. 
+. 
+. capture drop LNNFLMEDIANBELOW
+{txt}
+{com}. gen LNNFLMEDIANBELOW=.
+{txt}(61,050 missing values generated)
+
+{com}. replace LNNFLMEDIANBELOW=0 if LNNFLMEDIAN==2 & SAMPLE_FINAL==1
+{txt}(6,150 real changes made)
+
+{com}. replace LNNFLMEDIANBELOW=1 if LNNFLMEDIAN==1 & SAMPLE_FINAL==1
+{txt}(6,276 real changes made)
+
+{com}. 
+. 
+. capture drop LNNFLMEDIANABOVE
+{txt}
+{com}. gen LNNFLMEDIANABOVE=.
+{txt}(61,050 missing values generated)
+
+{com}. replace LNNFLMEDIANABOVE=0 if LNNFLMEDIAN==1 & SAMPLE_FINAL==1
+{txt}(6,276 real changes made)
+
+{com}. replace LNNFLMEDIANABOVE=1 if LNNFLMEDIAN==2 & SAMPLE_FINAL==1
+{txt}(6,150 real changes made)
+
+{com}. 
+. 
+. ****************BELOW MEDIAN LN NFL*******************************
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+finaldata_imputed.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. mi estimate: svy, subpop(LNNFLMEDIANBELOW): mean AGE 
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}AGE {c |}{col 14}{res}{space 2} 38.52611{col 26}{space 2} .5586043{col 37}{space 5} 37.32238{col 51}{space 3} 39.72985
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): prop SEX
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}SEX {c |}
+{space 10}1  {c |}{col 14}{res}{space 2} .4622807{col 26}{space 2} .0183061{col 37}{space 5} .4228331{col 51}{space 3} .5017283
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .5377193{col 26}{space 2} .0183061{col 37}{space 5} .4982717{col 51}{space 3} .5771669
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): prop RACE_ETHN
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 3}RACE_ETHN {c |}
+{space 10}0  {c |}{col 14}{res}{space 2} .5822351{col 26}{space 2} .0413483{col 37}{space 5} .4931341{col 51}{space 3} .6713362
+{txt}{space 10}1  {c |}{col 14}{res}{space 2} .1419089{col 26}{space 2} .0232501{col 37}{space 5} .0918075{col 51}{space 3} .1920103
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .1894677{col 26}{space 2} .0272251{col 37}{space 5} .1308006{col 51}{space 3} .2481348
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} .0863883{col 26}{space 2} .0111723{col 37}{space 5} .0623132{col 51}{space 3} .1104633
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): prop MARRIED_LIVP
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+MARRIED_LIVP {c |}
+{space 10}1  {c |}{col 14}{res}{space 2} .6587199{col 26}{space 2} .0261574{col 37}{space 5} .6023536{col 51}{space 3} .7150861
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .3412801{col 26}{space 2} .0261574{col 37}{space 5} .2849139{col 51}{space 3} .3976464
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): mean HOUSEHOLDSIZE
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 14}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 15}{c |}       Mean{col 27}   Std. err.{col 39}     [95% con{col 52}f. interval]
+{hline 14}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+HOUSEHOLDSIZE {c |}{col 15}{res}{space 2} 3.553909{col 27}{space 2}  .074854{col 38}{space 5} 3.392606{col 52}{space 3} 3.715211
+{txt}{hline 14}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): prop PIR
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0127
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0306
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.11
+{txt}{col 33}        avg{col 49}= {res}       13.16
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.21
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}PIR {c |}
+{space 10}1  {c |}{col 14}{res}{space 2} .1997811{col 26}{space 2} .0182671{col 37}{space 5} .1603501{col 51}{space 3} .2392121
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .1862493{col 26}{space 2} .0123506{col 37}{space 5} .1596113{col 51}{space 3} .2128872
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} .6139696{col 26}{space 2} .0245099{col 37}{space 5} .5610801{col 51}{space 3} .6668591
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): prop EDUCATION
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0022
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0165
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.29
+{txt}{col 33}        avg{col 49}= {res}       13.31
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 3}EDUCATION {c |}
+{space 10}1  {c |}{col 14}{res}{space 2} .0405729{col 26}{space 2} .0077981{col 37}{space 5} .0237688{col 51}{space 3} .0573769
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .1231313{col 26}{space 2} .0101174{col 37}{space 5}  .101322{col 51}{space 3} .1449406
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} .2027554{col 26}{space 2} .0231594{col 37}{space 5} .1528458{col 51}{space 3} .2526651
+{txt}{space 10}4  {c |}{col 14}{res}{space 2} .3259303{col 26}{space 2} .0173426{col 37}{space 5} .2885472{col 51}{space 3} .3633134
+{txt}{space 10}5  {c |}{col 14}{res}{space 2} .3076101{col 26}{space 2} .0255989{col 37}{space 5} .2524435{col 51}{space 3} .3627767
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): prop SMOKE
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 7}SMOKE {c |}
+{space 10}1  {c |}{col 14}{res}{space 2} .6135728{col 26}{space 2} .0211971{col 37}{space 5} .5678952{col 51}{space 3} .6592503
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .1867925{col 26}{space 2} .0179614{col 37}{space 5} .1480876{col 51}{space 3} .2254975
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} .1996347{col 26}{space 2}  .016034{col 37}{space 5} .1650832{col 51}{space 3} .2341862
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): prop ALCOHOL
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0543
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0703
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       12.54
+{txt}{col 33}        avg{col 49}= {res}       12.54
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       12.54
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 5}ALCOHOL {c |}
+{space 10}1  {c |}{col 14}{res}{space 2}   .77727{col 26}{space 2} .0284582{col 37}{space 5} .7155605{col 51}{space 3} .8389795
+{txt}{space 10}2  {c |}{col 14}{res}{space 2}   .22273{col 26}{space 2} .0284582{col 37}{space 5} .1610205{col 51}{space 3} .2844395
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): prop DRUG_USER_EVER
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 15}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 16}{c |}{col 39}             N{col 53}ormal
+{col 16}{c |} Proportion{col 28}   Std. err.{col 40}     [95% con{col 53}f. interval]
+{hline 15}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+DRUG_USER_EVER {c |}
+{space 12}0  {c |}{col 16}{res}{space 2} .5111485{col 28}{space 2}  .026324{col 39}{space 5} .4544231{col 53}{space 3} .5678739
+{txt}{space 12}1  {c |}{col 16}{res}{space 2} .4888515{col 28}{space 2}  .026324{col 39}{space 5} .4321261{col 53}{space 3} .5455769
+{txt}{hline 15}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): mean DR12TKCAL
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.1113
+{txt}{col 33}Largest FMI{col 49}= {res}      0.1259
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       11.65
+{txt}{col 33}        avg{col 49}= {res}       11.65
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       11.65
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 3}DR12TKCAL {c |}{col 14}{res}{space 2} 2143.294{col 26}{space 2} 32.19971{col 37}{space 5} 2072.901{col 51}{space 3} 2213.688
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): mean DASH_TOTAL_SCORE
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.1604
+{txt}{col 33}Largest FMI{col 49}= {res}      0.1701
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       10.89
+{txt}{col 33}        avg{col 49}= {res}       10.89
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       10.89
+
+{txt}{hline 17}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 18}{c |}       Mean{col 30}   Std. err.{col 42}     [95% con{col 55}f. interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+DASH_TOTAL_SCORE {c |}{col 18}{res}{space 2} 2.047413{col 30}{space 2} .0627434{col 41}{space 5} 1.909149{col 55}{space 3} 2.185677
+{txt}{hline 17}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): mean PHYSICAL_days_average
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 22}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 23}{c |}       Mean{col 35}   Std. err.{col 47}     [95% con{col 60}f. interval]
+{hline 22}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+PHYSICAL_days_average {c |}{col 23}{res}{space 2} 2119.493{col 35}{space 2} 206.6636{col 46}{space 5} 1674.155{col 60}{space 3}  2564.83
+{txt}{hline 22}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): prop SELF_RATED_HEALTH
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0898
+{txt}{col 33}Largest FMI{col 49}= {res}      0.1054
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       11.99
+{txt}{col 33}        avg{col 49}= {res}       11.99
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       11.99
+
+{txt}{hline 18}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 19}{c |}{col 42}             N{col 56}ormal
+{col 19}{c |} Proportion{col 31}   Std. err.{col 43}     [95% con{col 56}f. interval]
+{hline 18}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+SELF_RATED_HEALTH {c |}
+{space 15}1  {c |}{col 19}{res}{space 2} .8591412{col 31}{space 2} .0126422{col 42}{space 5} .8315927{col 56}{space 3} .8866897
+{txt}{space 15}2  {c |}{col 19}{res}{space 2} .1408588{col 31}{space 2} .0126422{col 42}{space 5} .1133103{col 56}{space 3} .1684073
+{txt}{hline 18}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANBELOW): prop CVD_CANCER_HISTORY
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 19}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 20}{c |}{col 43}             N{col 57}ormal
+{col 20}{c |} Proportion{col 32}   Std. err.{col 44}     [95% con{col 57}f. interval]
+{hline 19}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+CVD_CANCER_HISTORY {c |}
+{space 16}0  {c |}{col 20}{res}{space 2} .9180618{col 32}{space 2} .0100418{col 43}{space 5} .8964228{col 57}{space 3} .9397009
+{txt}{space 16}1  {c |}{col 20}{res}{space 2} .0819382{col 32}{space 2} .0100418{col 43}{space 5} .0602991{col 57}{space 3} .1035772
+{txt}{hline 19}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. 
+. foreach x of varlist BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  LNNFL {c -(}
+{txt}  2{com}.         mi estimate: svy, subpop(LNNFLMEDIANBELOW): mean `x'
+{txt}  3{com}. {c )-} 
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0004
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0132
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}BMI {c |}{col 14}{res}{space 2} 29.39082{col 26}{space 2} .2678595{col 37}{space 5} 28.81359{col 51}{space 3} 29.96805
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0352
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0505
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       12.83
+{txt}{col 33}        avg{col 49}= {res}       12.83
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       12.83
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}SBP {c |}{col 14}{res}{space 2} 116.9604{col 26}{space 2} .5174139{col 37}{space 5} 115.8411{col 51}{space 3} 118.0797
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.1000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.1153
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       11.82
+{txt}{col 33}        avg{col 49}= {res}       11.82
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       11.82
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}DBP {c |}{col 14}{res}{space 2} 68.87866{col 26}{space 2} .5634229{col 37}{space 5} 67.64904{col 51}{space 3} 70.10827
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 19}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 20}{c |}       Mean{col 32}   Std. err.{col 44}     [95% con{col 57}f. interval]
+{hline 19}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+TOTALCHOLESTEROLSI {c |}{col 20}{res}{space 2} 4.821874{col 32}{space 2} .0438164{col 43}{space 5} 4.727455{col 57}{space 3} 4.916294
+{txt}{hline 19}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0019
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0148
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.31
+{txt}{col 33}        avg{col 49}= {res}       13.31
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.31
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 7}HBA1C {c |}{col 14}{res}{space 2} 5.393265{col 26}{space 2} .0190087{col 37}{space 5} 5.352295{col 51}{space 3} 5.434234
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0049
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0181
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.27
+{txt}{col 33}        avg{col 49}= {res}       13.27
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.27
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 7}LnACR {c |}{col 14}{res}{space 2} 2.055267{col 26}{space 2} .0380286{col 37}{space 5} 1.973279{col 51}{space 3} 2.137254
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 15}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 16}{c |}       Mean{col 28}   Std. err.{col 40}     [95% con{col 53}f. interval]
+{hline 15}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+VitaminD_serum {c |}{col 16}{res}{space 2} 60.20782{col 28}{space 2} 1.453157{col 39}{space 5} 57.07643{col 53}{space 3} 63.33922
+{txt}{hline 15}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0035
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0166
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.29
+{txt}{col 33}        avg{col 49}= {res}       13.29
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.29
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+folate_RBCSI {c |}{col 14}{res}{space 2} 1180.109{col 26}{space 2} 28.68062{col 37}{space 5} 1118.284{col 51}{space 3} 1241.934
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0014
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0143
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.31
+{txt}{col 33}        avg{col 49}= {res}       13.31
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.31
+
+{txt}{hline 19}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 20}{c |}       Mean{col 32}   Std. err.{col 44}     [95% con{col 57}f. interval]
+{hline 19}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+vitaminb12_serumsi {c |}{col 20}{res}{space 2} 563.9129{col 32}{space 2} 8.601744{col 43}{space 5} 545.3745{col 57}{space 3} 582.4513
+{txt}{hline 19}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 7}LNNFL {c |}{col 14}{res}{space 2} 2.038952{col 26}{space 2} .0173722{col 37}{space 5} 2.001517{col 51}{space 3} 2.076387
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. 
+. mi estimate: svy, subpop(LNNFLMEDIANBELOW): prop LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}           .
+{txt}{col 33}Largest FMI{col 49}= {res}           .
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}           .
+{txt}{col 33}        avg{col 49}= {res}           .
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}           .
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 1}LNNFLMEDIAN {c |}
+{space 10}1  {c |}{col 14}{res}{space 2}        1{col 26}{space 2}        .{col 37}{space 5}        .{col 51}{space 3}        .
+{txt}{space 10}2  {c |}{col 14}{res}{space 2}        0{col 26}{txt}  (no observations)
+{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. 
+. mi estimate: svy, subpop(LNNFLMEDIANBELOW): prop MORTSTAT
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,046
+{txt}{col 33}Subpop. size{col 49}={res}  110,130,422
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 18}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 19}{c |}{col 42}             N{col 56}ormal
+{col 19}{c |} Proportion{col 31}   Std. err.{col 43}     [95% con{col 56}f. interval]
+{hline 18}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}MORTSTAT {c |}
+{space 3}Assumed alive  {c |}{col 19}{res}{space 2}  .988167{col 31}{space 2} .0041378{col 42}{space 5} .9792505{col 56}{space 3} .9970836
+{txt}Assumed deceased  {c |}{col 19}{res}{space 2}  .011833{col 31}{space 2} .0041378{col 42}{space 5} .0029164{col 56}{space 3} .0207495
+{txt}{hline 18}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+finaldata_imputed.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. 
+. ***************ABOVE MEDIAN LNNFL*******************************
+. 
+. mi estimate: svy, subpop(LNNFLMEDIANABOVE): mean AGE
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}AGE {c |}{col 14}{res}{space 2} 52.07704{col 26}{space 2} .5792995{col 37}{space 5} 50.82871{col 51}{space 3} 53.32537
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): prop SEX
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}SEX {c |}
+{space 10}1  {c |}{col 14}{res}{space 2} .5129584{col 26}{space 2} .0099717{col 37}{space 5} .4914703{col 51}{space 3} .5344464
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .4870416{col 26}{space 2} .0099717{col 37}{space 5} .4655536{col 51}{space 3} .5085297
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): prop RACE_ETHN
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 3}RACE_ETHN {c |}
+{space 10}0  {c |}{col 14}{res}{space 2} .7218418{col 26}{space 2} .0352671{col 37}{space 5}  .645845{col 51}{space 3} .7978386
+{txt}{space 10}1  {c |}{col 14}{res}{space 2} .0973716{col 26}{space 2} .0097082{col 37}{space 5} .0764514{col 51}{space 3} .1182917
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .1144081{col 26}{space 2} .0289459{col 37}{space 5} .0520329{col 51}{space 3} .1767833
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} .0663785{col 26}{space 2}  .011519{col 37}{space 5} .0415563{col 51}{space 3} .0912007
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): prop MARRIED_LIVP
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+MARRIED_LIVP {c |}
+{space 10}1  {c |}{col 14}{res}{space 2} .6383828{col 26}{space 2}  .017098{col 37}{space 5} .6015385{col 51}{space 3} .6752271
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .3616172{col 26}{space 2}  .017098{col 37}{space 5} .3247729{col 51}{space 3} .3984615
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): mean HOUSEHOLDSIZE
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 14}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 15}{c |}       Mean{col 27}   Std. err.{col 39}     [95% con{col 52}f. interval]
+{hline 14}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+HOUSEHOLDSIZE {c |}{col 15}{res}{space 2} 2.839174{col 27}{space 2} .0700516{col 38}{space 5}  2.68822{col 52}{space 3} 2.990127
+{txt}{hline 14}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): prop PIR
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0785
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0884
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       12.26
+{txt}{col 33}        avg{col 49}= {res}       12.91
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.25
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}PIR {c |}
+{space 10}1  {c |}{col 14}{res}{space 2} .1618831{col 26}{space 2} .0325601{col 37}{space 5} .0916737{col 51}{space 3} .2320926
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .2037407{col 26}{space 2} .0219693{col 37}{space 5} .1559859{col 51}{space 3} .2514955
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} .6343762{col 26}{space 2} .0488651{col 37}{space 5} .5289803{col 51}{space 3}  .739772
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): prop EDUCATION
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0128
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 3}EDUCATION {c |}
+{space 10}1  {c |}{col 14}{res}{space 2}  .045287{col 26}{space 2} .0070602{col 37}{space 5} .0300731{col 51}{space 3} .0605009
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .1046635{col 26}{space 2} .0210329{col 37}{space 5} .0593398{col 51}{space 3} .1499871
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} .1988952{col 26}{space 2} .0187281{col 37}{space 5} .1585381{col 51}{space 3} .2392523
+{txt}{space 10}4  {c |}{col 14}{res}{space 2} .3451229{col 26}{space 2} .0221674{col 37}{space 5} .2973544{col 51}{space 3} .3928915
+{txt}{space 10}5  {c |}{col 14}{res}{space 2} .3060314{col 26}{space 2} .0285154{col 37}{space 5} .2445838{col 51}{space 3} .3674791
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): prop SMOKE
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0128
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 7}SMOKE {c |}
+{space 10}1  {c |}{col 14}{res}{space 2} .5099869{col 26}{space 2} .0290871{col 37}{space 5} .4473073{col 51}{space 3} .5726665
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .2633819{col 26}{space 2} .0236434{col 37}{space 5} .2124328{col 51}{space 3} .3143311
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} .2266312{col 26}{space 2} .0340355{col 37}{space 5} .1532883{col 51}{space 3} .2999741
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): prop ALCOHOL
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0052
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0184
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.26
+{txt}{col 33}        avg{col 49}= {res}       13.26
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.26
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 5}ALCOHOL {c |}
+{space 10}1  {c |}{col 14}{res}{space 2} .7750283{col 26}{space 2} .0265769{col 37}{space 5}  .717728{col 51}{space 3} .8323286
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .2249717{col 26}{space 2} .0265769{col 37}{space 5} .1676714{col 51}{space 3}  .282272
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): prop DRUG_USER_EVER
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 15}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 16}{c |}{col 39}             N{col 53}ormal
+{col 16}{c |} Proportion{col 28}   Std. err.{col 40}     [95% con{col 53}f. interval]
+{hline 15}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+DRUG_USER_EVER {c |}
+{space 12}0  {c |}{col 16}{res}{space 2} .5804602{col 28}{space 2} .0244418{col 39}{space 5} .5277907{col 53}{space 3} .6331297
+{txt}{space 12}1  {c |}{col 16}{res}{space 2} .4195398{col 28}{space 2} .0244418{col 39}{space 5} .3668703{col 53}{space 3} .4722093
+{txt}{hline 15}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): mean DR12TKCAL
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.2063
+{txt}{col 33}Largest FMI{col 49}= {res}      0.2084
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       10.23
+{txt}{col 33}        avg{col 49}= {res}       10.23
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       10.23
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 3}DR12TKCAL {c |}{col 14}{res}{space 2} 2099.106{col 26}{space 2} 44.11972{col 37}{space 5} 2001.095{col 51}{space 3} 2197.116
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): mean DASH_TOTAL_SCORE
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0688
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0849
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       12.32
+{txt}{col 33}        avg{col 49}= {res}       12.32
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       12.32
+
+{txt}{hline 17}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 18}{c |}       Mean{col 30}   Std. err.{col 42}     [95% con{col 55}f. interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+DASH_TOTAL_SCORE {c |}{col 18}{res}{space 2} 2.244319{col 30}{space 2} .0919141{col 41}{space 5} 2.044623{col 55}{space 3} 2.444016
+{txt}{hline 17}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): mean PHYSICAL_days_average
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 22}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 23}{c |}       Mean{col 35}   Std. err.{col 47}     [95% con{col 60}f. interval]
+{hline 22}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+PHYSICAL_days_average {c |}{col 23}{res}{space 2} 1993.903{col 35}{space 2} 266.8097{col 46}{space 5} 1418.957{col 60}{space 3} 2568.849
+{txt}{hline 22}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): prop SELF_RATED_HEALTH
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0026
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0156
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.30
+{txt}{col 33}        avg{col 49}= {res}       13.30
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.30
+
+{txt}{hline 18}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 19}{c |}{col 42}             N{col 56}ormal
+{col 19}{c |} Proportion{col 31}   Std. err.{col 43}     [95% con{col 56}f. interval]
+{hline 18}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+SELF_RATED_HEALTH {c |}
+{space 15}1  {c |}{col 19}{res}{space 2}  .771743{col 31}{space 2} .0368592{col 42}{space 5} .6922951{col 56}{space 3}  .851191
+{txt}{space 15}2  {c |}{col 19}{res}{space 2}  .228257{col 31}{space 2} .0368592{col 42}{space 5}  .148809{col 56}{space 3} .3077049
+{txt}{hline 18}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(LNNFLMEDIANABOVE): prop CVD_CANCER_HISTORY
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 19}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 20}{c |}{col 43}             N{col 57}ormal
+{col 20}{c |} Proportion{col 32}   Std. err.{col 44}     [95% con{col 57}f. interval]
+{hline 19}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+CVD_CANCER_HISTORY {c |}
+{space 16}0  {c |}{col 20}{res}{space 2} .7858241{col 32}{space 2}  .015889{col 43}{space 5} .7515851{col 57}{space 3} .8200631
+{txt}{space 16}1  {c |}{col 20}{res}{space 2} .2141759{col 32}{space 2}  .015889{col 43}{space 5} .1799369{col 57}{space 3} .2484149
+{txt}{hline 19}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. 
+. foreach x of varlist BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  LNNFL {c -(}
+{txt}  2{com}.         mi estimate: svy, subpop(LNNFLMEDIANABOVE): mean `x'
+{txt}  3{com}. {c )-} 
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0016
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0145
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.31
+{txt}{col 33}        avg{col 49}= {res}       13.31
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.31
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}BMI {c |}{col 14}{res}{space 2}   29.335{col 26}{space 2} .3299653{col 37}{space 5} 28.62385{col 51}{space 3} 30.04615
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0344
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0497
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       12.84
+{txt}{col 33}        avg{col 49}= {res}       12.84
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       12.84
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}SBP {c |}{col 14}{res}{space 2} 122.9098{col 26}{space 2} .7000244{col 37}{space 5} 121.3956{col 51}{space 3}  124.424
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.1101
+{txt}{col 33}Largest FMI{col 49}= {res}      0.1248
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       11.67
+{txt}{col 33}        avg{col 49}= {res}       11.67
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       11.67
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}DBP {c |}{col 14}{res}{space 2} 69.70218{col 26}{space 2} .5819865{col 37}{space 5} 68.43011{col 51}{space 3} 70.97426
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 19}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 20}{c |}       Mean{col 32}   Std. err.{col 44}     [95% con{col 57}f. interval]
+{hline 19}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+TOTALCHOLESTEROLSI {c |}{col 20}{res}{space 2} 4.968438{col 32}{space 2} .0497945{col 43}{space 5} 4.861137{col 57}{space 3}  5.07574
+{txt}{hline 19}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 7}HBA1C {c |}{col 14}{res}{space 2} 5.826888{col 26}{space 2} .0418978{col 37}{space 5} 5.736603{col 51}{space 3} 5.917174
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0392
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0547
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       12.77
+{txt}{col 33}        avg{col 49}= {res}       12.77
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       12.77
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 7}LnACR {c |}{col 14}{res}{space 2} 2.235837{col 26}{space 2} .0364243{col 37}{space 5} 2.157004{col 51}{space 3} 2.314669
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 15}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 16}{c |}       Mean{col 28}   Std. err.{col 40}     [95% con{col 53}f. interval]
+{hline 15}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+VitaminD_serum {c |}{col 16}{res}{space 2} 68.63459{col 28}{space 2} 1.461974{col 39}{space 5}  65.4842{col 53}{space 3} 71.78499
+{txt}{hline 15}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0072
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0207
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.24
+{txt}{col 33}        avg{col 49}= {res}       13.24
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.24
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+folate_RBCSI {c |}{col 14}{res}{space 2} 1312.121{col 26}{space 2} 34.64174{col 37}{space 5} 1237.417{col 51}{space 3} 1386.825
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0128
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 19}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 20}{c |}       Mean{col 32}   Std. err.{col 44}     [95% con{col 57}f. interval]
+{hline 19}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+vitaminb12_serumsi {c |}{col 20}{res}{space 2} 642.9245{col 32}{space 2}   46.458{col 43}{space 5} 542.8121{col 57}{space 3} 743.0368
+{txt}{hline 19}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Mean estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}       Mean{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 7}LNNFL {c |}{col 14}{res}{space 2} 3.073128{col 26}{space 2} .0410809{col 37}{space 5} 2.984603{col 51}{space 3} 3.161653
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. 
+. mi estimate: svy, subpop(LNNFLMEDIANABOVE): prop LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}           .
+{txt}{col 33}Largest FMI{col 49}= {res}           .
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}           .
+{txt}{col 33}        avg{col 49}= {res}           .
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}           .
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 14}{c |}{col 37}             N{col 51}ormal
+{col 14}{c |} Proportion{col 26}   Std. err.{col 38}     [95% con{col 51}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 1}LNNFLMEDIAN {c |}
+{space 10}1  {c |}{col 14}{res}{space 2}        0{col 26}{txt}  (no observations)
+{space 10}2  {c |}{col 14}{res}{space 2}        1{col 26}{space 2}        .{col 37}{space 5}        .{col 51}{space 3}        .
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. 
+. mi estimate: svy, subpop(LNNFLMEDIANABOVE): prop MORTSTAT
+{res}
+{txt}Multiple-imputation estimates{col 33}Imputations{col 49}= {res}           5
+{txt}Survey: Proportion estimation{col 33}Number of obs{col 49}= {res}       2,071
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 33}Population size{col 49}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 33}Subpop. no. obs{col 49}={res}        1,025
+{txt}{col 33}Subpop. size{col 49}={res}  102,365,619
+{txt}{col 33}Average RVI{col 49}= {res}      0.0000
+{txt}{col 33}Largest FMI{col 49}= {res}      0.0000
+{txt}{col 33}Complete DF{col 49}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 33}DF:     min{col 49}= {res}       13.33
+{txt}{col 33}        avg{col 49}= {res}       13.33
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 33}        max{col 49}= {res}       13.33
+
+{txt}{hline 18}{c TT}{hline 11}{hline 11}{hline 14}{hline 12}
+{col 19}{c |}{col 42}             N{col 56}ormal
+{col 19}{c |} Proportion{col 31}   Std. err.{col 43}     [95% con{col 56}f. interval]
+{hline 18}{c +}{hline 11}{hline 11}{hline 14}{hline 12}
+{space 9}MORTSTAT {c |}
+{space 3}Assumed alive  {c |}{col 19}{res}{space 2} .9400321{col 31}{space 2} .0093621{col 42}{space 5} .9198578{col 56}{space 3} .9602064
+{txt}Assumed deceased  {c |}{col 19}{res}{space 2} .0599679{col 31}{space 2} .0093621{col 42}{space 5} .0397936{col 56}{space 3} .0801422
+{txt}{hline 18}{c BT}{hline 11}{hline 11}{hline 14}{hline 12}
+{res}{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+finaldata_imputed.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. 
+. **************DIFFERENCE BY LNNFLMEDIAN********************
+. mi estimate: svy, subpop(SAMPLE_FINAL): reg AGE LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0000
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}      476.58
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}         AGE{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} 13.55092{col 26}{space 2} .6207259{col 37}{space 1}   21.83{col 46}{space 3}0.000{col 54}{space 4} 12.21333{col 67}{space 3} 14.88852
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 24.97519{col 26}{space 2} 1.029121{col 37}{space 1}   24.27{col 46}{space 3}0.000{col 54}{space 4} 22.75754{col 67}{space 3} 27.19283
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): mlogit SEX LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Multinomial logistic regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0000
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}        4.73
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0482
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}         SEX{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}1            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} .2030094{col 26}{space 2} .0933407{col 37}{space 1}    2.17{col 46}{space 3}0.048{col 54}{space 4} .0018704{col 67}{space 3} .4041484
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-.3541737{col 26}{space 2} .1633358{col 37}{space 1}   -2.17{col 46}{space 3}0.049{col 54}{space 4}-.7061445{col 67}{space 3}-.0022029
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}{res}2           {col 14}{txt}{c |}  (base outcome)
+{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): mlogit RACE_ETHN LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Multinomial logistic regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0000
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   3{txt},{res}   13.3{txt}){col 65}= {res}       10.39
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0009
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}   RACE_ETHN{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}{res}0           {col 14}{txt}{c |}  (base outcome)
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}1            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2}-.5915826{col 26}{space 2} .1489333{col 37}{space 1}   -3.97{col 46}{space 3}0.002{col 54}{space 4}-.9125178{col 67}{space 3}-.2706475
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-.8201064{col 26}{space 2} .3489014{col 37}{space 1}   -2.35{col 46}{space 3}0.035{col 54}{space 4}-1.571951{col 67}{space 3}-.0682619
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}2            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2}-.7193782{col 26}{space 2} .1780066{col 37}{space 1}   -4.04{col 46}{space 3}0.001{col 54}{space 4}-1.102963{col 67}{space 3}-.3357933
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-.4032776{col 26}{space 2} .2441405{col 37}{space 1}   -1.65{col 46}{space 3}0.122{col 54}{space 4}-.9293738{col 67}{space 3} .1228185
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}3            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2}-.4784101{col 26}{space 2} .1434905{col 37}{space 1}   -3.33{col 46}{space 3}0.005{col 54}{space 4}-.7876166{col 67}{space 3}-.1692036
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-1.429612{col 26}{space 2} .2405998{col 37}{space 1}   -5.94{col 46}{space 3}0.000{col 54}{space 4}-1.948079{col 67}{space 3}-.9111461
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): mlogit MARRIED_LIVP LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Multinomial logistic regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0000
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}        0.49
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.4961
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}MARRIED_LIVP{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}{res}1           {col 14}{txt}{c |}  (base outcome)
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}2            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} .0892427{col 26}{space 2} .1275455{col 37}{space 1}    0.70{col 46}{space 3}0.496{col 54}{space 4}-.1856039{col 67}{space 3} .3640894
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-.7468373{col 26}{space 2} .2326513{col 37}{space 1}   -3.21{col 46}{space 3}0.007{col 54}{space 4}-1.248176{col 67}{space 3} -.245499
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): reg HOUSEHOLDSIZE LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0000
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}      150.83
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}HOUSEHOLDS~E{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2}-.7147348{col 26}{space 2} .0581974{col 37}{space 1}  -12.28{col 46}{space 3}0.000{col 54}{space 4}-.8401439{col 67}{space 3}-.5893257
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 4.268643{col 26}{space 2} .1143368{col 37}{space 1}   37.33{col 46}{space 3}0.000{col 54}{space 4}  4.02226{col 67}{space 3} 4.515027
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): mlogit PIR LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Multinomial logistic regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0575
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0671
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       12.59
+{txt}{col 47}        avg{col 65}= {res}       12.78
+{txt}{col 47}        max{col 65}= {res}       13.10
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   2{txt},{res}   12.8{txt}){col 65}= {res}        1.38
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.2869
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}         PIR{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}1            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2}-.2430749{col 26}{space 2} .1982535{col 37}{space 1}   -1.23{col 46}{space 3}0.242{col 54}{space 4}-.6710387{col 67}{space 3}  .184889
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-.8796861{col 26}{space 2} .1898401{col 37}{space 1}   -4.63{col 46}{space 3}0.000{col 54}{space 4}-1.290828{col 67}{space 3}-.4685443
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}2            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} .0568277{col 26}{space 2} .1654338{col 37}{space 1}    0.34{col 46}{space 3}0.737{col 54}{space 4}-.3017601{col 67}{space 3} .4154154
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-1.249693{col 26}{space 2}  .206082{col 37}{space 1}   -6.06{col 46}{space 3}0.000{col 54}{space 4}-1.695787{col 67}{space 3}-.8035985
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}{res}3           {col 14}{txt}{c |}  (base outcome)
+{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): mlogit EDUCATION LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Multinomial logistic regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0025
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0191
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.26
+{txt}{col 47}        avg{col 65}= {res}       13.31
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   4{txt},{res}   13.3{txt}){col 65}= {res}        0.49
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.7413
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}   EDUCATION{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}1            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} .0527008{col 26}{space 2} .1795174{col 37}{space 1}    0.29{col 46}{space 3}0.774{col 54}{space 4}-.3341511{col 67}{space 3} .4395526
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-2.136282{col 26}{space 2} .3491605{col 37}{space 1}   -6.12{col 46}{space 3}0.000{col 54}{space 4}-2.888707{col 67}{space 3}-1.383857
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}2            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2}-.2197136{col 26}{space 2} .1901463{col 37}{space 1}   -1.16{col 46}{space 3}0.268{col 54}{space 4}-.6295351{col 67}{space 3}  .190108
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-.7537236{col 26}{space 2} .2077214{col 37}{space 1}   -3.63{col 46}{space 3}0.003{col 54}{space 4}-1.201601{col 67}{space 3}-.3058461
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}3            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2}-.0764394{col 26}{space 2}  .199208{col 37}{space 1}   -0.38{col 46}{space 3}0.707{col 54}{space 4}-.5057409{col 67}{space 3} .3528621
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} -.398244{col 26}{space 2} .3157677{col 37}{space 1}   -1.26{col 46}{space 3}0.229{col 54}{space 4} -1.07876{col 67}{space 3} .2822717
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}{res}4           {col 14}{txt}{c |}  (base outcome)
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}5            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2}-.0623637{col 26}{space 2} .1641734{col 37}{space 1}   -0.38{col 46}{space 3}0.710{col 54}{space 4}-.4161643{col 67}{space 3} .2914369
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .0045145{col 26}{space 2} .2497923{col 37}{space 1}    0.02{col 46}{space 3}0.986{col 54}{space 4}-.5338244{col 67}{space 3} .5428534
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): mlogit SMOKE LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Multinomial logistic regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0128
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   2{txt},{res}   13.3{txt}){col 65}= {res}       12.95
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0008
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}       SMOKE{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}{res}1           {col 14}{txt}{c |}  (base outcome)
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}2            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} .5285206{col 26}{space 2} .1302954{col 37}{space 1}    4.06{col 46}{space 3}0.001{col 54}{space 4} .2477469{col 67}{space 3} .8092942
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-1.717821{col 26}{space 2} .2250995{col 37}{space 1}   -7.63{col 46}{space 3}0.000{col 54}{space 4}-2.202887{col 67}{space 3}-1.232755
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}3            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} .3117485{col 26}{space 2}  .168285{col 37}{space 1}    1.85{col 46}{space 3}0.086{col 54}{space 4} -.050888{col 67}{space 3} .6743851
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-1.434558{col 26}{space 2} .1997033{col 37}{space 1}   -7.18{col 46}{space 3}0.000{col 54}{space 4}-1.864898{col 67}{space 3}-1.004219
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): mlogit ALCOHOL LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Multinomial logistic regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0807
+{txt}{col 47}Largest FMI{col 65}= {res}      0.1638
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       11.00
+{txt}{col 47}        avg{col 65}= {res}       11.24
+{txt}{col 47}        max{col 65}= {res}       11.48
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   11.0{txt}){col 65}= {res}        0.01
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.9143
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     ALCOHOL{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}{res}1           {col 14}{txt}{c |}  (base outcome)
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}2            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2}  .013138{col 26}{space 2} .1193734{col 37}{space 1}    0.11{col 46}{space 3}0.914{col 54}{space 4} -.249598{col 67}{space 3}  .275874
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-1.263223{col 26}{space 2} .2435274{col 37}{space 1}   -5.19{col 46}{space 3}0.000{col 54}{space 4}  -1.7965{col 67}{space 3}-.7299461
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): mlogit DRUG_USER_EVER LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Multinomial logistic regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0000
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}        5.67
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0328
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}DRUG_USER_~R{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}{res}0           {col 14}{txt}{c |}  (base outcome)
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}1            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2}-.2800614{col 26}{space 2} .1176438{col 37}{space 1}   -2.38{col 46}{space 3}0.033{col 54}{space 4}-.5335711{col 67}{space 3}-.0265518
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .2354599{col 26}{space 2} .1995076{col 37}{space 1}    1.18{col 46}{space 3}0.259{col 54}{space 4}-.1944573{col 67}{space 3} .6653772
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): reg DR12TKCAL LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.1791
+{txt}{col 47}Largest FMI{col 65}= {res}      0.1203
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       11.74
+{txt}{col 47}        avg{col 65}= {res}       11.92
+{txt}{col 47}        max{col 65}= {res}       12.11
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   11.7{txt}){col 65}= {res}        0.57
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.4669
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}   DR12TKCAL{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} -44.1887{col 26}{space 2}  58.7725{col 37}{space 1}   -0.75{col 46}{space 3}0.467{col 54}{space 4}-172.5573{col 67}{space 3} 84.17987
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 2187.483{col 26}{space 2} 83.87792{col 37}{space 1}   26.08{col 46}{space 3}0.000{col 54}{space 4}  2004.91{col 67}{space 3} 2370.056
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): reg DASH_TOTAL_SCORE LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.1238
+{txt}{col 47}Largest FMI{col 65}= {res}      0.2071
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       10.25
+{txt}{col 47}        avg{col 65}= {res}       10.53
+{txt}{col 47}        max{col 65}= {res}       10.81
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   10.8{txt}){col 65}= {res}        3.34
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0951
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}DASH_TOTAL~E{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} .1969065{col 26}{space 2} .1076764{col 37}{space 1}    1.83{col 46}{space 3}0.095{col 54}{space 4}  -.04059{col 67}{space 3}  .434403
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 1.850506{col 26}{space 2} .1503784{col 37}{space 1}   12.31{col 46}{space 3}0.000{col 54}{space 4} 1.516547{col 67}{space 3} 2.184465
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): reg PHYSICAL_days_average LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0000
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}        0.31
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.5853
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}PHYSICAL_d~e{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2}  -125.59{col 26}{space 2} 224.5798{col 37}{space 1}   -0.56{col 46}{space 3}0.585{col 54}{space 4} -609.535{col 67}{space 3}  358.355
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 2245.083{col 26}{space 2} 339.2704{col 37}{space 1}    6.62{col 46}{space 3}0.000{col 54}{space 4} 1513.992{col 67}{space 3} 2976.173
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): mlogit SELF_RATED_HEALTH LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Multinomial logistic regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0466
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0532
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       12.79
+{txt}{col 47}        avg{col 65}= {res}       12.95
+{txt}{col 47}        max{col 65}= {res}       13.12
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.1{txt}){col 65}= {res}        5.88
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0305
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}SELF_RATED~H{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}{res}1           {col 14}{txt}{c |}  (base outcome)
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}2            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} .5901885{col 26}{space 2} .2434458{col 37}{space 1}    2.42{col 46}{space 3}0.031{col 54}{space 4} .0647261{col 67}{space 3} 1.115651
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-2.398577{col 26}{space 2} .3106549{col 37}{space 1}   -7.72{col 46}{space 3}0.000{col 54}{space 4}-3.070807{col 67}{space 3}-1.726347
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. mi estimate: svy, subpop(SAMPLE_FINAL): mlogit CVD_CANCER_HISTORY LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Multinomial logistic regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0000
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}       43.63
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}CVD_CANCER~Y{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}{res}0           {col 14}{txt}{c |}  (base outcome)
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}1            {txt}{c |}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} 1.116365{col 26}{space 2} .1690013{col 37}{space 1}    6.61{col 46}{space 3}0.000{col 54}{space 4} .7521853{col 67}{space 3} 1.480544
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-3.532665{col 26}{space 2} .2895697{col 37}{space 1}  -12.20{col 46}{space 3}0.000{col 54}{space 4}-4.156656{col 67}{space 3}-2.908674
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. foreach x of varlist BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  LNNFL {c -(}
+{txt}  2{com}.         mi estimate: svy, subpop(SAMPLE_FINAL): reg `x' LNNFLMEDIAN
+{txt}  3{com}. {c )-} 
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0016
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0161
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.29
+{txt}{col 47}        avg{col 65}= {res}       13.30
+{txt}{col 47}        max{col 65}= {res}       13.30
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}        0.03
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.8665
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}         BMI{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2}-.0558204{col 26}{space 2} .3257354{col 37}{space 1}   -0.17{col 46}{space 3}0.867{col 54}{space 4}-.7579591{col 67}{space 3} .6463183
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 29.44664{col 26}{space 2} .4968173{col 37}{space 1}   59.27{col 46}{space 3}0.000{col 54}{space 4} 28.37582{col 67}{space 3} 30.51746
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0482
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0952
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       12.15
+{txt}{col 47}        avg{col 65}= {res}       12.16
+{txt}{col 47}        max{col 65}= {res}       12.18
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   12.2{txt}){col 65}= {res}       71.13
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}         SBP{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} 5.949383{col 26}{space 2}  .705439{col 37}{space 1}    8.43{col 46}{space 3}0.000{col 54}{space 4} 4.414488{col 67}{space 3} 7.484277
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}  111.011{col 26}{space 2} 1.020141{col 37}{space 1}  108.82{col 46}{space 3}0.000{col 54}{space 4} 108.7919{col 67}{space 3} 113.2302
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.1102
+{txt}{col 47}Largest FMI{col 65}= {res}      0.1390
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       11.43
+{txt}{col 47}        avg{col 65}= {res}       11.50
+{txt}{col 47}        max{col 65}= {res}       11.57
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   11.4{txt}){col 65}= {res}        1.53
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.2412
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}         DBP{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} .8235252{col 26}{space 2} .6661885{col 37}{space 1}    1.24{col 46}{space 3}0.241{col 54}{space 4}-.6361067{col 67}{space 3} 2.283157
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 68.05513{col 26}{space 2} 1.088024{col 37}{space 1}   62.55{col 46}{space 3}0.000{col 54}{space 4} 65.67479{col 67}{space 3} 70.43547
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0000
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}        6.26
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0261
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}TOTALCHOLE~I{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} .1465639{col 26}{space 2}  .058593{col 37}{space 1}    2.50{col 46}{space 3}0.026{col 54}{space 4} .0203024{col 67}{space 3} .2728253
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 4.675311{col 26}{space 2} .0907002{col 37}{space 1}   51.55{col 46}{space 3}0.000{col 54}{space 4} 4.479861{col 67}{space 3}  4.87076
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0010
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0138
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.32
+{txt}{col 47}        avg{col 65}= {res}       13.32
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}       93.04
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}       HBA1C{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} .4336236{col 26}{space 2} .0449556{col 37}{space 1}    9.65{col 46}{space 3}0.000{col 54}{space 4} .3367459{col 67}{space 3} .5305012
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 4.959641{col 26}{space 2} .0548566{col 37}{space 1}   90.41{col 46}{space 3}0.000{col 54}{space 4} 4.841421{col 67}{space 3} 5.077862
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0281
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0602
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       12.69
+{txt}{col 47}        avg{col 65}= {res}       12.85
+{txt}{col 47}        max{col 65}= {res}       13.00
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   12.7{txt}){col 65}= {res}       17.26
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0012
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}       LnACR{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} .1805701{col 26}{space 2}   .04346{col 37}{space 1}    4.15{col 46}{space 3}0.001{col 54}{space 4} .0864481{col 67}{space 3} .2746921
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 1.874696{col 26}{space 2} .0730969{col 37}{space 1}   25.65{col 46}{space 3}0.000{col 54}{space 4} 1.716778{col 67}{space 3} 2.032615
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0000
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}       38.67
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}VitaminD_s~m{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} 8.426768{col 26}{space 2} 1.355096{col 37}{space 1}    6.22{col 46}{space 3}0.000{col 54}{space 4} 5.506683{col 67}{space 3} 11.34685
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 51.78106{col 26}{space 2} 2.399694{col 37}{space 1}   21.58{col 46}{space 3}0.000{col 54}{space 4} 46.60998{col 67}{space 3} 56.95214
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0065
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0237
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.20
+{txt}{col 47}        avg{col 65}= {res}       13.21
+{txt}{col 47}        max{col 65}= {res}       13.23
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.2{txt}){col 65}= {res}       13.79
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0025
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}folate_RBCSI{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} 132.0121{col 26}{space 2} 35.55107{col 37}{space 1}    3.71{col 46}{space 3}0.003{col 54}{space 4}  55.3248{col 67}{space 3} 208.6994
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 1048.097{col 26}{space 2} 54.52396{col 37}{space 1}   19.22{col 46}{space 3}0.000{col 54}{space 4} 930.5136{col 67}{space 3}  1165.68
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0008
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0131
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}        2.93
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.1104
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}vitaminb12~i{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} 79.01156{col 26}{space 2} 46.19559{col 37}{space 1}    1.71{col 46}{space 3}0.110{col 54}{space 4}-20.53648{col 67}{space 3} 178.5596
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 484.9013{col 26}{space 2} 47.51525{col 37}{space 1}   10.21{col 46}{space 3}0.000{col 54}{space 4} 382.5076{col 67}{space 3} 587.2951
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Linear regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0000
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}      750.97
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}       LNNFL{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LNNFLMEDIAN {c |}{col 14}{res}{space 2} 1.034176{col 26}{space 2} .0377385{col 37}{space 1}   27.40{col 46}{space 3}0.000{col 54}{space 4} .9528536{col 67}{space 3} 1.115498
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 1.004776{col 26}{space 2}  .042004{col 37}{space 1}   23.92{col 46}{space 3}0.000{col 54}{space 4} .9142622{col 67}{space 3}  1.09529
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. mi estimate: svy, subpop(SAMPLE_FINAL): mlogit MORTSTAT LNNFLMEDIAN
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Multinomial logistic regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,071
+{txt}{col 47}Subpop. size{col 65}={res}  212,496,041
+{txt}{col 47}Average RVI{col 65}= {res}      0.0000
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0000
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.33
+{txt}{col 47}        avg{col 65}= {res}       13.33
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   1{txt},{res}   13.3{txt}){col 65}= {res}       18.39
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0008
+
+{txt}{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}        MORTSTAT{col 18}{c |} Coefficient{col 30}  Std. err.{col 42}      t{col 50}   P>|t|{col 58}     [95% con{col 71}f. interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}{res}Assumed_alive   {col 18}{txt}{c |}  (base outcome)
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}Assumed_deceased {txt}{c |}
+{space 5}LNNFLMEDIAN {c |}{col 18}{res}{space 2} 1.672859{col 30}{space 2} .3901013{col 41}{space 1}    4.29{col 50}{space 3}0.001{col 58}{space 4} .8322332{col 71}{space 3} 2.513485
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2}-6.097823{col 30}{space 2} .7261045{col 41}{space 1}   -8.40{col 50}{space 3}0.000{col 58}{space 4}-7.662499{col 71}{space 3}-4.533147
+{txt}{hline 17}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+finaldata_imputed.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. 
+. capture log close
+{smcl}
+{com}{sf}{ul off}
