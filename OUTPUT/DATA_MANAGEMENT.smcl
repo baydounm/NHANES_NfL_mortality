@@ -1,0 +1,4389 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\DATA_MANAGEMENT.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 2 Nov 2022, 07:28:21
+{txt}
+{com}. 
+. ************************************STEP 1: GENERATE DTA FILE FOR LINKED MORTALITY DATA*************************
+. 
+. 
+. *******************************************************************************
+. * May 2022
+. 
+. **      PUBLIC-USE LINKED MORTALITY FOLLOW-UP THROUGH DECEMBER 31, 2019 **
+. 
+. *       The following Stata code can be used to read the fixed-width format ASCII 
+. *       public-use Linked Mortality Files (LMFs) from a stored location into a 
+. *       Stata dataset.  Basic frequencies are also produced.  
+.  
+.         
+. **NOTE: The format definitions given below will result in procedure output 
+.         **      showing values that have been grouped as they are shown in the file layout
+.         **      documentation.
+. 
+.                 
+. **To download and save the public-use LMFs to your hard drive, follow these steps:
+. 
+. *Step 1: Designate a folder on your hard drive to download the public-use LMF. 
+.         **       In this example, the data will be saved to: 'C:\PUBLIC USE DATA'
+. 
+. *Step 2: To download the public-use LMF, go to the web site: 
+.           **   https://ftp.cdc.gov/pub/health_statistics/nchs/datalinkage/linked_mortality/.
+. 
+.       **   Right click on the desired survey link and select "Save target as...".  
+.      **  A "Save As" screen will appear where you will need to select and input 
+.                 ** a location where to save the data file on your hard drive.  
+. 
+.         ** Also note that the "Save as type:" box should read "DAT File (*.dat)".  
+.                 ** This will ensure that the data file is saved to your hard drive in the 
+.                 ** correct format.  
+. 
+.         ** In this example, the data file is saved in the folder, "C:\PUBLIC USE DATA", 
+.                 ** and the data file is saved as "<SURVEY>_MORT_2019_PUBLIC.DAT". 
+. */
+. 
+. global SURVEY NHANES_2013_2014     // REPLACE <SURVEY> WITH RELEVANT SURVEY NAME (IN ALL CAPS)
+{txt}
+{com}. 
+. clear all
+{res}{txt}
+{com}. 
+. ****************
+. *NHANES VERSION*
+. ****************
+. clear all
+{res}{txt}
+{com}. 
+. // DEFINE VALUE LABELS FOR REPORTS
+. label define premiss .z "Missing"
+{txt}
+{com}. label define eligfmt 1 "Eligible" 2 "Under age 18, not available for public release" 3 "Ineligible" 
+{txt}
+{com}. label define mortfmt 0 "Assumed alive" 1 "Assumed deceased" .z "Ineligible or under age 18"
+{txt}
+{com}. label define flagfmt 0 "No - Condition not listed as a multiple cause of death" 1 "Yes - Condition listed as a multiple cause of death" .z "Assumed alive, under age 18, ineligible for mortality follow-up, or MCOD not available"
+{txt}
+{com}. label define qtrfmt 1 "January-March" 2 "April-June" 3 "July-September" 4 "October-December" .z "Ineligible, under age 18, or assumed alive"
+{txt}
+{com}. label define dodyfmt .z "Ineligible, under age 18, or assumed alive"
+{txt}
+{com}. label define ucodfmt 1 "Diseases of heart (I00-I09, I11, I13, I20-I51)"                           
+{txt}
+{com}. label define ucodfmt 2 "Malignant neoplasms (C00-C97)"                                            , add
+{txt}
+{com}. label define ucodfmt 3 "Chronic lower respiratory diseases (J40-J47)"                             , add
+{txt}
+{com}. label define ucodfmt 4 "Accidents (unintentional injuries) (V01-X59, Y85-Y86)"                    , add
+{txt}
+{com}. label define ucodfmt 5 "Cerebrovascular diseases (I60-I69)"                                       , add
+{txt}
+{com}. label define ucodfmt 6 "Alzheimer's disease (G30)"                                                , add
+{txt}
+{com}. label define ucodfmt 7 "Diabetes mellitus (E10-E14)"                                              , add
+{txt}
+{com}. label define ucodfmt 8 "Influenza and pneumonia (J09-J18)"                                        , add
+{txt}
+{com}. label define ucodfmt 9 "Nephritis, nephrotic syndrome and nephrosis (N00-N07, N17-N19, N25-N27)"  , add
+{txt}
+{com}. label define ucodfmt 10 "All other causes (residual)"                                             , add
+{txt}
+{com}. label define ucodfmt .z "Ineligible, under age 18, assumed alive, or no cause of death data"      , add
+{txt}
+{com}. 
+. // READ IN THE FIXED-WIDTH FORMAT ASCII PUBLIC-USE LMF
+. infix seqn 1-6 eligstat 15 mortstat 16 ucod_leading 17-19 diabetes 20 hyperten 21 permth_int 43-45 permth_exm 46-48 using ${c -(}SURVEY{c )-}_MORT_2019_PUBLIC.dat        
+{txt}(10,175 observations read)
+
+{com}. 
+. 
+. // REPLACE MISSING VALUES TO .z FOR LABELING
+. replace mortstat = .z if mortstat >=.
+{txt}(4,075 real changes made, 4,075 to missing)
+
+{com}. replace ucod_leading = .z if ucod_leading >=.
+{txt}(9,708 real changes made, 9,708 to missing)
+
+{com}. replace diabetes = .z if diabetes >=.
+{txt}(9,708 real changes made, 9,708 to missing)
+
+{com}. replace hyperten = .z if hyperten >=.
+{txt}(9,708 real changes made, 9,708 to missing)
+
+{com}. replace permth_int = .z if permth_int >=.
+{txt}(4,075 real changes made, 4,075 to missing)
+
+{com}. replace permth_exm = .z if permth_exm >=.
+{txt}(4,262 real changes made, 4,262 to missing)
+
+{com}. 
+. 
+. // DEFINE VARIABLE LABELS 
+. label var seqn "NHANES Respondent Sequence Number"
+{txt}
+{com}. label var eligstat "Eligibility Status for Mortality Follow-up"
+{txt}
+{com}. label var mortstat "Final Mortality Status"
+{txt}
+{com}. label var ucod_leading "Underlying Cause of Death: Recode"
+{txt}
+{com}. label var diabetes "Diabetes flag from Multiple Cause of Death"
+{txt}
+{com}. label var hyperten "Hypertension flag from Multiple Cause of Death"
+{txt}
+{com}. label var permth_int "Person-Months of Follow-up from NHANES Interview date"
+{txt}
+{com}. label var permth_exm "Person-Months of Follow-up from NHANES Mobile Examination Center (MEC) Date"
+{txt}
+{com}. 
+. 
+. // ASSOCIATE VARIABLES WITH FORMAT VALUES 
+. label values eligstat eligfmt
+{txt}
+{com}. label values mortstat mortfmt
+{txt}
+{com}. label values ucod_leading ucodfmt
+{txt}
+{com}. label values diabetes flagfmt
+{txt}
+{com}. label values hyperten flagfmt
+{txt}
+{com}. label value permth_int premiss
+{txt}
+{com}. label value permth_exm premiss
+{txt}
+{com}. 
+. 
+. // DISPLAY OVERALL DESCRIPTION OF FILE 
+. describe
+
+{txt}Contains data
+ Observations:{res}        10,175                  
+{txt}    Variables:{res}             8                  
+{txt}{hline}
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+{hline}
+{p 0 48}{res}{bind:seqn           }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}NHANES Respondent Sequence Number{p_end}
+{p 0 48}{bind:eligstat       }{txt}{bind: byte    }{bind:{txt}%46.0g    }{space 1}{bind:eligfmt  }{bind:  }{res}{res}Eligibility Status for Mortality Follow-up{p_end}
+{p 0 48}{bind:mortstat       }{txt}{bind: byte    }{bind:{txt}%26.0g    }{space 1}{bind:mortfmt  }{bind:  }{res}{res}Final Mortality Status{p_end}
+{p 0 48}{bind:ucod_leading   }{txt}{bind: float   }{bind:{txt}%71.0g    }{space 1}{bind:ucodfmt  }{bind:  }{res}{res}Underlying Cause of Death: Recode{p_end}
+{p 0 48}{bind:diabetes       }{txt}{bind: byte    }{bind:{txt}%86.0g    }{space 1}{bind:flagfmt  }{bind:  }{res}{res}Diabetes flag from Multiple Cause of Death{p_end}
+{p 0 48}{bind:hyperten       }{txt}{bind: byte    }{bind:{txt}%86.0g    }{space 1}{bind:flagfmt  }{bind:  }{res}{res}Hypertension flag from Multiple Cause of Death{p_end}
+{p 0 48}{bind:permth_int     }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:premiss  }{bind:  }{res}{res}Person-Months of Follow-up from NHANES Interview date{p_end}
+{p 0 48}{bind:permth_exm     }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:premiss  }{bind:  }{res}{res}Person-Months of Follow-up from NHANES Mobile Examination Center (MEC) Date{p_end}
+{txt}{hline}
+Sorted by: 
+{res}     Note: Dataset has changed since last saved.
+{txt}
+{com}. 
+. 
+. // ONE-WAY FREQUENCIES (UNWEIGHTED)
+. tab1 eligstat mortstat ucod_leading diabetes hyperten, missing
+
+{res}-> tabulation of eligstat  
+
+       {txt}Eligibility Status for Mortality {c |}
+                              Follow-up {c |}      Freq.     Percent        Cum.
+{hline 40}{c +}{hline 35}
+                               Eligible {c |}{res}      6,100       59.95       59.95
+{txt}Under age 18, not available for public  {c |}{res}      4,062       39.92       99.87
+{txt}                             Ineligible {c |}{res}         13        0.13      100.00
+{txt}{hline 40}{c +}{hline 35}
+                                  Total {c |}{res}     10,175      100.00
+
+-> tabulation of mortstat  
+
+    {txt}Final Mortality Status {c |}      Freq.     Percent        Cum.
+{hline 27}{c +}{hline 35}
+             Assumed alive {c |}{res}      5,633       55.36       55.36
+{txt}          Assumed deceased {c |}{res}        467        4.59       59.95
+{txt}Ineligible or under age 18 {c |}{res}      4,075       40.05      100.00
+{txt}{hline 27}{c +}{hline 35}
+                     Total {c |}{res}     10,175      100.00
+
+-> tabulation of ucod_leading  
+
+      {txt}Underlying Cause of Death: Recode {c |}      Freq.     Percent        Cum.
+{hline 40}{c +}{hline 35}
+Diseases of heart (I00-I09, I11, I13, I {c |}{res}        136        1.34        1.34
+{txt}          Malignant neoplasms (C00-C97) {c |}{res}         99        0.97        2.31
+{txt}Chronic lower respiratory diseases (J40 {c |}{res}         24        0.24        2.55
+{txt}Accidents (unintentional injuries) (V01 {c |}{res}         14        0.14        2.68
+{txt}     Cerebrovascular diseases (I60-I69) {c |}{res}         28        0.28        2.96
+{txt}              Alzheimer's disease (G30) {c |}{res}         17        0.17        3.13
+{txt}            Diabetes mellitus (E10-E14) {c |}{res}         21        0.21        3.33
+{txt}      Influenza and pneumonia (J09-J18) {c |}{res}          9        0.09        3.42
+{txt}Nephritis, nephrotic syndrome and nephr {c |}{res}         16        0.16        3.58
+{txt}            All other causes (residual) {c |}{res}        103        1.01        4.59
+{txt}Ineligible, under age 18, assumed alive {c |}{res}      9,708       95.41      100.00
+{txt}{hline 40}{c +}{hline 35}
+                                  Total {c |}{res}     10,175      100.00
+
+-> tabulation of diabetes  
+
+   {txt}Diabetes flag from Multiple Cause of {c |}
+                                  Death {c |}      Freq.     Percent        Cum.
+{hline 40}{c +}{hline 35}
+No - Condition not listed as a multiple {c |}{res}        422        4.15        4.15
+{txt}Yes - Condition listed as a multiple ca {c |}{res}         45        0.44        4.59
+{txt}Assumed alive, under age 18, ineligible {c |}{res}      9,708       95.41      100.00
+{txt}{hline 40}{c +}{hline 35}
+                                  Total {c |}{res}     10,175      100.00
+
+-> tabulation of hyperten  
+
+  {txt}Hypertension flag from Multiple Cause {c |}
+                               of Death {c |}      Freq.     Percent        Cum.
+{hline 40}{c +}{hline 35}
+No - Condition not listed as a multiple {c |}{res}        384        3.77        3.77
+{txt}Yes - Condition listed as a multiple ca {c |}{res}         83        0.82        4.59
+{txt}Assumed alive, under age 18, ineligible {c |}{res}      9,708       95.41      100.00
+{txt}{hline 40}{c +}{hline 35}
+                                  Total {c |}{res}     10,175      100.00
+{txt}
+{com}. tab permth_int if permth_int==.z, missing
+
+{txt}Person-Mont {c |}
+      hs of {c |}
+  Follow-up {c |}
+from NHANES {c |}
+  Interview {c |}
+       date {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    Missing {c |}{res}      4,075      100.00      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      4,075      100.00
+{txt}
+{com}. tab permth_exm if permth_exm==.z, missing
+
+{txt}Person-Mont {c |}
+      hs of {c |}
+  Follow-up {c |}
+from NHANES {c |}
+     Mobile {c |}
+Examination {c |}
+     Center {c |}
+ (MEC) Date {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    Missing {c |}{res}      4,262      100.00      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      4,262      100.00
+{txt}
+{com}. 
+. // SAVE DATA FILE IN DIRECTORY DESIGNATED AT TOP OF PROGRAM AS **SURVEY**_PUF.DTA
+. // replace option allows Stata to overwrite an existing .dta file
+. save ${c -(}SURVEY{c )-}_PUF, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_2013_2014_PUF.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. ************************************STEP 2: MERGE MORTALITY DATASET WITH NFL DATASET*********************************
+. 
+. use NHANES_2013_2014_PUF,clear
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_2013_2014_PUF.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. use SSSNFL_H,clear
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+SSSNFL_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. merge seqn using NHANES_2013_2014_PUF
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. 
+. save NHANES_2013_2014_PUF_NFL, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_2013_2014_PUF_NFL.dta{rm}
+saved
+{p_end}
+
+{com}. tab _merge
+
+     {txt}_merge {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          2 {c |}{res}      8,090       79.51       79.51
+{txt}          3 {c |}{res}      2,085       20.49      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_2013_2014_PUF_NFL.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. *********************************STEP 3: MERGE DEMOGRAPHICS FILE WITH THE NFL-MORTALITY FILE******************************
+. 
+. use NHANES_2013_2014_PUF_NFL,clear
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_2013_2014_PUF_NFL.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. 
+. use NHANES2013DEMO,clear
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES2013DEMO.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. merge seqn using NHANES_2013_2014_PUF_NFL
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. 
+. save NHANES_NFL_MORTALITY_PAPER, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. *********************************STEP 4: LN TRANSFORM THE NFL VARIABLES, CREATE Z-SCORES AND TERTILES************************
+. 
+. use NHANES_NFL_MORTALITY_PAPER,clear
+{txt}
+{com}. 
+. capture drop LnNFL
+{txt}
+{com}. gen LnNFL=.
+{txt}(10,175 missing values generated)
+
+{com}. replace LnNFL=ln(sssnfl)
+{txt}(2,071 real changes made)
+
+{com}. 
+. capture drop zLnNFL
+{txt}
+{com}. egen zLnNFL=std(LnNFL)
+{txt}(8,104 missing values generated)
+
+{com}. 
+. capture drop LnNFLmedian
+{txt}
+{com}. xtile LnNFLmedian=LnNFL, nq(2)
+{txt}
+{com}. 
+. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. *********************************STEP 5: STSET DATASET USING STUDYTIME AND DEATH OF ALL CAUSES*******************************
+. 
+. 
+. stset permth_exm [pweight=wtssnh2y], failure(mortstat)
+
+{txt}Survival-time data settings
+
+{col 10}Failure event: {res}mortstat!=0 & mortstat<.
+{col 1}{txt}Observed time interval: {res}(0, permth_exm]
+{col 6}{txt}Exit on or before: {res}failure
+{col 17}{txt}Weight: {res}[pweight=wtssnh2y]
+
+{txt}{hline 74}
+{res}     10,175{txt}  total observations
+{res}      4,262{txt}  event time missing (permth_exm>=.){col 61}PROBABLE ERROR
+{res}          1{txt}  observation ends on or before {bf:enter()}
+{res}      3,842{txt}  weights invalid {col 61}PROBABLE ERROR
+{hline 74}
+{res}      2,070{txt}  observations remaining, representing
+{res}         84{txt}  failures in single-record/single-failure data
+{res}    146,303{txt}  total analysis time at risk and under observation
+                                                At risk from t = {res}        0
+                                     {txt}Earliest observed entry t = {res}        0
+                                          {txt}Last observed exit t = {res}       85
+{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. 
+. 
+. *********************************STEP 6: RUN PRELIMINARY COX MODELS WITH BASIC DEMOGRAPHICS: AGE, SEX, RACE, PIR*************
+. 
+. 
+. 
+. stcox zLnNFL riagendr ridageyr i.ridreth3 dmdeduc2 i.dmdmartl dmdhhsiz indfmpir 
+
+{col 9}{txt}Failure {bf:_d}: {res}mortstat
+{col 3}{txt}Analysis time {bf:_t}: {res}permth_exm
+{col 13}{txt}Weight: {res}[pweight=wtssnh2y]
+
+{txt}(sum of wgt is 201,352,806.76699)
+Iteration 0:   log pseudolikelihood = {res}-1.358e+08
+{txt}Iteration 1:   log pseudolikelihood = {res}-1.331e+08
+{txt}Iteration 2:   log pseudolikelihood = {res}-1.296e+08
+{txt}Iteration 3:   log pseudolikelihood = {res}-1.292e+08
+{txt}Iteration 4:   log pseudolikelihood = {res}-1.292e+08
+{txt}Iteration 5:   log pseudolikelihood = {res}-1.292e+08
+{txt}Refining estimates:
+Iteration 0:   log pseudolikelihood = {res}-1.292e+08
+
+{txt}Cox regression with Breslow method for ties
+
+No. of subjects = {res}{ralign 11:201,352,807}{col 57}{txt}{lalign 13:Number of obs} = {res}{ralign 6:1,924}
+{txt}No. of failures = {res}{ralign 11:7,152,197}
+{txt}Time at risk    = {res}{ralign 11:1.42392e+10}
+{col 57}{txt}{lalign 13:Wald chi2({res:16})} = {res}{ralign 6:161.03}
+{txt}Log pseudolikelihood = {res}-1.292e+08{col 57}{txt}{lalign 13:Prob > chi2} = {res}{ralign 6:0.0000}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}          _t{col 14}{c |} Haz. ratio{col 26}   std. err.{col 38}      z{col 46}   P>|z|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}zLnNFL {c |}{col 14}{res}{space 2}  1.92408{col 26}{space 2} .2179815{col 37}{space 1}    5.78{col 46}{space 3}0.000{col 54}{space 4} 1.540953{col 67}{space 3} 2.402463
+{txt}{space 4}riagendr {c |}{col 14}{res}{space 2} .8864334{col 26}{space 2} .2533683{col 37}{space 1}   -0.42{col 46}{space 3}0.673{col 54}{space 4} .5062303{col 67}{space 3} 1.552187
+{txt}{space 4}ridageyr {c |}{col 14}{res}{space 2} 1.020602{col 26}{space 2} .0129518{col 37}{space 1}    1.61{col 46}{space 3}0.108{col 54}{space 4} .9955303{col 67}{space 3} 1.046306
+{txt}{space 12} {c |}
+{space 4}ridreth3 {c |}
+{space 10}2  {c |}{col 14}{res}{space 2} .6727278{col 26}{space 2} .5641525{col 37}{space 1}   -0.47{col 46}{space 3}0.636{col 54}{space 4} .1300223{col 67}{space 3} 3.480653
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} 1.982381{col 26}{space 2} .8882414{col 37}{space 1}    1.53{col 46}{space 3}0.127{col 54}{space 4} .8237413{col 67}{space 3} 4.770713
+{txt}{space 10}4  {c |}{col 14}{res}{space 2} 2.256323{col 26}{space 2} 1.071733{col 37}{space 1}    1.71{col 46}{space 3}0.087{col 54}{space 4} .8893823{col 67}{space 3} 5.724192
+{txt}{space 10}6  {c |}{col 14}{res}{space 2} 1.498798{col 26}{space 2} .9295474{col 37}{space 1}    0.65{col 46}{space 3}0.514{col 54}{space 4} .4444596{col 67}{space 3} 5.054221
+{txt}{space 10}7  {c |}{col 14}{res}{space 2} 1.211291{col 26}{space 2} .8531496{col 37}{space 1}    0.27{col 46}{space 3}0.786{col 54}{space 4}  .304594{col 67}{space 3} 4.816992
+{txt}{space 12} {c |}
+{space 4}dmdeduc2 {c |}{col 14}{res}{space 2} 1.263872{col 26}{space 2} .1641804{col 37}{space 1}    1.80{col 46}{space 3}0.071{col 54}{space 4} .9797822{col 67}{space 3} 1.630333
+{txt}{space 12} {c |}
+{space 4}dmdmartl {c |}
+{space 10}2  {c |}{col 14}{res}{space 2} 2.962331{col 26}{space 2} 1.548563{col 37}{space 1}    2.08{col 46}{space 3}0.038{col 54}{space 4} 1.063326{col 67}{space 3} 8.252786
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} 2.121328{col 26}{space 2} .7400986{col 37}{space 1}    2.16{col 46}{space 3}0.031{col 54}{space 4} 1.070624{col 67}{space 3} 4.203189
+{txt}{space 10}4  {c |}{col 14}{res}{space 2} .6442898{col 26}{space 2} .5744393{col 37}{space 1}   -0.49{col 46}{space 3}0.622{col 54}{space 4} .1122438{col 67}{space 3} 3.698283
+{txt}{space 10}5  {c |}{col 14}{res}{space 2} 1.338344{col 26}{space 2} .6574605{col 37}{space 1}    0.59{col 46}{space 3}0.553{col 54}{space 4}  .510994{col 67}{space 3} 3.505257
+{txt}{space 10}6  {c |}{col 14}{res}{space 2} 1.220847{col 26}{space 2}  .680992{col 37}{space 1}    0.36{col 46}{space 3}0.721{col 54}{space 4} .4091275{col 67}{space 3}  3.64304
+{txt}{space 12} {c |}
+{space 4}dmdhhsiz {c |}{col 14}{res}{space 2} .9319441{col 26}{space 2} .0995473{col 37}{space 1}   -0.66{col 46}{space 3}0.509{col 54}{space 4}  .755905{col 67}{space 3}  1.14898
+{txt}{space 4}indfmpir {c |}{col 14}{res}{space 2} .6991036{col 26}{space 2} .1048333{col 37}{space 1}   -2.39{col 46}{space 3}0.017{col 54}{space 4} .5210754{col 67}{space 3} .9379561
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. 
+. 
+. stcox LnNFLmedian riagendr ridageyr i.ridreth3 dmdeduc2 i.dmdmartl dmdhhsiz indfmpir 
+
+{col 9}{txt}Failure {bf:_d}: {res}mortstat
+{col 3}{txt}Analysis time {bf:_t}: {res}permth_exm
+{col 13}{txt}Weight: {res}[pweight=wtssnh2y]
+
+{txt}(sum of wgt is 201,352,806.76699)
+Iteration 0:   log pseudolikelihood = {res}-1.358e+08
+{txt}Iteration 1:   log pseudolikelihood = {res}-1.344e+08
+{txt}Iteration 2:   log pseudolikelihood = {res}-1.311e+08
+{txt}Iteration 3:   log pseudolikelihood = {res}-1.308e+08
+{txt}Iteration 4:   log pseudolikelihood = {res}-1.308e+08
+{txt}Iteration 5:   log pseudolikelihood = {res}-1.308e+08
+{txt}Refining estimates:
+Iteration 0:   log pseudolikelihood = {res}-1.308e+08
+
+{txt}Cox regression with Breslow method for ties
+
+No. of subjects = {res}{ralign 11:201,352,807}{col 57}{txt}{lalign 13:Number of obs} = {res}{ralign 6:1,924}
+{txt}No. of failures = {res}{ralign 11:7,152,197}
+{txt}Time at risk    = {res}{ralign 11:1.42392e+10}
+{col 57}{txt}{lalign 13:Wald chi2({res:16})} = {res}{ralign 6:114.37}
+{txt}Log pseudolikelihood = {res}-1.308e+08{col 57}{txt}{lalign 13:Prob > chi2} = {res}{ralign 6:0.0000}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}          _t{col 14}{c |} Haz. ratio{col 26}   std. err.{col 38}      z{col 46}   P>|z|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}LnNFLmedian {c |}{col 14}{res}{space 2} 2.488295{col 26}{space 2}  1.02873{col 37}{space 1}    2.20{col 46}{space 3}0.027{col 54}{space 4} 1.106602{col 67}{space 3} 5.595155
+{txt}{space 4}riagendr {c |}{col 14}{res}{space 2} .7887871{col 26}{space 2}  .237985{col 37}{space 1}   -0.79{col 46}{space 3}0.432{col 54}{space 4} .4366603{col 67}{space 3} 1.424872
+{txt}{space 4}ridageyr {c |}{col 14}{res}{space 2} 1.033365{col 26}{space 2}  .013623{col 37}{space 1}    2.49{col 46}{space 3}0.013{col 54}{space 4} 1.007006{col 67}{space 3} 1.060413
+{txt}{space 12} {c |}
+{space 4}ridreth3 {c |}
+{space 10}2  {c |}{col 14}{res}{space 2} .5547004{col 26}{space 2} .4688028{col 37}{space 1}   -0.70{col 46}{space 3}0.486{col 54}{space 4} .1058447{col 67}{space 3}  2.90702
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} 2.095045{col 26}{space 2} .9257236{col 37}{space 1}    1.67{col 46}{space 3}0.094{col 54}{space 4} .8812084{col 67}{space 3} 4.980903
+{txt}{space 10}4  {c |}{col 14}{res}{space 2} 2.196392{col 26}{space 2} 1.027419{col 37}{space 1}    1.68{col 46}{space 3}0.093{col 54}{space 4}  .878089{col 67}{space 3} 5.493907
+{txt}{space 10}6  {c |}{col 14}{res}{space 2} 1.326717{col 26}{space 2} .8144938{col 37}{space 1}    0.46{col 46}{space 3}0.645{col 54}{space 4} .3983013{col 67}{space 3} 4.419216
+{txt}{space 10}7  {c |}{col 14}{res}{space 2} 1.718498{col 26}{space 2} 1.885708{col 37}{space 1}    0.49{col 46}{space 3}0.622{col 54}{space 4} .2000441{col 67}{space 3} 14.76293
+{txt}{space 12} {c |}
+{space 4}dmdeduc2 {c |}{col 14}{res}{space 2} 1.281194{col 26}{space 2}  .164635{col 37}{space 1}    1.93{col 46}{space 3}0.054{col 54}{space 4} .9959434{col 67}{space 3} 1.648145
+{txt}{space 12} {c |}
+{space 4}dmdmartl {c |}
+{space 10}2  {c |}{col 14}{res}{space 2} 2.496359{col 26}{space 2} 1.196118{col 37}{space 1}    1.91{col 46}{space 3}0.056{col 54}{space 4} .9760182{col 67}{space 3}  6.38493
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} 2.154249{col 26}{space 2} .8028508{col 37}{space 1}    2.06{col 46}{space 3}0.039{col 54}{space 4} 1.037691{col 67}{space 3} 4.472226
+{txt}{space 10}4  {c |}{col 14}{res}{space 2} .5143539{col 26}{space 2} .4693087{col 37}{space 1}   -0.73{col 46}{space 3}0.466{col 54}{space 4} .0860212{col 67}{space 3}  3.07552
+{txt}{space 10}5  {c |}{col 14}{res}{space 2} 1.382412{col 26}{space 2}  .657477{col 37}{space 1}    0.68{col 46}{space 3}0.496{col 54}{space 4} .5442581{col 67}{space 3} 3.511318
+{txt}{space 10}6  {c |}{col 14}{res}{space 2}  1.25233{col 26}{space 2} .6946726{col 37}{space 1}    0.41{col 46}{space 3}0.685{col 54}{space 4} .4222346{col 67}{space 3} 3.714358
+{txt}{space 12} {c |}
+{space 4}dmdhhsiz {c |}{col 14}{res}{space 2} .9397773{col 26}{space 2} .1028721{col 37}{space 1}   -0.57{col 46}{space 3}0.570{col 54}{space 4} .7583135{col 67}{space 3} 1.164665
+{txt}{space 4}indfmpir {c |}{col 14}{res}{space 2} .6727433{col 26}{space 2} .0959856{col 37}{space 1}   -2.78{col 46}{space 3}0.005{col 54}{space 4} .5086297{col 67}{space 3} .8898095
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. *********************************STEP 7-10: INCLUDE ADDITIONAL COVARIATES: INSURANCE STATUS, SMOKING, DRUG USE, PHYSICAL ACTIVITY, ALCOHOL USE, DIET (create MAR), SOCIAL SUPPORT, DEPRESSIVE SYMPTOMS, SELECTED NUTRITIONAL BIOMARKERS (FOLATE, B-12 and vitamin D), measures of BMI, blood pressure, dyslipidemia, hyperglycemia, eGFR, CO-MORBIDITY INDEX, SELF-RATED HEALTH**************************
+. 
+. use NHANES_NFL_MORTALITY_PAPER,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **Health insurance**
+. use HIQ_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+HIQ_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. **Income measures**
+. use INQ_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+INQ_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **Smoking**
+. use SMQ_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+SMQ_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **Alcohol use**
+. use ALQ_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+ALQ_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. **Drug use**
+. use DUQ_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+DUQ_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. **DIET**
+. use DR1TOT_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+DR1TOT_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. use DR2TOT_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+DR2TOT_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. use DR1TOT_H,clear
+{txt}
+{com}. merge seqn using DR2TOT_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. save DR12TOT_H,replace
+{txt}{p 0 4 2}
+file {bf}
+DR12TOT_H.dta{rm}
+saved
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+DR12TOT_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. **BODY MEASURES**
+. use BMX_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+BMX_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. **Blood pressure**
+. use BPX_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+BPX_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **Albumin and creatinine**
+. use ALB_CR_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+ALB_CR_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **BP and Cholesterol medication**
+. use BPQ_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+BPQ_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **Depressive symptoms**
+. use DPQ_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+DPQ_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **Self-rated health**
+. use HSQ_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+HSQ_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **Co-morbidity index**
+. use MCQ_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+MCQ_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **Physical activity**
+. use PAQ_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+PAQ_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **Sleep**
+. use SLQ_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+SLQ_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **Vitamin B-12**
+. use VITB12_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+VITB12_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. **Folate**
+. use FOLATE_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+FOLATE_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. **Vitamin D**
+. use VID_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+VID_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. **Lipids and glycated hemoglobin**
+. 
+. use TRIGLY_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+TRIGLY_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. use TCHOL_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+TCHOL_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. use INS_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+INS_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. use GHB_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+GHB_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. use GLU_H,clear
+{txt}
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+GLU_H.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **HIQ_H INQ_H SMQ_H ALQ_H DUQ_H DR12TOT_H BMX_H BPX_H ALB_CR_H BPQ_H DPQ_H HSQ_H MCQ_H PAQ_H SLQ_H FOLATE_H VITB12_H VID_H 
+. **TRIGLY_H TCHOL_H INS_H GHB_H GLU_H 
+. 
+. 
+. use NHANES_NFL_MORTALITY_PAPER,clear
+{txt}
+{com}. merge seqn using HIQ_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using INQ_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using SMQ_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using ALQ_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using DUQ_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using DR12TOT_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using BMX_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using BPX_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using ALB_CR_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using BPQ_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using DPQ_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using HSQ_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using MCQ_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using PAQ_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using SLQ_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using FOLATE_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using VITB12_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using VID_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using TRIGLY_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using TCHOL_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using INS_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using GHB_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. merge seqn using GLU_H
+{txt}{p}
+(you are using old
+{bf:merge} syntax; see
+{bf:{help merge:[D] merge}} for new syntax)
+{p_end}
+
+{com}. capture drop _merge
+{txt}
+{com}. sort seqn
+{txt}
+{com}. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. capture rename seqn-lbdglusi,upper
+{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. ***************************SOCIO-DEMOGRAPHIC VARIABLES****************************************************
+. 
+. **AGE*
+. 
+. capture drop AGE
+{txt}
+{com}. gen AGE=RIDAGEYR
+{txt}
+{com}. 
+. su AGE, det
+
+                             {txt}AGE
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}        0              0
+{txt} 5%    {res}        1              0
+{txt}10%    {res}        3              0       {txt}Obs         {res}     10,175
+{txt}25%    {res}       10              0       {txt}Sum of wgt. {res}     10,175
+
+{txt}50%    {res}       26                      {txt}Mean          {res} 31.48413
+                        {txt}Largest       Std. dev.     {res} 24.42165
+{txt}75%    {res}       52             80
+{txt}90%    {res}       68             80       {txt}Variance      {res} 596.4171
+{txt}95%    {res}       75             80       {txt}Skewness      {res} .4382973
+{txt}99%    {res}       80             80       {txt}Kurtosis      {res} 1.906333
+{txt}
+{com}. histogram AGE
+{txt}(bin={res}40{txt}, start={res}0{txt}, width={res}2{txt})
+{res}{txt}
+{com}. 
+. **SEX**
+. 
+. capture drop SEX
+{txt}
+{com}. gen SEX=RIAGENDR
+{txt}
+{com}. 
+. tab SEX
+
+        {txt}SEX {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      5,003       49.17       49.17
+{txt}          2 {c |}{res}      5,172       50.83      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. 
+. **RACE/ETHNICITY**
+. 
+. **0: Non-Hispanic White, 1:Non-Hispanic Black, 2:Mexican American or other Hispanic, and 3:Other race/ethnicities
+. 
+. 
+. capture drop RACE_ETHN
+{txt}
+{com}. gen RACE_ETHN=.
+{txt}(10,175 missing values generated)
+
+{com}. replace RACE_ETHN=0 if RIDRETH3==3
+{txt}(3,674 real changes made)
+
+{com}. replace RACE_ETHN=1 if RIDRETH3==4
+{txt}(2,267 real changes made)
+
+{com}. replace RACE_ETHN=2 if RIDRETH3==1 | RIDRETH3==2
+{txt}(2,690 real changes made)
+
+{com}. replace RACE_ETHN=3 if RIDRETH3~=. & RACE_ETHN==.
+{txt}(1,544 real changes made)
+
+{com}. 
+. tab RACE_ETHN
+
+  {txt}RACE_ETHN {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      3,674       36.11       36.11
+{txt}          1 {c |}{res}      2,267       22.28       58.39
+{txt}          2 {c |}{res}      2,690       26.44       84.83
+{txt}          3 {c |}{res}      1,544       15.17      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. **MARITAL STATUS**
+. tab DMDMARTL, missing
+
+    {txt}Marital {c |}
+     status {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      2,965       29.14       29.14
+{txt}          2 {c |}{res}        436        4.29       33.43
+{txt}          3 {c |}{res}        659        6.48       39.90
+{txt}          4 {c |}{res}        177        1.74       41.64
+{txt}          5 {c |}{res}      1,112       10.93       52.57
+{txt}          6 {c |}{res}        417        4.10       56.67
+{txt}         77 {c |}{res}          2        0.02       56.69
+{txt}         99 {c |}{res}          1        0.01       56.70
+{txt}          . {c |}{res}      4,406       43.30      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. capture drop MARRIED_LIVP
+{txt}
+{com}. gen MARRIED_LIVP=.
+{txt}(10,175 missing values generated)
+
+{com}. replace MARRIED_LIVP=1 if DMDMARTL == 1 | DMDMARTL == 6
+{txt}(3,382 real changes made)
+
+{com}. replace MARRIED_LIVP=2 if DMDMARTL == 2 | DMDMARTL == 3 | DMDMARTL == 4 | DMDMARTL == 5
+{txt}(2,384 real changes made)
+
+{com}. 
+. tab MARRIED_LIVP, missing
+
+{txt}MARRIED_LIV {c |}
+          P {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      3,382       33.24       33.24
+{txt}          2 {c |}{res}      2,384       23.43       56.67
+{txt}          . {c |}{res}      4,409       43.33      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. 
+. **HOUSEHOLD SIZE**
+. 
+. capture drop HOUSEHOLDSIZE
+{txt}
+{com}. gen HOUSEHOLDSIZE=DMDHHSIZ
+{txt}
+{com}. su HOUSEHOLDSIZE
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+HOUSEHOLDS~E {c |}{res}     10,175    3.874693    1.722184          1          7
+{txt}
+{com}. 
+. 
+. **POVERTY INCOME RATIO**
+. 
+. tab INDFMPIR, missing
+
+   {txt}Ratio of {c |}
+     family {c |}
+  income to {c |}
+    poverty {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}        105        1.03        1.03
+{txt}        .01 {c |}{res}         10        0.10        1.13
+{txt}        .02 {c |}{res}         30        0.29        1.43
+{txt}        .03 {c |}{res}         29        0.29        1.71
+{txt}        .04 {c |}{res}         14        0.14        1.85
+{txt}        .05 {c |}{res}          7        0.07        1.92
+{txt}        .06 {c |}{res}         11        0.11        2.02
+{txt}        .07 {c |}{res}         25        0.25        2.27
+{txt}        .08 {c |}{res}          5        0.05        2.32
+{txt}        .09 {c |}{res}         12        0.12        2.44
+{txt}         .1 {c |}{res}         11        0.11        2.55
+{txt}        .11 {c |}{res}         12        0.12        2.66
+{txt}        .12 {c |}{res}          7        0.07        2.73
+{txt}        .13 {c |}{res}         23        0.23        2.96
+{txt}        .14 {c |}{res}          4        0.04        3.00
+{txt}        .15 {c |}{res}          3        0.03        3.03
+{txt}        .16 {c |}{res}          7        0.07        3.10
+{txt}        .17 {c |}{res}         14        0.14        3.23
+{txt}        .18 {c |}{res}         16        0.16        3.39
+{txt}        .19 {c |}{res}          6        0.06        3.45
+{txt}         .2 {c |}{res}         13        0.13        3.58
+{txt}        .21 {c |}{res}         14        0.14        3.71
+{txt}        .22 {c |}{res}          5        0.05        3.76
+{txt}        .23 {c |}{res}          1        0.01        3.77
+{txt}        .24 {c |}{res}          6        0.06        3.83
+{txt}        .25 {c |}{res}         19        0.19        4.02
+{txt}        .26 {c |}{res}         24        0.24        4.26
+{txt}        .27 {c |}{res}          3        0.03        4.29
+{txt}        .28 {c |}{res}         14        0.14        4.42
+{txt}        .29 {c |}{res}         31        0.30        4.73
+{txt}         .3 {c |}{res}         20        0.20        4.92
+{txt}        .31 {c |}{res}         33        0.32        5.25
+{txt}        .32 {c |}{res}         17        0.17        5.42
+{txt}        .33 {c |}{res}         12        0.12        5.53
+{txt}        .34 {c |}{res}         20        0.20        5.73
+{txt}        .35 {c |}{res}         46        0.45        6.18
+{txt}        .36 {c |}{res}         35        0.34        6.53
+{txt}        .37 {c |}{res}          7        0.07        6.59
+{txt}        .38 {c |}{res}         25        0.25        6.84
+{txt}        .39 {c |}{res}          8        0.08        6.92
+{txt}         .4 {c |}{res}         15        0.15        7.07
+{txt}        .41 {c |}{res}         12        0.12        7.18
+{txt}        .42 {c |}{res}         34        0.33        7.52
+{txt}        .43 {c |}{res}         19        0.19        7.71
+{txt}        .44 {c |}{res}         12        0.12        7.82
+{txt}        .45 {c |}{res}         34        0.33        8.16
+{txt}        .46 {c |}{res}         19        0.19        8.34
+{txt}        .47 {c |}{res}         51        0.50        8.85
+{txt}        .48 {c |}{res}         28        0.28        9.12
+{txt}        .49 {c |}{res}         12        0.12        9.24
+{txt}         .5 {c |}{res}         28        0.28        9.51
+{txt}        .51 {c |}{res}         61        0.60       10.11
+{txt}        .52 {c |}{res}         25        0.25       10.36
+{txt}        .53 {c |}{res}         10        0.10       10.46
+{txt}        .54 {c |}{res}         77        0.76       11.21
+{txt}        .55 {c |}{res}         20        0.20       11.41
+{txt}        .56 {c |}{res}         51        0.50       11.91
+{txt}        .57 {c |}{res}         42        0.41       12.32
+{txt}        .58 {c |}{res}         19        0.19       12.51
+{txt}        .59 {c |}{res}         30        0.29       12.81
+{txt}         .6 {c |}{res}          7        0.07       12.87
+{txt}        .61 {c |}{res}         46        0.45       13.33
+{txt}        .62 {c |}{res}          5        0.05       13.38
+{txt}        .63 {c |}{res}         74        0.73       14.10
+{txt}        .64 {c |}{res}         59        0.58       14.68
+{txt}        .65 {c |}{res}         38        0.37       15.06
+{txt}        .66 {c |}{res}         13        0.13       15.18
+{txt}        .67 {c |}{res}         33        0.32       15.51
+{txt}        .68 {c |}{res}         26        0.26       15.76
+{txt}        .69 {c |}{res}         38        0.37       16.14
+{txt}         .7 {c |}{res}         53        0.52       16.66
+{txt}        .71 {c |}{res}         31        0.30       16.96
+{txt}        .72 {c |}{res}         71        0.70       17.66
+{txt}        .73 {c |}{res}         54        0.53       18.19
+{txt}        .74 {c |}{res}         15        0.15       18.34
+{txt}        .75 {c |}{res}         23        0.23       18.57
+{txt}        .76 {c |}{res}         58        0.57       19.14
+{txt}        .77 {c |}{res}         43        0.42       19.56
+{txt}        .78 {c |}{res}         38        0.37       19.93
+{txt}        .79 {c |}{res}          8        0.08       20.01
+{txt}         .8 {c |}{res}         22        0.22       20.23
+{txt}        .81 {c |}{res}         15        0.15       20.37
+{txt}        .82 {c |}{res}         33        0.32       20.70
+{txt}        .83 {c |}{res}         30        0.29       20.99
+{txt}        .84 {c |}{res}         65        0.64       21.63
+{txt}        .85 {c |}{res}         38        0.37       22.00
+{txt}        .86 {c |}{res}         65        0.64       22.64
+{txt}        .87 {c |}{res}         45        0.44       23.09
+{txt}        .88 {c |}{res}         43        0.42       23.51
+{txt}        .89 {c |}{res}         23        0.23       23.73
+{txt}         .9 {c |}{res}         50        0.49       24.23
+{txt}        .91 {c |}{res}         36        0.35       24.58
+{txt}        .92 {c |}{res}         31        0.30       24.88
+{txt}        .93 {c |}{res}         33        0.32       25.21
+{txt}        .94 {c |}{res}         22        0.22       25.43
+{txt}        .95 {c |}{res}         33        0.32       25.75
+{txt}        .96 {c |}{res}         19        0.19       25.94
+{txt}        .97 {c |}{res}         32        0.31       26.25
+{txt}        .98 {c |}{res}         30        0.29       26.55
+{txt}        .99 {c |}{res}         10        0.10       26.64
+{txt}          1 {c |}{res}         24        0.24       26.88
+{txt}       1.01 {c |}{res}         37        0.36       27.24
+{txt}       1.02 {c |}{res}         73        0.72       27.96
+{txt}       1.03 {c |}{res}         43        0.42       28.38
+{txt}       1.04 {c |}{res}         55        0.54       28.92
+{txt}       1.05 {c |}{res}         29        0.29       29.21
+{txt}       1.06 {c |}{res}         57        0.56       29.77
+{txt}       1.07 {c |}{res}         58        0.57       30.34
+{txt}       1.08 {c |}{res}         23        0.23       30.57
+{txt}       1.09 {c |}{res}         42        0.41       30.98
+{txt}        1.1 {c |}{res}         10        0.10       31.08
+{txt}       1.11 {c |}{res}         33        0.32       31.40
+{txt}       1.12 {c |}{res}         16        0.16       31.56
+{txt}       1.13 {c |}{res}         45        0.44       32.00
+{txt}       1.14 {c |}{res}         36        0.35       32.35
+{txt}       1.15 {c |}{res}         15        0.15       32.50
+{txt}       1.16 {c |}{res}         46        0.45       32.95
+{txt}       1.17 {c |}{res}         10        0.10       33.05
+{txt}       1.18 {c |}{res}         15        0.15       33.20
+{txt}       1.19 {c |}{res}         11        0.11       33.31
+{txt}        1.2 {c |}{res}         44        0.43       33.74
+{txt}       1.21 {c |}{res}         27        0.27       34.00
+{txt}       1.22 {c |}{res}         42        0.41       34.42
+{txt}       1.23 {c |}{res}         31        0.30       34.72
+{txt}       1.24 {c |}{res}         10        0.10       34.82
+{txt}       1.25 {c |}{res}         35        0.34       35.16
+{txt}       1.26 {c |}{res}         36        0.35       35.52
+{txt}       1.27 {c |}{res}        151        1.48       37.00
+{txt}       1.28 {c |}{res}         31        0.30       37.31
+{txt}       1.29 {c |}{res}         60        0.59       37.90
+{txt}        1.3 {c |}{res}         10        0.10       38.00
+{txt}       1.31 {c |}{res}         30        0.29       38.29
+{txt}       1.32 {c |}{res}          5        0.05       38.34
+{txt}       1.33 {c |}{res}         25        0.25       38.58
+{txt}       1.34 {c |}{res}         24        0.24       38.82
+{txt}       1.35 {c |}{res}          5        0.05       38.87
+{txt}       1.36 {c |}{res}         18        0.18       39.05
+{txt}       1.37 {c |}{res}         18        0.18       39.22
+{txt}       1.38 {c |}{res}         24        0.24       39.46
+{txt}       1.39 {c |}{res}         20        0.20       39.66
+{txt}        1.4 {c |}{res}         15        0.15       39.80
+{txt}       1.41 {c |}{res}          2        0.02       39.82
+{txt}       1.42 {c |}{res}         28        0.28       40.10
+{txt}       1.43 {c |}{res}         53        0.52       40.62
+{txt}       1.44 {c |}{res}         15        0.15       40.77
+{txt}       1.45 {c |}{res}         32        0.31       41.08
+{txt}       1.46 {c |}{res}         25        0.25       41.33
+{txt}       1.47 {c |}{res}         38        0.37       41.70
+{txt}       1.48 {c |}{res}          6        0.06       41.76
+{txt}       1.49 {c |}{res}         17        0.17       41.93
+{txt}        1.5 {c |}{res}         12        0.12       42.04
+{txt}       1.51 {c |}{res}         18        0.18       42.22
+{txt}       1.52 {c |}{res}         55        0.54       42.76
+{txt}       1.53 {c |}{res}         18        0.18       42.94
+{txt}       1.54 {c |}{res}         49        0.48       43.42
+{txt}       1.55 {c |}{res}         13        0.13       43.55
+{txt}       1.56 {c |}{res}         22        0.22       43.76
+{txt}       1.57 {c |}{res}         13        0.13       43.89
+{txt}       1.58 {c |}{res}         29        0.29       44.18
+{txt}       1.59 {c |}{res}         27        0.27       44.44
+{txt}        1.6 {c |}{res}          2        0.02       44.46
+{txt}       1.61 {c |}{res}         38        0.37       44.84
+{txt}       1.62 {c |}{res}         14        0.14       44.97
+{txt}       1.63 {c |}{res}         20        0.20       45.17
+{txt}       1.64 {c |}{res}         13        0.13       45.30
+{txt}       1.65 {c |}{res}         20        0.20       45.49
+{txt}       1.66 {c |}{res}          1        0.01       45.50
+{txt}       1.67 {c |}{res}          9        0.09       45.59
+{txt}       1.68 {c |}{res}         34        0.33       45.93
+{txt}       1.69 {c |}{res}          1        0.01       45.94
+{txt}        1.7 {c |}{res}         21        0.21       46.14
+{txt}       1.71 {c |}{res}         25        0.25       46.39
+{txt}       1.72 {c |}{res}         23        0.23       46.61
+{txt}       1.74 {c |}{res}         36        0.35       46.97
+{txt}       1.75 {c |}{res}          5        0.05       47.02
+{txt}       1.76 {c |}{res}          6        0.06       47.08
+{txt}       1.77 {c |}{res}         26        0.26       47.33
+{txt}       1.78 {c |}{res}         16        0.16       47.49
+{txt}       1.79 {c |}{res}         25        0.25       47.73
+{txt}        1.8 {c |}{res}          5        0.05       47.78
+{txt}       1.81 {c |}{res}         39        0.38       48.17
+{txt}       1.82 {c |}{res}         15        0.15       48.31
+{txt}       1.83 {c |}{res}          7        0.07       48.38
+{txt}       1.84 {c |}{res}          9        0.09       48.47
+{txt}       1.85 {c |}{res}          2        0.02       48.49
+{txt}       1.86 {c |}{res}          6        0.06       48.55
+{txt}       1.87 {c |}{res}          2        0.02       48.57
+{txt}       1.88 {c |}{res}         10        0.10       48.67
+{txt}       1.89 {c |}{res}         28        0.28       48.94
+{txt}        1.9 {c |}{res}          1        0.01       48.95
+{txt}       1.91 {c |}{res}         52        0.51       49.46
+{txt}       1.92 {c |}{res}         15        0.15       49.61
+{txt}       1.93 {c |}{res}         33        0.32       49.94
+{txt}       1.94 {c |}{res}          6        0.06       50.00
+{txt}       1.95 {c |}{res}          8        0.08       50.07
+{txt}       1.96 {c |}{res}          1        0.01       50.08
+{txt}       1.97 {c |}{res}         24        0.24       50.32
+{txt}       1.98 {c |}{res}          1        0.01       50.33
+{txt}       1.99 {c |}{res}         12        0.12       50.45
+{txt}          2 {c |}{res}         10        0.10       50.55
+{txt}       2.01 {c |}{res}          2        0.02       50.57
+{txt}       2.02 {c |}{res}         26        0.26       50.82
+{txt}       2.03 {c |}{res}         12        0.12       50.94
+{txt}       2.04 {c |}{res}         10        0.10       51.04
+{txt}       2.05 {c |}{res}         21        0.21       51.24
+{txt}       2.06 {c |}{res}         12        0.12       51.36
+{txt}       2.07 {c |}{res}          3        0.03       51.39
+{txt}       2.08 {c |}{res}          1        0.01       51.40
+{txt}       2.09 {c |}{res}          7        0.07       51.47
+{txt}        2.1 {c |}{res}         30        0.29       51.76
+{txt}       2.11 {c |}{res}         10        0.10       51.86
+{txt}       2.12 {c |}{res}         33        0.32       52.19
+{txt}       2.13 {c |}{res}          7        0.07       52.26
+{txt}       2.14 {c |}{res}         17        0.17       52.42
+{txt}       2.15 {c |}{res}         47        0.46       52.88
+{txt}       2.16 {c |}{res}          4        0.04       52.92
+{txt}       2.17 {c |}{res}          1        0.01       52.93
+{txt}       2.18 {c |}{res}         35        0.34       53.28
+{txt}       2.19 {c |}{res}         33        0.32       53.60
+{txt}        2.2 {c |}{res}         16        0.16       53.76
+{txt}       2.21 {c |}{res}          5        0.05       53.81
+{txt}       2.22 {c |}{res}         25        0.25       54.05
+{txt}       2.23 {c |}{res}         25        0.25       54.30
+{txt}       2.24 {c |}{res}          6        0.06       54.36
+{txt}       2.25 {c |}{res}         18        0.18       54.54
+{txt}       2.26 {c |}{res}         19        0.19       54.72
+{txt}       2.27 {c |}{res}         27        0.27       54.99
+{txt}       2.29 {c |}{res}          8        0.08       55.07
+{txt}        2.3 {c |}{res}         18        0.18       55.24
+{txt}       2.31 {c |}{res}         19        0.19       55.43
+{txt}       2.32 {c |}{res}         11        0.11       55.54
+{txt}       2.33 {c |}{res}         13        0.13       55.67
+{txt}       2.34 {c |}{res}         16        0.16       55.82
+{txt}       2.35 {c |}{res}          4        0.04       55.86
+{txt}       2.36 {c |}{res}         20        0.20       56.06
+{txt}       2.37 {c |}{res}          5        0.05       56.11
+{txt}       2.38 {c |}{res}          7        0.07       56.18
+{txt}       2.39 {c |}{res}         15        0.15       56.32
+{txt}        2.4 {c |}{res}          5        0.05       56.37
+{txt}       2.41 {c |}{res}          4        0.04       56.41
+{txt}       2.42 {c |}{res}         18        0.18       56.59
+{txt}       2.43 {c |}{res}          9        0.09       56.68
+{txt}       2.44 {c |}{res}          8        0.08       56.76
+{txt}       2.45 {c |}{res}          5        0.05       56.81
+{txt}       2.46 {c |}{res}          8        0.08       56.88
+{txt}       2.47 {c |}{res}          4        0.04       56.92
+{txt}       2.48 {c |}{res}          4        0.04       56.96
+{txt}       2.49 {c |}{res}          8        0.08       57.04
+{txt}        2.5 {c |}{res}          8        0.08       57.12
+{txt}       2.51 {c |}{res}         16        0.16       57.28
+{txt}       2.52 {c |}{res}         29        0.29       57.56
+{txt}       2.53 {c |}{res}         40        0.39       57.96
+{txt}       2.54 {c |}{res}         24        0.24       58.19
+{txt}       2.55 {c |}{res}         12        0.12       58.31
+{txt}       2.56 {c |}{res}         20        0.20       58.51
+{txt}       2.57 {c |}{res}         15        0.15       58.65
+{txt}       2.58 {c |}{res}         36        0.35       59.01
+{txt}       2.59 {c |}{res}          7        0.07       59.08
+{txt}        2.6 {c |}{res}          5        0.05       59.13
+{txt}       2.61 {c |}{res}         19        0.19       59.31
+{txt}       2.62 {c |}{res}          2        0.02       59.33
+{txt}       2.63 {c |}{res}         17        0.17       59.50
+{txt}       2.64 {c |}{res}          3        0.03       59.53
+{txt}       2.65 {c |}{res}          6        0.06       59.59
+{txt}       2.66 {c |}{res}         14        0.14       59.72
+{txt}       2.67 {c |}{res}          9        0.09       59.81
+{txt}       2.68 {c |}{res}          8        0.08       59.89
+{txt}       2.69 {c |}{res}         27        0.27       60.16
+{txt}       2.71 {c |}{res}          3        0.03       60.19
+{txt}       2.72 {c |}{res}          4        0.04       60.23
+{txt}       2.73 {c |}{res}         21        0.21       60.43
+{txt}       2.74 {c |}{res}          8        0.08       60.51
+{txt}       2.76 {c |}{res}          5        0.05       60.56
+{txt}       2.77 {c |}{res}          4        0.04       60.60
+{txt}       2.78 {c |}{res}         14        0.14       60.74
+{txt}       2.79 {c |}{res}          3        0.03       60.77
+{txt}        2.8 {c |}{res}          1        0.01       60.78
+{txt}       2.81 {c |}{res}          6        0.06       60.84
+{txt}       2.82 {c |}{res}         26        0.26       61.09
+{txt}       2.83 {c |}{res}          6        0.06       61.15
+{txt}       2.84 {c |}{res}          2        0.02       61.17
+{txt}       2.85 {c |}{res}          6        0.06       61.23
+{txt}       2.86 {c |}{res}          7        0.07       61.30
+{txt}       2.87 {c |}{res}         25        0.25       61.54
+{txt}       2.89 {c |}{res}          6        0.06       61.60
+{txt}        2.9 {c |}{res}         36        0.35       61.96
+{txt}       2.91 {c |}{res}          1        0.01       61.97
+{txt}       2.92 {c |}{res}          1        0.01       61.98
+{txt}       2.93 {c |}{res}          2        0.02       62.00
+{txt}       2.94 {c |}{res}         28        0.28       62.27
+{txt}       2.96 {c |}{res}          5        0.05       62.32
+{txt}       2.97 {c |}{res}         17        0.17       62.49
+{txt}       2.98 {c |}{res}          2        0.02       62.51
+{txt}          3 {c |}{res}         20        0.20       62.70
+{txt}       3.02 {c |}{res}          4        0.04       62.74
+{txt}       3.03 {c |}{res}         20        0.20       62.94
+{txt}       3.05 {c |}{res}         28        0.28       63.21
+{txt}       3.06 {c |}{res}          1        0.01       63.22
+{txt}       3.07 {c |}{res}         22        0.22       63.44
+{txt}       3.08 {c |}{res}          6        0.06       63.50
+{txt}       3.09 {c |}{res}         25        0.25       63.74
+{txt}        3.1 {c |}{res}         14        0.14       63.88
+{txt}       3.11 {c |}{res}          1        0.01       63.89
+{txt}       3.12 {c |}{res}          2        0.02       63.91
+{txt}       3.13 {c |}{res}         16        0.16       64.07
+{txt}       3.14 {c |}{res}         27        0.27       64.33
+{txt}       3.16 {c |}{res}          1        0.01       64.34
+{txt}       3.17 {c |}{res}         37        0.36       64.71
+{txt}       3.18 {c |}{res}         42        0.41       65.12
+{txt}        3.2 {c |}{res}          4        0.04       65.16
+{txt}       3.22 {c |}{res}         49        0.48       65.64
+{txt}       3.23 {c |}{res}          5        0.05       65.69
+{txt}       3.24 {c |}{res}          8        0.08       65.77
+{txt}       3.26 {c |}{res}         19        0.19       65.96
+{txt}       3.27 {c |}{res}          5        0.05       66.00
+{txt}       3.28 {c |}{res}         21        0.21       66.21
+{txt}        3.3 {c |}{res}          7        0.07       66.28
+{txt}       3.31 {c |}{res}          9        0.09       66.37
+{txt}       3.33 {c |}{res}         22        0.22       66.58
+{txt}       3.34 {c |}{res}          2        0.02       66.60
+{txt}       3.35 {c |}{res}         17        0.17       66.77
+{txt}       3.36 {c |}{res}          4        0.04       66.81
+{txt}       3.37 {c |}{res}         19        0.19       67.00
+{txt}       3.38 {c |}{res}          3        0.03       67.03
+{txt}       3.39 {c |}{res}          2        0.02       67.05
+{txt}        3.4 {c |}{res}         27        0.27       67.31
+{txt}       3.43 {c |}{res}         15        0.15       67.46
+{txt}       3.44 {c |}{res}          7        0.07       67.53
+{txt}       3.45 {c |}{res}         21        0.21       67.73
+{txt}       3.46 {c |}{res}          5        0.05       67.78
+{txt}       3.48 {c |}{res}         39        0.38       68.17
+{txt}       3.49 {c |}{res}          2        0.02       68.19
+{txt}        3.5 {c |}{res}         15        0.15       68.33
+{txt}       3.51 {c |}{res}          3        0.03       68.36
+{txt}       3.53 {c |}{res}         10        0.10       68.46
+{txt}       3.54 {c |}{res}         14        0.14       68.60
+{txt}       3.55 {c |}{res}          5        0.05       68.65
+{txt}       3.56 {c |}{res}         11        0.11       68.76
+{txt}       3.57 {c |}{res}          5        0.05       68.81
+{txt}       3.58 {c |}{res}         31        0.30       69.11
+{txt}        3.6 {c |}{res}         10        0.10       69.21
+{txt}       3.61 {c |}{res}         15        0.15       69.36
+{txt}       3.62 {c |}{res}          1        0.01       69.37
+{txt}       3.63 {c |}{res}         38        0.37       69.74
+{txt}       3.64 {c |}{res}          2        0.02       69.76
+{txt}       3.65 {c |}{res}          3        0.03       69.79
+{txt}       3.66 {c |}{res}          4        0.04       69.83
+{txt}       3.67 {c |}{res}          4        0.04       69.87
+{txt}       3.68 {c |}{res}          3        0.03       69.90
+{txt}       3.69 {c |}{res}          3        0.03       69.93
+{txt}        3.7 {c |}{res}          1        0.01       69.94
+{txt}       3.72 {c |}{res}          3        0.03       69.97
+{txt}       3.74 {c |}{res}          6        0.06       70.02
+{txt}       3.75 {c |}{res}          3        0.03       70.05
+{txt}       3.76 {c |}{res}          1        0.01       70.06
+{txt}       3.77 {c |}{res}         13        0.13       70.19
+{txt}       3.79 {c |}{res}         29        0.29       70.48
+{txt}        3.8 {c |}{res}          2        0.02       70.50
+{txt}       3.81 {c |}{res}         31        0.30       70.80
+{txt}       3.82 {c |}{res}         33        0.32       71.13
+{txt}       3.83 {c |}{res}          3        0.03       71.15
+{txt}       3.84 {c |}{res}         24        0.24       71.39
+{txt}       3.86 {c |}{res}          8        0.08       71.47
+{txt}       3.87 {c |}{res}         26        0.26       71.72
+{txt}       3.88 {c |}{res}          1        0.01       71.73
+{txt}       3.89 {c |}{res}          8        0.08       71.81
+{txt}        3.9 {c |}{res}          3        0.03       71.84
+{txt}       3.91 {c |}{res}          2        0.02       71.86
+{txt}       3.92 {c |}{res}         17        0.17       72.03
+{txt}       3.93 {c |}{res}         11        0.11       72.14
+{txt}       3.94 {c |}{res}          7        0.07       72.21
+{txt}       3.95 {c |}{res}          2        0.02       72.23
+{txt}       3.96 {c |}{res}         15        0.15       72.37
+{txt}       3.97 {c |}{res}          3        0.03       72.40
+{txt}       3.98 {c |}{res}          4        0.04       72.44
+{txt}       3.99 {c |}{res}          1        0.01       72.45
+{txt}          4 {c |}{res}          2        0.02       72.47
+{txt}       4.03 {c |}{res}          7        0.07       72.54
+{txt}       4.04 {c |}{res}         18        0.18       72.72
+{txt}       4.05 {c |}{res}          2        0.02       72.74
+{txt}       4.06 {c |}{res}          8        0.08       72.82
+{txt}       4.07 {c |}{res}          9        0.09       72.90
+{txt}       4.09 {c |}{res}          1        0.01       72.91
+{txt}        4.1 {c |}{res}         18        0.18       73.09
+{txt}       4.11 {c |}{res}          5        0.05       73.14
+{txt}       4.12 {c |}{res}          6        0.06       73.20
+{txt}       4.13 {c |}{res}         15        0.15       73.35
+{txt}       4.14 {c |}{res}          3        0.03       73.38
+{txt}       4.16 {c |}{res}         15        0.15       73.52
+{txt}       4.17 {c |}{res}          4        0.04       73.56
+{txt}       4.18 {c |}{res}          4        0.04       73.60
+{txt}       4.19 {c |}{res}         66        0.65       74.25
+{txt}        4.2 {c |}{res}          2        0.02       74.27
+{txt}       4.25 {c |}{res}         43        0.42       74.69
+{txt}       4.26 {c |}{res}          3        0.03       74.72
+{txt}       4.28 {c |}{res}         16        0.16       74.88
+{txt}        4.3 {c |}{res}         27        0.27       75.14
+{txt}       4.32 {c |}{res}          3        0.03       75.17
+{txt}       4.35 {c |}{res}         38        0.37       75.55
+{txt}       4.36 {c |}{res}          2        0.02       75.57
+{txt}       4.38 {c |}{res}          6        0.06       75.63
+{txt}        4.4 {c |}{res}          6        0.06       75.69
+{txt}       4.42 {c |}{res}          3        0.03       75.71
+{txt}       4.43 {c |}{res}          3        0.03       75.74
+{txt}       4.44 {c |}{res}          2        0.02       75.76
+{txt}       4.45 {c |}{res}         13        0.13       75.89
+{txt}       4.46 {c |}{res}          2        0.02       75.91
+{txt}       4.48 {c |}{res}          9        0.09       76.00
+{txt}        4.5 {c |}{res}          2        0.02       76.02
+{txt}       4.51 {c |}{res}         14        0.14       76.16
+{txt}       4.53 {c |}{res}         10        0.10       76.26
+{txt}       4.54 {c |}{res}          1        0.01       76.27
+{txt}       4.55 {c |}{res}         10        0.10       76.36
+{txt}       4.58 {c |}{res}          2        0.02       76.38
+{txt}       4.61 {c |}{res}         38        0.37       76.76
+{txt}       4.63 {c |}{res}          1        0.01       76.77
+{txt}       4.64 {c |}{res}          9        0.09       76.86
+{txt}       4.66 {c |}{res}          2        0.02       76.87
+{txt}       4.67 {c |}{res}         27        0.27       77.14
+{txt}       4.69 {c |}{res}          9        0.09       77.23
+{txt}        4.7 {c |}{res}          3        0.03       77.26
+{txt}       4.71 {c |}{res}          5        0.05       77.31
+{txt}       4.72 {c |}{res}         12        0.12       77.43
+{txt}       4.77 {c |}{res}         20        0.20       77.62
+{txt}       4.79 {c |}{res}          4        0.04       77.66
+{txt}        4.8 {c |}{res}          2        0.02       77.68
+{txt}       4.81 {c |}{res}          3        0.03       77.71
+{txt}       4.82 {c |}{res}          4        0.04       77.75
+{txt}       4.83 {c |}{res}          1        0.01       77.76
+{txt}       4.84 {c |}{res}         22        0.22       77.98
+{txt}       4.86 {c |}{res}          8        0.08       78.05
+{txt}       4.87 {c |}{res}          1        0.01       78.06
+{txt}       4.88 {c |}{res}         10        0.10       78.16
+{txt}        4.9 {c |}{res}          9        0.09       78.25
+{txt}       4.92 {c |}{res}          3        0.03       78.28
+{txt}       4.93 {c |}{res}          5        0.05       78.33
+{txt}       4.96 {c |}{res}          1        0.01       78.34
+{txt}       4.97 {c |}{res}          2        0.02       78.36
+{txt}       4.99 {c |}{res}          1        0.01       78.37
+{txt}          5 {c |}{res}      1,416       13.92       92.29
+{txt}          . {c |}{res}        785        7.71      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. capture drop PIR
+{txt}
+{com}. gen PIR=.
+{txt}(10,175 missing values generated)
+
+{com}. replace PIR=1 if INDFMPIR <1 
+{txt}(2,711 real changes made)
+
+{com}. replace PIR=2 if INDFMPIR>=1 & INDFMPIR<2
+{txt}(2,422 real changes made)
+
+{com}. replace PIR=3 if INDFMPIR>=2 & INDFMPIR ~=.
+{txt}(4,257 real changes made)
+
+{com}. 
+. tab PIR, missing
+
+        {txt}PIR {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      2,711       26.64       26.64
+{txt}          2 {c |}{res}      2,422       23.80       50.45
+{txt}          3 {c |}{res}      4,257       41.84       92.29
+{txt}          . {c |}{res}        785        7.71      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. 
+. **EDUCATION, YEARS**
+. 
+. **Less than 9th grade           
+. **9-11th grade (Includes 12th grade with no diploma)            
+. **High school graduate/GED or equivalent                
+. **Some college or AA degree             
+. **College graduate or above     
+. 
+. 
+. tab DMDEDUC2, missing
+
+  {txt}Education {c |}
+    level - {c |}
+ Adults 20+ {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        455        4.47        4.47
+{txt}          2 {c |}{res}        791        7.77       12.25
+{txt}          3 {c |}{res}      1,303       12.81       25.05
+{txt}          4 {c |}{res}      1,770       17.40       42.45
+{txt}          5 {c |}{res}      1,443       14.18       56.63
+{txt}          7 {c |}{res}          2        0.02       56.65
+{txt}          9 {c |}{res}          5        0.05       56.70
+{txt}          . {c |}{res}      4,406       43.30      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. capture drop EDUCATION
+{txt}
+{com}. gen EDUCATION=DMDEDUC2
+{txt}(4,406 missing values generated)
+
+{com}. replace EDUCATION=. if (DMDEDUC2==9 | DMDEDUC2==7) 
+{txt}(7 real changes made, 7 to missing)
+
+{com}. 
+. tab EDUCATION, missing
+
+  {txt}EDUCATION {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        455        4.47        4.47
+{txt}          2 {c |}{res}        791        7.77       12.25
+{txt}          3 {c |}{res}      1,303       12.81       25.05
+{txt}          4 {c |}{res}      1,770       17.40       42.45
+{txt}          5 {c |}{res}      1,443       14.18       56.63
+{txt}          . {c |}{res}      4,413       43.37      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. su EDUCATION
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 3}EDUCATION {c |}{res}      5,762    3.512843    1.224465          1          5
+{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. ***************************SMOKING***********************************************************************
+. 
+. tab SMQ020, missing
+
+  {txt}Smoked at {c |}
+  least 100 {c |}
+ cigarettes {c |}
+    in life {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      2,579       25.35       25.35
+{txt}          2 {c |}{res}      3,532       34.71       60.06
+{txt}          9 {c |}{res}          2        0.02       60.08
+{txt}          . {c |}{res}      4,062       39.92      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. tab SMQ040, missing
+
+ {txt}Do you now {c |}
+      smoke {c |}
+ cigarettes {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        992        9.75        9.75
+{txt}          2 {c |}{res}        240        2.36       12.11
+{txt}          3 {c |}{res}      1,347       13.24       25.35
+{txt}          . {c |}{res}      7,596       74.65      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. capture drop SMOKE
+{txt}
+{com}. gen SMOKE=.
+{txt}(10,175 missing values generated)
+
+{com}. replace SMOKE=1 if SMQ020==2
+{txt}(3,532 real changes made)
+
+{com}. replace SMOKE=2 if SMQ020==1 & SMQ040==3
+{txt}(1,347 real changes made)
+
+{com}. replace SMOKE=3 if SMQ020==1 & (SMQ040==1|SMQ040==2)
+{txt}(1,232 real changes made)
+
+{com}.  
+. tab SMOKE, missing
+
+      {txt}SMOKE {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      3,532       34.71       34.71
+{txt}          2 {c |}{res}      1,347       13.24       47.95
+{txt}          3 {c |}{res}      1,232       12.11       60.06
+{txt}          . {c |}{res}      4,064       39.94      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. 
+. ***************************ALCOHOL, GRAMS *******************************************************************
+. 
+. tab ALQ101, missing
+
+     {txt}Had at {c |}
+   least 12 {c |}
+    alcohol {c |}
+   drinks/1 {c |}
+        yr? {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      3,790       37.25       37.25
+{txt}          2 {c |}{res}      1,623       15.95       53.20
+{txt}          9 {c |}{res}          8        0.08       53.28
+{txt}          . {c |}{res}      4,754       46.72      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. capture drop ALCOHOL
+{txt}
+{com}. gen ALCOHOL=.
+{txt}(10,175 missing values generated)
+
+{com}. replace ALCOHOL=1 if (ALQ101==1)
+{txt}(3,790 real changes made)
+
+{com}. replace ALCOHOL=2 if (ALQ101==2)
+{txt}(1,623 real changes made)
+
+{com}. 
+. tab ALCOHOL, missing
+
+    {txt}ALCOHOL {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      3,790       37.25       37.25
+{txt}          2 {c |}{res}      1,623       15.95       53.20
+{txt}          . {c |}{res}      4,762       46.80      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. 
+. *****************************EVER DRUG USE********************************************************************
+. tab1 DUQ200 DUQ240 DUQ290 DUQ330
+
+{res}-> tabulation of DUQ200  
+
+  {txt}Ever used {c |}
+  marijuana {c |}
+ or hashish {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      1,991       53.80       53.80
+{txt}          2 {c |}{res}      1,699       45.91       99.70
+{txt}          7 {c |}{res}          6        0.16       99.86
+{txt}          9 {c |}{res}          5        0.14      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      3,701      100.00
+
+-> tabulation of DUQ240  
+
+  {txt}Ever used {c |}
+cocaine/her {c |}
+oin/methamp {c |}
+   hetamine {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        723       15.93       15.93
+{txt}          2 {c |}{res}      3,800       83.70       99.63
+{txt}          7 {c |}{res}         10        0.22       99.85
+{txt}          9 {c |}{res}          7        0.15      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      4,540      100.00
+
+-> tabulation of DUQ290  
+
+  {txt}Ever used {c |}
+     heroin {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        110       15.21       15.21
+{txt}          2 {c |}{res}        611       84.51       99.72
+{txt}          9 {c |}{res}          2        0.28      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}        723      100.00
+
+-> tabulation of DUQ330  
+
+  {txt}Ever used {c |}
+methampheta {c |}
+       mine {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        284       39.28       39.28
+{txt}          2 {c |}{res}        439       60.72      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}        723      100.00
+{txt}
+{com}. 
+. capture drop DUQ200r DUQ240r DUQ290r DUQ330r
+{txt}
+{com}. 
+. 
+. foreach x of varlist DUQ200 DUQ240 DUQ290 DUQ330 {c -(}
+{txt}  2{com}.         gen `x'r=`x' if `x'~=7 & `x'~=9
+{txt}  3{com}. {c )-}
+{txt}(6,485 missing values generated)
+(5,652 missing values generated)
+(9,454 missing values generated)
+(9,452 missing values generated)
+
+{com}. 
+. tab1  DUQ200r DUQ240r DUQ290r DUQ330r
+
+{res}-> tabulation of DUQ200r  
+
+    {txt}DUQ200r {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      1,991       53.96       53.96
+{txt}          2 {c |}{res}      1,699       46.04      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      3,690      100.00
+
+-> tabulation of DUQ240r  
+
+    {txt}DUQ240r {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        723       15.98       15.98
+{txt}          2 {c |}{res}      3,800       84.02      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      4,523      100.00
+
+-> tabulation of DUQ290r  
+
+    {txt}DUQ290r {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        110       15.26       15.26
+{txt}          2 {c |}{res}        611       84.74      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}        721      100.00
+
+-> tabulation of DUQ330r  
+
+    {txt}DUQ330r {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        284       39.28       39.28
+{txt}          2 {c |}{res}        439       60.72      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}        723      100.00
+{txt}
+{com}. 
+. 
+. 
+. capture drop DRUG_USER_EVER
+{txt}
+{com}. gen DRUG_USER_EVER=.
+{txt}(10,175 missing values generated)
+
+{com}. replace DRUG_USER_EVER=1 if DUQ200r==1 | DUQ240r==1 | DUQ290r==1 | DUQ330r==1
+{txt}(2,130 real changes made)
+
+{com}. replace DRUG_USER_EVER=0 if DRUG_USER_EVER~=1
+{txt}(8,045 real changes made)
+
+{com}. 
+. tab DRUG_USER_EVER
+
+{txt}DRUG_USER_E {c |}
+        VER {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      8,045       79.07       79.07
+{txt}          1 {c |}{res}      2,130       20.93      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. **************************** ENERGEY INTAKE*******************************************
+. 
+. *****************************DASH DIET SCORE*************************************************************
+. 
+. /*DASH component 1-8 scores*/
+. 
+. /*use "H:\MANUSCRIPTS_2018_2019\MANSCRIPT_12_DASH_MORTALITY\DATA\FULL_DASH_DIET_DATASET_MORTALITY_LINKED_B_G.dta"*/
+. 
+. /*Energy -- kcal*/
+. 
+. summ DR1TKCAL 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR1TKCAL {c |}{res}      8,531    1964.539    984.4931        117      12108
+{txt}
+{com}. summ DR2TKCAL 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR2TKCAL {c |}{res}      7,453    1839.988    883.9725          0      10591
+{txt}
+{com}. 
+. capture drop DR12TKCAL
+{txt}
+{com}. gen DR12TKCAL=(DR1TKCAL+DR2TKCAL)/2
+{txt}(2,726 missing values generated)
+
+{com}. 
+. su DR12TKCAL
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 3}DR12TKCAL {c |}{res}      7,449    1904.067     803.862       96.5      10025
+{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. /*Saturated fat -- grams*/
+. 
+. summ DR1TSFAT 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR1TSFAT {c |}{res}      8,531    24.76425    15.88331          0    177.467
+{txt}
+{com}. summ DR2TSFAT 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR2TSFAT {c |}{res}      7,453    23.02986    15.24631          0     259.21
+{txt}
+{com}. 
+. 
+. capture drop DR12TSFAT
+{txt}
+{com}. gen DR12TSFAT=(DR1TSFAT+DR2TSFAT)/2
+{txt}(2,726 missing values generated)
+
+{com}. 
+. su DR12TSFAT
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 3}DR12TSFAT {c |}{res}      7,449    23.94156    12.84116         .6    190.057
+{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. capture drop SAT_FAT_DASH
+{txt}
+{com}. gen SAT_FAT_DASH=.
+{txt}(10,175 missing values generated)
+
+{com}. replace SAT_FAT_DASH=(DR12TSFAT*9)/DR12TKCAL*100
+{txt}(7,449 real changes made)
+
+{com}. 
+. summ SAT_FAT_DASH
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+SAT_FAT_DASH {c |}{res}      7,449    11.25617     3.33631   1.698113   32.18073
+{txt}
+{com}. 
+. capture drop SAT_FAT_DASH_BR
+{txt}
+{com}. gen SAT_FAT_DASH_BR=.
+{txt}(10,175 missing values generated)
+
+{com}. replace SAT_FAT_DASH_BR=1 if SAT_FAT_DASH <=6 
+{txt}(324 real changes made)
+
+{com}. replace SAT_FAT_DASH_BR=0.5 if (SAT_FAT_DASH >6 & SAT_FAT_DASH<=11)
+{txt}(3,339 real changes made)
+
+{com}. replace SAT_FAT_DASH_BR=0 if (SAT_FAT_DASH>11 & SAT_FAT_DASH~=.)
+{txt}(3,786 real changes made)
+
+{com}. 
+. tab SAT_FAT_DASH_BR, missing
+
+{txt}SAT_FAT_DAS {c |}
+       H_BR {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      3,786       37.21       37.21
+{txt}         .5 {c |}{res}      3,339       32.82       70.02
+{txt}          1 {c |}{res}        324        3.18       73.21
+{txt}          . {c |}{res}      2,726       26.79      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. 
+. /*Total fat -- grams*/
+. 
+. summ DR1TTFAT 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR1TTFAT {c |}{res}      8,531     75.0988    45.50421          0     548.38
+{txt}
+{com}. summ DR2TTFAT 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR2TTFAT {c |}{res}      7,453    69.12929    40.95999          0     530.22
+{txt}
+{com}. 
+. capture drop DR12TTFAT
+{txt}
+{com}. gen DR12TTFAT=(DR1TTFAT+DR2TTFAT)/2
+{txt}(2,726 missing values generated)
+
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. capture drop TOT_FAT_DASH
+{txt}
+{com}. gen TOT_FAT_DASH=.
+{txt}(10,175 missing values generated)
+
+{com}. replace TOT_FAT_DASH=(DR12TTFAT*9)/DR12TKCAL*100
+{txt}(7,449 real changes made)
+
+{com}. 
+. summ TOT_FAT_DASH
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+TOT_FAT_DASH {c |}{res}      7,449    33.78169    6.991296   6.877359    68.0814
+{txt}
+{com}. 
+. capture drop TOT_FAT_DASH_BR
+{txt}
+{com}. gen TOT_FAT_DASH_BR=.
+{txt}(10,175 missing values generated)
+
+{com}. replace TOT_FAT_DASH_BR=1 if TOT_FAT_DASH <=27 
+{txt}(1,162 real changes made)
+
+{com}. replace TOT_FAT_DASH_BR=0.5 if (TOT_FAT_DASH >27 & TOT_FAT_DASH<=32)
+{txt}(1,857 real changes made)
+
+{com}. replace TOT_FAT_DASH_BR=0 if (TOT_FAT_DASH >32 & TOT_FAT_DASH ~=.)
+{txt}(4,430 real changes made)
+
+{com}. 
+. tab TOT_FAT_DASH_BR, missing
+
+{txt}TOT_FAT_DAS {c |}
+       H_BR {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      4,430       43.54       43.54
+{txt}         .5 {c |}{res}      1,857       18.25       61.79
+{txt}          1 {c |}{res}      1,162       11.42       73.21
+{txt}          . {c |}{res}      2,726       26.79      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. 
+. /*Protein -- grams*/
+. 
+. summ DR1TPROT
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR1TPROT {c |}{res}      8,531    74.53671    44.72318          0     869.49
+{txt}
+{com}. summ DR2TPROT 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR2TPROT {c |}{res}      7,453     73.4317    41.44096          0     474.19
+{txt}
+{com}. 
+. capture drop DR12TPROT
+{txt}
+{com}. gen DR12TPROT=(DR1TPROT+DR2TPROT)/2
+{txt}(2,726 missing values generated)
+
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. capture drop PROT_DASH
+{txt}
+{com}. gen PROT_DASH=.
+{txt}(10,175 missing values generated)
+
+{com}. replace PROT_DASH=(DR12TPROT*4)/DR12TKCAL*100
+{txt}(7,449 real changes made)
+
+{com}. 
+. summ PROT_DASH
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 3}PROT_DASH {c |}{res}      7,449    15.65494    4.445737   2.021305   56.15414
+{txt}
+{com}. 
+. capture drop PROT_DASH_BR
+{txt}
+{com}. gen PROT_DASH_BR=.
+{txt}(10,175 missing values generated)
+
+{com}. replace PROT_DASH_BR=1 if PROT_DASH >=18 & PROT_DASH~=.
+{txt}(1,816 real changes made)
+
+{com}. replace PROT_DASH_BR=0.5 if (PROT_DASH <18 & PROT_DASH>=16.5)
+{txt}(852 real changes made)
+
+{com}. replace PROT_DASH_BR=0 if (PROT_DASH <16.5 & PROT_DASH ~=.)
+{txt}(4,781 real changes made)
+
+{com}. 
+. tab PROT_DASH_BR, missing
+
+{txt}PROT_DASH_B {c |}
+          R {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      4,781       46.99       46.99
+{txt}         .5 {c |}{res}        852        8.37       55.36
+{txt}          1 {c |}{res}      1,816       17.85       73.21
+{txt}          . {c |}{res}      2,726       26.79      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. /*Cholesterol -- mg*/
+. 
+. summ DR1TCHOL 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR1TCHOL {c |}{res}      8,531    262.3687    233.5791          0       3515
+{txt}
+{com}. summ DR2TCHOL 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR2TCHOL {c |}{res}      7,453    251.3217     217.941          0       2666
+{txt}
+{com}. 
+. capture drop DR12TCHOL
+{txt}
+{com}. gen DR12TCHOL=(DR1TCHOL+DR2TCHOL)/2
+{txt}(2,726 missing values generated)
+
+{com}. 
+. 
+. 
+. capture drop CHOL_DASH
+{txt}
+{com}. gen CHOL_DASH=.
+{txt}(10,175 missing values generated)
+
+{com}. replace CHOL_DASH=(DR12TCHOL/DR12TKCAL)*1000
+{txt}(7,449 real changes made)
+
+{com}. 
+. summ CHOL_DASH
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 3}CHOL_DASH {c |}{res}      7,449    133.6302    77.58005          0   721.2176
+{txt}
+{com}. 
+. capture drop CHOL_DASH_BR
+{txt}
+{com}. gen CHOL_DASH_BR=.
+{txt}(10,175 missing values generated)
+
+{com}. replace CHOL_DASH_BR=1 if CHOL_DASH <=71.4 
+{txt}(1,394 real changes made)
+
+{com}. replace CHOL_DASH_BR=0.5 if (CHOL_DASH >71.4 & CHOL_DASH<=107.1)
+{txt}(1,888 real changes made)
+
+{com}. replace CHOL_DASH_BR=0 if (CHOL_DASH >107.1) & CHOL_DASH ~=.
+{txt}(4,167 real changes made)
+
+{com}. 
+. tab CHOL_DASH_BR, missing
+
+{txt}CHOL_DASH_B {c |}
+          R {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      4,167       40.95       40.95
+{txt}         .5 {c |}{res}      1,888       18.56       59.51
+{txt}          1 {c |}{res}      1,394       13.70       73.21
+{txt}          . {c |}{res}      2,726       26.79      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. /*Fiber -- g*/
+. 
+. summ DR1TFIBE 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR1TFIBE {c |}{res}      8,531    15.27804    10.13266          0      136.3
+{txt}
+{com}. summ DR2TFIBE 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR2TFIBE {c |}{res}      7,453    15.42759    10.22192          0      134.8
+{txt}
+{com}. 
+. 
+. capture drop DR12TFIBE
+{txt}
+{com}. gen DR12TFIBE=(DR1TFIBE+DR2TFIBE)/2
+{txt}(2,726 missing values generated)
+
+{com}. 
+. 
+. capture drop FIB_DASH
+{txt}
+{com}. gen FIB_DASH=.
+{txt}(10,175 missing values generated)
+
+{com}. replace FIB_DASH=(DR12TFIBE/DR12TKCAL)*1000
+{txt}(7,449 real changes made)
+
+{com}. 
+. summ FIB_DASH
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}FIB_DASH {c |}{res}      7,449    8.250123    3.735244          0   41.61869
+{txt}
+{com}. 
+. capture drop FIB_DASH_BR
+{txt}
+{com}. gen FIB_DASH_BR=.
+{txt}(10,175 missing values generated)
+
+{com}. replace FIB_DASH_BR=1 if FIB_DASH >=14.8 & FIB_DASH ~=.
+{txt}(376 real changes made)
+
+{com}. replace FIB_DASH_BR=0.5 if (FIB_DASH <14.8 & FIB_DASH>=9.5)
+{txt}(1,811 real changes made)
+
+{com}. replace FIB_DASH_BR=0 if (FIB_DASH <9.5 & FIB_DASH ~=.)
+{txt}(5,262 real changes made)
+
+{com}. 
+. tab FIB_DASH_BR, missing
+
+{txt}FIB_DASH_BR {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      5,262       51.71       51.71
+{txt}         .5 {c |}{res}      1,811       17.80       69.51
+{txt}          1 {c |}{res}        376        3.70       73.21
+{txt}          . {c |}{res}      2,726       26.79      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. /*Magnesium -- mg*/
+. 
+. summ DR1TMAGN 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR1TMAGN {c |}{res}      8,531    264.4613    149.0214          0       2725
+{txt}
+{com}. summ DR2TMAGN
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR2TMAGN {c |}{res}      7,453    260.2704    141.3616          0       1912
+{txt}
+{com}. 
+. 
+. capture drop DR12TMAGN
+{txt}
+{com}. gen DR12TMAGN=(DR1TMAGN+DR2TMAGN)/2
+{txt}(2,726 missing values generated)
+
+{com}. 
+. 
+. 
+. capture drop MAG_DASH
+{txt}
+{com}. gen MAG_DASH=.
+{txt}(10,175 missing values generated)
+
+{com}. replace MAG_DASH=(DR12TMAGN/DR12TKCAL)*1000
+{txt}(7,449 real changes made)
+
+{com}. 
+. summ MAG_DASH
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}MAG_DASH {c |}{res}      7,449    141.2791    44.08901   28.81041   539.4514
+{txt}
+{com}. 
+. capture drop MAG_DASH_BR
+{txt}
+{com}. gen MAG_DASH_BR=.
+{txt}(10,175 missing values generated)
+
+{com}. replace MAG_DASH_BR=1 if MAG_DASH >=238 & MAG_DASH ~=. 
+{txt}(269 real changes made)
+
+{com}. replace MAG_DASH_BR=0.5 if (MAG_DASH <238 & MAG_DASH>=158)
+{txt}(1,783 real changes made)
+
+{com}. replace MAG_DASH_BR=0 if (MAG_DASH <158) 
+{txt}(5,397 real changes made)
+
+{com}. 
+. tab MAG_DASH_BR, missing
+
+{txt}MAG_DASH_BR {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      5,397       53.04       53.04
+{txt}         .5 {c |}{res}      1,783       17.52       70.57
+{txt}          1 {c |}{res}        269        2.64       73.21
+{txt}          . {c |}{res}      2,726       26.79      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. /*Calcium -- mg*/
+. 
+. summ DR1TCALC 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR1TCALC {c |}{res}      8,531    934.2482    578.0352          6       7337
+{txt}
+{com}. summ DR2TCALC
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR2TCALC {c |}{res}      7,453    933.9057    596.7542          0      11164
+{txt}
+{com}. 
+. 
+. capture drop DR12TCALC
+{txt}
+{com}. gen DR12TCALC=(DR1TCALC+DR2TCALC)/2
+{txt}(2,726 missing values generated)
+
+{com}. 
+. capture drop CAL_DASH
+{txt}
+{com}. gen CAL_DASH=.
+{txt}(10,175 missing values generated)
+
+{com}. replace CAL_DASH=(DR2TCALC/DR12TKCAL)*1000
+{txt}(7,449 real changes made)
+
+{com}. 
+. 
+. capture drop CAL_DASH
+{txt}
+{com}. gen CAL_DASH=.
+{txt}(10,175 missing values generated)
+
+{com}. replace CAL_DASH=(DR12TCALC/DR12TKCAL)*1000
+{txt}(7,449 real changes made)
+
+{com}. 
+. summ CAL_DASH
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}CAL_DASH {c |}{res}      7,449    514.6868     218.827   52.19553    2379.53
+{txt}
+{com}. 
+. capture drop CAL_DASH_BR
+{txt}
+{com}. gen CAL_DASH_BR=.
+{txt}(10,175 missing values generated)
+
+{com}. replace CAL_DASH_BR=1 if CAL_DASH >=590 & CAL_DASH ~=.
+{txt}(2,295 real changes made)
+
+{com}. replace CAL_DASH_BR=0.5 if (CAL_DASH <590 & CAL_DASH>=402)
+{txt}(2,655 real changes made)
+
+{com}. replace CAL_DASH_BR=0 if (CAL_DASH <402) 
+{txt}(2,499 real changes made)
+
+{com}. 
+. tab CAL_DASH_BR, missing
+
+{txt}CAL_DASH_BR {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      2,499       24.56       24.56
+{txt}         .5 {c |}{res}      2,655       26.09       50.65
+{txt}          1 {c |}{res}      2,295       22.56       73.21
+{txt}          . {c |}{res}      2,726       26.79      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. /*Potassium -- mg*/
+. 
+. summ DR1TPOTA 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR1TPOTA {c |}{res}      8,531    2358.753    1214.393         68      15876
+{txt}
+{com}. summ DR2TPOTA
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR2TPOTA {c |}{res}      7,453    2354.313    1186.952          0      19663
+{txt}
+{com}. 
+. 
+. capture drop DR12TPOTA
+{txt}
+{com}. gen DR12TPOTA=(DR1TPOTA+DR2TPOTA)/2
+{txt}(2,726 missing values generated)
+
+{com}. 
+. 
+. 
+. capture drop POT_DASH
+{txt}
+{com}. gen POT_DASH=.
+{txt}(10,175 missing values generated)
+
+{com}. replace POT_DASH=(DR12TPOTA*1000/DR12TKCAL)
+{txt}(7,449 real changes made)
+
+{com}. 
+. summ POT_DASH
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}POT_DASH {c |}{res}      7,449    1280.659    372.5777   392.7966   4360.613
+{txt}
+{com}. 
+. capture drop POT_DASH_BR
+{txt}
+{com}. gen POT_DASH_BR=.
+{txt}(10,175 missing values generated)
+
+{com}. replace POT_DASH_BR=1 if POT_DASH >=2238 & POT_DASH ~=.
+{txt}(149 real changes made)
+
+{com}. replace POT_DASH_BR=0.5 if (POT_DASH <2238 & POT_DASH>=1534)
+{txt}(1,441 real changes made)
+
+{com}. replace POT_DASH_BR=0 if (POT_DASH <1534) 
+{txt}(5,859 real changes made)
+
+{com}. 
+. tab POT_DASH_BR, missing
+
+{txt}POT_DASH_BR {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      5,859       57.58       57.58
+{txt}         .5 {c |}{res}      1,441       14.16       71.74
+{txt}          1 {c |}{res}        149        1.46       73.21
+{txt}          . {c |}{res}      2,726       26.79      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}.  
+. 
+. /*Sodium*/
+. 
+. summ DR1TSODI 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR1TSODI {c |}{res}      8,531     3178.13    1818.145         17      21399
+{txt}
+{com}. summ DR2TSODI 
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}DR2TSODI {c |}{res}      7,453    3051.957    1689.761          0      20683
+{txt}
+{com}. 
+. 
+. 
+. capture drop DR12TSODI
+{txt}
+{com}. gen DR12TSODI=(DR1TSODI+DR2TSODI)/2
+{txt}(2,726 missing values generated)
+
+{com}. 
+. 
+. capture drop SOD_DASH
+{txt}
+{com}. gen SOD_DASH=.
+{txt}(10,175 missing values generated)
+
+{com}. replace SOD_DASH=(DR12TSODI/DR12TKCAL)*1000
+{txt}(7,449 real changes made)
+
+{com}. 
+. 
+. summ SOD_DASH
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}SOD_DASH {c |}{res}      7,449    1636.255    468.0715    189.589   8515.513
+{txt}
+{com}. 
+. capture drop SOD_DASH_BR
+{txt}
+{com}. gen SOD_DASH_BR=.
+{txt}(10,175 missing values generated)
+
+{com}. replace SOD_DASH_BR=1 if SOD_DASH <=1143 
+{txt}(666 real changes made)
+
+{com}. replace SOD_DASH_BR=0.5 if (SOD_DASH >1143 & SOD_DASH<=1286)
+{txt}(652 real changes made)
+
+{com}. replace SOD_DASH_BR=0 if (SOD_DASH >1286) &  SOD_DASH ~=.  
+{txt}(6,131 real changes made)
+
+{com}. 
+. tab SOD_DASH_BR, missing
+
+{txt}SOD_DASH_BR {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      6,131       60.26       60.26
+{txt}         .5 {c |}{res}        652        6.41       66.66
+{txt}          1 {c |}{res}        666        6.55       73.21
+{txt}          . {c |}{res}      2,726       26.79      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. /*DASH total score*/
+. 
+. capture drop DASH_TOTAL_SCORE
+{txt}
+{com}. gen DASH_TOTAL_SCORE = SAT_FAT_DASH_BR+TOT_FAT_DASH_BR+PROT_DASH_BR+CHOL_DASH_BR+FIB_DASH_BR+MAG_DASH_BR+CAL_DASH_BR+POT_DASH_BR+SOD_DASH_BR
+{txt}(2,726 missing values generated)
+
+{com}. 
+. tab DASH_TOTAL_SCORE
+
+{txt}DASH_TOTAL_ {c |}
+      SCORE {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}        276        3.71        3.71
+{txt}         .5 {c |}{res}        700        9.40       13.10
+{txt}          1 {c |}{res}      1,035       13.89       27.00
+{txt}        1.5 {c |}{res}      1,154       15.49       42.49
+{txt}          2 {c |}{res}      1,044       14.02       56.50
+{txt}        2.5 {c |}{res}        854       11.46       67.97
+{txt}          3 {c |}{res}        786       10.55       78.52
+{txt}        3.5 {c |}{res}        567        7.61       86.13
+{txt}          4 {c |}{res}        380        5.10       91.23
+{txt}        4.5 {c |}{res}        262        3.52       94.75
+{txt}          5 {c |}{res}        145        1.95       96.70
+{txt}        5.5 {c |}{res}        121        1.62       98.32
+{txt}          6 {c |}{res}         50        0.67       98.99
+{txt}        6.5 {c |}{res}         34        0.46       99.45
+{txt}          7 {c |}{res}         26        0.35       99.80
+{txt}        7.5 {c |}{res}         11        0.15       99.95
+{txt}          8 {c |}{res}          2        0.03       99.97
+{txt}        8.5 {c |}{res}          1        0.01       99.99
+{txt}          9 {c |}{res}          1        0.01      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      7,449      100.00
+{txt}
+{com}. 
+. capture drop DASH_TOTAL_SCORE_BR
+{txt}
+{com}. gen DASH_TOTAL_SCORE_BR=.
+{txt}(10,175 missing values generated)
+
+{com}. replace DASH_TOTAL_SCORE_BR=1 if DASH_TOTAL_SCORE<4.5 
+{txt}(6,796 real changes made)
+
+{com}. replace DASH_TOTAL_SCORE_BR=0 if DASH_TOTAL_SCORE>=4.5 & DASH_TOTAL_SCORE ~=.
+{txt}(653 real changes made)
+
+{com}. 
+. tab DASH_TOTAL_SCORE_BR
+
+{txt}DASH_TOTAL_ {c |}
+   SCORE_BR {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}        653        8.77        8.77
+{txt}          1 {c |}{res}      6,796       91.23      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      7,449      100.00
+{txt}
+{com}. 
+. save, replace 
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. 
+. ****************************PHYSICAL ACTIVITY: MODERATE OR VIGOROUS, WORK OR RECREATIONAL*************************************************************
+. 
+. capture rename paq605-paq772c, upper
+{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. tab PAQ605, missing
+
+   {txt}Vigorous {c |}
+       work {c |}
+   activity {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      1,172       11.52       11.52
+{txt}          2 {c |}{res}      5,975       58.72       70.24
+{txt}          7 {c |}{res}          1        0.01       70.25
+{txt}          . {c |}{res}      3,027       29.75      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. tab PAQ620, missing
+
+   {txt}Moderate {c |}
+       work {c |}
+   activity {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      2,308       22.68       22.68
+{txt}          2 {c |}{res}      4,837       47.54       70.22
+{txt}          7 {c |}{res}          1        0.01       70.23
+{txt}          9 {c |}{res}          2        0.02       70.25
+{txt}          . {c |}{res}      3,027       29.75      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. tab PAQ635, missing
+
+    {txt}Walk or {c |}
+    bicycle {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      2,047       20.12       20.12
+{txt}          2 {c |}{res}      5,099       50.11       70.23
+{txt}          9 {c |}{res}          1        0.01       70.24
+{txt}          . {c |}{res}      3,028       29.76      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. tab PAQ650, missing
+
+   {txt}Vigorous {c |}
+recreationa {c |}
+          l {c |}
+ activities {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      2,059       20.24       20.24
+{txt}          2 {c |}{res}      5,087       50.00       70.23
+{txt}          9 {c |}{res}          1        0.01       70.24
+{txt}          . {c |}{res}      3,028       29.76      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. tab PAQ665, missing
+
+   {txt}Moderate {c |}
+recreationa {c |}
+          l {c |}
+ activities {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      3,059       30.06       30.06
+{txt}          2 {c |}{res}      4,084       40.14       70.20
+{txt}          9 {c |}{res}          2        0.02       70.22
+{txt}          . {c |}{res}      3,030       29.78      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. capture drop PHYSICAL
+{txt}
+{com}. gen PHYSICAL=.
+{txt}(10,175 missing values generated)
+
+{com}. replace PHYSICAL=1 if (PAQ605==1 | PAQ620==1 | PAQ650==1 | PAQ665==1 | PAQ635) 
+{txt}(10,175 real changes made)
+
+{com}. replace PHYSICAL=0 if PAQ605==2 & PAQ620==2 & PAQ650==2 & PAQ665==2 & PAQ635==2
+{txt}(1,697 real changes made)
+
+{com}. 
+. tab1 PAQ670 PAQ655 PAQ640 PAQ625 PAQ610
+
+{res}-> tabulation of PAQ670  
+
+       {txt}Days {c |}
+   moderate {c |}
+recreationa {c |}
+          l {c |}
+ activities {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        415       13.57       13.57
+{txt}          2 {c |}{res}        603       19.71       33.28
+{txt}          3 {c |}{res}        732       23.93       57.21
+{txt}          4 {c |}{res}        318       10.40       67.60
+{txt}          5 {c |}{res}        537       17.55       85.16
+{txt}          6 {c |}{res}        105        3.43       88.59
+{txt}          7 {c |}{res}        346       11.31       99.90
+{txt}         99 {c |}{res}          3        0.10      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      3,059      100.00
+
+-> tabulation of PAQ655  
+
+       {txt}Days {c |}
+   vigorous {c |}
+recreationa {c |}
+          l {c |}
+ activities {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        218       10.59       10.59
+{txt}          2 {c |}{res}        388       18.85       29.45
+{txt}          3 {c |}{res}        493       23.96       53.40
+{txt}          4 {c |}{res}        295       14.33       67.74
+{txt}          5 {c |}{res}        417       20.26       88.00
+{txt}          6 {c |}{res}        112        5.44       93.44
+{txt}          7 {c |}{res}        133        6.46       99.90
+{txt}         99 {c |}{res}          2        0.10      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      2,058      100.00
+
+-> tabulation of PAQ640  
+
+  {txt}Number of {c |}
+  days walk {c |}
+ or bicycle {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        115        5.62        5.62
+{txt}          2 {c |}{res}        209       10.21       15.83
+{txt}          3 {c |}{res}        263       12.85       28.68
+{txt}          4 {c |}{res}        162        7.91       36.59
+{txt}          5 {c |}{res}        563       27.50       64.09
+{txt}          6 {c |}{res}        108        5.28       69.37
+{txt}          7 {c |}{res}        627       30.63      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      2,047      100.00
+
+-> tabulation of PAQ625  
+
+  {txt}Number of {c |}
+       days {c |}
+   moderate {c |}
+       work {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        181        7.85        7.85
+{txt}          2 {c |}{res}        299       12.96       20.81
+{txt}          3 {c |}{res}        374       16.21       37.02
+{txt}          4 {c |}{res}        241       10.45       47.46
+{txt}          5 {c |}{res}        747       32.38       79.84
+{txt}          6 {c |}{res}        146        6.33       86.17
+{txt}          7 {c |}{res}        315       13.65       99.83
+{txt}         77 {c |}{res}          1        0.04       99.87
+{txt}         99 {c |}{res}          3        0.13      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      2,307      100.00
+
+-> tabulation of PAQ610  
+
+  {txt}Number of {c |}
+       days {c |}
+   vigorous {c |}
+       work {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        130       11.09       11.09
+{txt}          2 {c |}{res}        166       14.16       25.26
+{txt}          3 {c |}{res}        183       15.61       40.87
+{txt}          4 {c |}{res}        110        9.39       50.26
+{txt}          5 {c |}{res}        373       31.83       82.08
+{txt}          6 {c |}{res}        100        8.53       90.61
+{txt}          7 {c |}{res}        109        9.30       99.91
+{txt}         99 {c |}{res}          1        0.09      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      1,172      100.00
+{txt}
+{com}. 
+. foreach x of varlist PAQ670 PAQ655 PAQ640 PAQ625 PAQ610 {c -(}
+{txt}  2{com}.         gen `x'r=`x' if `x'~=77 & `x'~=99
+{txt}  3{com}. {c )-}
+{txt}(7,119 missing values generated)
+(8,119 missing values generated)
+(8,128 missing values generated)
+(7,872 missing values generated)
+(9,004 missing values generated)
+
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. describe PAQ* PAD*
+
+{txt}Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+{hline}
+{p 0 48}{res}{bind:PAQ605         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Vigorous work activity{p_end}
+{p 0 48}{bind:PAQ610         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Number of days vigorous work{p_end}
+{p 0 48}{bind:PAQ620         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Moderate work activity{p_end}
+{p 0 48}{bind:PAQ625         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Number of days moderate work{p_end}
+{p 0 48}{bind:PAQ635         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Walk or bicycle{p_end}
+{p 0 48}{bind:PAQ640         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Number of days walk or bicycle{p_end}
+{p 0 48}{bind:PAQ650         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Vigorous recreational activities{p_end}
+{p 0 48}{bind:PAQ655         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Days vigorous recreational activities{p_end}
+{p 0 48}{bind:PAQ665         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Moderate recreational activities{p_end}
+{p 0 48}{bind:PAQ670         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Days moderate recreational activities{p_end}
+{p 0 48}{bind:PAQ706         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Days physically active at least 60 min.{p_end}
+{p 0 48}{bind:PAQ710         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Hours watch TV or videos past 30 days{p_end}
+{p 0 48}{bind:PAQ715         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Hours use computer past 30 days{p_end}
+{p 0 48}{bind:PAQ722         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Any physical activities past 7 days{p_end}
+{p 0 48}{bind:PAQ724A        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity aerobics{p_end}
+{p 0 48}{bind:PAQ724B        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity baseball{p_end}
+{p 0 48}{bind:PAQ724C        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity basketball{p_end}
+{p 0 48}{bind:PAQ724D        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity bike riding{p_end}
+{p 0 48}{bind:PAQ724E        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity cheerleading{p_end}
+{p 0 48}{bind:PAQ724F        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity dance{p_end}
+{p 0 48}{bind:PAQ724G        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity field hockey{p_end}
+{p 0 48}{bind:PAQ724H        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity football{p_end}
+{p 0 48}{bind:PAQ724I        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity golf{p_end}
+{p 0 48}{bind:PAQ724J        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity gymnastics{p_end}
+{p 0 48}{bind:PAQ724K        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity hiking{p_end}
+{p 0 48}{bind:PAQ724L        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity ice hockey{p_end}
+{p 0 48}{bind:PAQ724M        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity ice skating{p_end}
+{p 0 48}{bind:PAQ724N        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity jumping rope{p_end}
+{p 0 48}{bind:PAQ724O        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity lacrosse{p_end}
+{p 0 48}{bind:PAQ724P        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity martial arts{p_end}
+{p 0 48}{bind:PAQ724Q        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity playing games{p_end}
+{p 0 48}{bind:PAQ724R        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity roller blading{p_end}
+{p 0 48}{bind:PAQ724S        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity running{p_end}
+{p 0 48}{bind:PAQ724T        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity scooter riding{p_end}
+{p 0 48}{bind:PAQ724U        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity skateboarding{p_end}
+{p 0 48}{bind:PAQ724V        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity soccer{p_end}
+{p 0 48}{bind:PAQ724W        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity swimming{p_end}
+{p 0 48}{bind:PAQ724X        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity tennis{p_end}
+{p 0 48}{bind:PAQ724Y        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity track & field{p_end}
+{p 0 48}{bind:PAQ724Z        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity volleyball{p_end}
+{p 0 48}{bind:PAQ724AA       }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity walking{p_end}
+{p 0 48}{bind:PAQ724AB       }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity wrestling{p_end}
+{p 0 48}{bind:PAQ724AC       }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity frisbee{p_end}
+{p 0 48}{bind:PAQ724AD       }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity backyard games{p_end}
+{p 0 48}{bind:PAQ724AE       }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity trampoline{p_end}
+{p 0 48}{bind:PAQ724AF       }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity horseback riding{p_end}
+{p 0 48}{bind:PAQ724CM       }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Physical activity other{p_end}
+{p 0 48}{bind:PAQ731         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Days played active video games{p_end}
+{p 0 48}{bind:PAQ677         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Past wk # days cardiovascular exercise{p_end}
+{p 0 48}{bind:PAQ678         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Past wk # days strengthened muscles{p_end}
+{p 0 48}{bind:PAQ740         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Use school facilities at lunch{p_end}
+{p 0 48}{bind:PAQ742         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Use school facilities for physical activ{p_end}
+{p 0 48}{bind:PAQ744         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Have PE during school days?{p_end}
+{p 0 48}{bind:PAQ746         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}How often do you have PE or gym?{p_end}
+{p 0 48}{bind:PAQ748         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}How long is the PE or gym class?{p_end}
+{p 0 48}{bind:PAQ755         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in school sports?{p_end}
+{p 0 48}{bind:PAQ759A        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in baseball{p_end}
+{p 0 48}{bind:PAQ759B        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in basketball{p_end}
+{p 0 48}{bind:PAQ759C        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in bocce ball{p_end}
+{p 0 48}{bind:PAQ759D        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in cheerleading{p_end}
+{p 0 48}{bind:PAQ759E        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in football{p_end}
+{p 0 48}{bind:PAQ759F        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in golf{p_end}
+{p 0 48}{bind:PAQ759G        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in gymnastics{p_end}
+{p 0 48}{bind:PAQ759H        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in hockey{p_end}
+{p 0 48}{bind:PAQ759I        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in lacrosse{p_end}
+{p 0 48}{bind:PAQ759J        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in soccer{p_end}
+{p 0 48}{bind:PAQ759K        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in swimming/diving{p_end}
+{p 0 48}{bind:PAQ759L        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in tennis{p_end}
+{p 0 48}{bind:PAQ759M        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in track and field{p_end}
+{p 0 48}{bind:PAQ759N        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in volleyball{p_end}
+{p 0 48}{bind:PAQ759O        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in wrestling{p_end}
+{p 0 48}{bind:PAQ759P        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in other specify{p_end}
+{p 0 48}{bind:PAQ759Q        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in dance{p_end}
+{p 0 48}{bind:PAQ759R        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in frisbee{p_end}
+{p 0 48}{bind:PAQ759S        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in running{p_end}
+{p 0 48}{bind:PAQ759T        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in trampoline{p_end}
+{p 0 48}{bind:PAQ759U        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in martial arts{p_end}
+{p 0 48}{bind:PAQ759V        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Participate in walking{p_end}
+{p 0 48}{bind:PAQ762         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Do you have recess during school?{p_end}
+{p 0 48}{bind:PAQ764         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}How often do you have recess?{p_end}
+{p 0 48}{bind:PAQ766         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}How long is the recess period?{p_end}
+{p 0 48}{bind:PAQ679         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}How much exercise for good health{p_end}
+{p 0 48}{bind:PAQ750         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Enjoy participating in PE or recess{p_end}
+{p 0 48}{bind:PAQ770         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Receive physical fitness award past yr{p_end}
+{p 0 48}{bind:PAQ772A        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Fitness award Fitnessgram{p_end}
+{p 0 48}{bind:PAQ772B        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Fitness award President's Challenge{p_end}
+{p 0 48}{bind:PAQ772C        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Fitness award other specify{p_end}
+{p 0 48}{bind:PAQ670r        }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:PAQ655r        }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:PAQ640r        }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:PAQ625r        }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:PAQ610r        }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:PAD615         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Minutes vigorous-intensity work{p_end}
+{p 0 48}{bind:PAD630         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Minutes moderate-intensity work{p_end}
+{p 0 48}{bind:PAD645         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Minutes walk/bicycle for transportation{p_end}
+{p 0 48}{bind:PAD660         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Minutes vigorous recreational activities{p_end}
+{p 0 48}{bind:PAD675         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Minutes moderate recreational activities{p_end}
+{p 0 48}{bind:PAD680         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Minutes sedentary activity{p_end}
+{p 0 48}{bind:PAD733         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Minutes play active video games{p_end}
+{txt}
+{com}. 
+. 
+. **PAD615          double  %10.0g                Minutes vigorous-intensity work
+. **PAD630          double  %10.0g                Minutes moderate-intensity work
+. **PAD645          double  %10.0g                Minutes walk/bicycle for transportation
+. **PAD660          double  %10.0g                Minutes vigorous recreational activities
+. **PAD675          double  %10.0g                Minutes moderate recreational activities
+. **PAD680          double  %10.0g                Minutes sedentary activity
+. **PAD733          double  %10.0g                Minutes play active video games
+. 
+. su PAD615 PAD630 PAD645 PAD660 PAD675 PAD680 PAD733
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 6}PAD615 {c |}{res}      1,168    187.5086    433.8161         10       9999
+{txt}{space 6}PAD630 {c |}{res}      2,299    152.8164    379.6938         10       9999
+{txt}{space 6}PAD645 {c |}{res}      2,043    71.95839    387.5661         10       9999
+{txt}{space 6}PAD660 {c |}{res}      2,055    91.97129    383.0116         10       9999
+{txt}{space 6}PAD675 {c |}{res}      3,056     63.2091    59.69457         10        900
+{txt}{hline 13}{c +}{hline 57}
+{space 6}PAD680 {c |}{res}      7,139     478.549    644.3079          0       9999
+{txt}{space 6}PAD733 {c |}{res}        798    106.1241    499.8816          5       9999
+{txt}
+{com}. 
+. tab1 PAD615 PAD630 PAD645 PAD660 PAD675 PAD680 PAD733
+
+{res}-> tabulation of PAD615  
+
+    {txt}Minutes {c |}
+vigorous-in {c |}
+    tensity {c |}
+       work {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+         10 {c |}{res}         46        3.94        3.94
+{txt}         12 {c |}{res}          3        0.26        4.20
+{txt}         15 {c |}{res}         32        2.74        6.93
+{txt}         20 {c |}{res}         27        2.31        9.25
+{txt}         21 {c |}{res}          1        0.09        9.33
+{txt}         25 {c |}{res}          2        0.17        9.50
+{txt}         30 {c |}{res}         91        7.79       17.29
+{txt}         35 {c |}{res}          2        0.17       17.47
+{txt}         40 {c |}{res}         10        0.86       18.32
+{txt}         45 {c |}{res}         20        1.71       20.03
+{txt}         60 {c |}{res}        197       16.87       36.90
+{txt}         75 {c |}{res}          1        0.09       36.99
+{txt}         90 {c |}{res}         22        1.88       38.87
+{txt}        120 {c |}{res}        212       18.15       57.02
+{txt}        130 {c |}{res}          1        0.09       57.11
+{txt}        160 {c |}{res}          1        0.09       57.19
+{txt}        180 {c |}{res}        135       11.56       68.75
+{txt}        240 {c |}{res}        136       11.64       80.39
+{txt}        300 {c |}{res}         53        4.54       84.93
+{txt}        360 {c |}{res}         60        5.14       90.07
+{txt}        420 {c |}{res}         12        1.03       91.10
+{txt}        480 {c |}{res}         64        5.48       96.58
+{txt}        540 {c |}{res}         13        1.11       97.69
+{txt}        600 {c |}{res}         15        1.28       98.97
+{txt}        660 {c |}{res}          3        0.26       99.23
+{txt}        720 {c |}{res}          5        0.43       99.66
+{txt}        840 {c |}{res}          1        0.09       99.74
+{txt}       1080 {c |}{res}          1        0.09       99.83
+{txt}       9999 {c |}{res}          2        0.17      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      1,168      100.00
+
+-> tabulation of PAD630  
+
+    {txt}Minutes {c |}
+moderate-in {c |}
+    tensity {c |}
+       work {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+         10 {c |}{res}        104        4.52        4.52
+{txt}         12 {c |}{res}          1        0.04        4.57
+{txt}         15 {c |}{res}         82        3.57        8.13
+{txt}         16 {c |}{res}          2        0.09        8.22
+{txt}         19 {c |}{res}          1        0.04        8.26
+{txt}         20 {c |}{res}         98        4.26       12.53
+{txt}         25 {c |}{res}          9        0.39       12.92
+{txt}         29 {c |}{res}          1        0.04       12.96
+{txt}         30 {c |}{res}        247       10.74       23.71
+{txt}         31 {c |}{res}          1        0.04       23.75
+{txt}         35 {c |}{res}          1        0.04       23.79
+{txt}         40 {c |}{res}         20        0.87       24.66
+{txt}         45 {c |}{res}         40        1.74       26.40
+{txt}         50 {c |}{res}          1        0.04       26.45
+{txt}         55 {c |}{res}          2        0.09       26.53
+{txt}         60 {c |}{res}        439       19.10       45.63
+{txt}         65 {c |}{res}          1        0.04       45.67
+{txt}         70 {c |}{res}          1        0.04       45.72
+{txt}         80 {c |}{res}          2        0.09       45.80
+{txt}         90 {c |}{res}         46        2.00       47.80
+{txt}        120 {c |}{res}        421       18.31       66.12
+{txt}        150 {c |}{res}          3        0.13       66.25
+{txt}        160 {c |}{res}          1        0.04       66.29
+{txt}        180 {c |}{res}        207        9.00       75.29
+{txt}        240 {c |}{res}        263       11.44       86.73
+{txt}        300 {c |}{res}         84        3.65       90.39
+{txt}        360 {c |}{res}         76        3.31       93.69
+{txt}        420 {c |}{res}         29        1.26       94.95
+{txt}        480 {c |}{res}         78        3.39       98.35
+{txt}        540 {c |}{res}          6        0.26       98.61
+{txt}        600 {c |}{res}         18        0.78       99.39
+{txt}        660 {c |}{res}          1        0.04       99.43
+{txt}        720 {c |}{res}          9        0.39       99.83
+{txt}        900 {c |}{res}          1        0.04       99.87
+{txt}       9999 {c |}{res}          3        0.13      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      2,299      100.00
+
+-> tabulation of PAD645  
+
+    {txt}Minutes {c |}
+walk/bicycl {c |}
+      e for {c |}
+transportat {c |}
+        ion {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+         10 {c |}{res}        239       11.70       11.70
+{txt}         11 {c |}{res}          2        0.10       11.80
+{txt}         12 {c |}{res}          5        0.24       12.04
+{txt}         13 {c |}{res}          3        0.15       12.19
+{txt}         14 {c |}{res}          3        0.15       12.33
+{txt}         15 {c |}{res}        176        8.61       20.95
+{txt}         16 {c |}{res}          1        0.05       21.00
+{txt}         18 {c |}{res}          1        0.05       21.05
+{txt}         20 {c |}{res}        275       13.46       34.51
+{txt}         22 {c |}{res}          1        0.05       34.56
+{txt}         25 {c |}{res}         34        1.66       36.22
+{txt}         27 {c |}{res}          1        0.05       36.27
+{txt}         30 {c |}{res}        393       19.24       55.51
+{txt}         35 {c |}{res}          9        0.44       55.95
+{txt}         37 {c |}{res}          1        0.05       56.00
+{txt}         40 {c |}{res}         62        3.03       59.03
+{txt}         45 {c |}{res}         74        3.62       62.65
+{txt}         46 {c |}{res}          1        0.05       62.70
+{txt}         50 {c |}{res}          7        0.34       63.04
+{txt}         60 {c |}{res}        369       18.06       81.11
+{txt}         90 {c |}{res}         42        2.06       83.16
+{txt}         95 {c |}{res}          1        0.05       83.21
+{txt}        115 {c |}{res}          1        0.05       83.26
+{txt}        120 {c |}{res}        193        9.45       92.71
+{txt}        130 {c |}{res}          1        0.05       92.76
+{txt}        180 {c |}{res}         66        3.23       95.99
+{txt}        240 {c |}{res}         43        2.10       98.09
+{txt}        300 {c |}{res}         12        0.59       98.68
+{txt}        360 {c |}{res}          8        0.39       99.07
+{txt}        420 {c |}{res}          3        0.15       99.22
+{txt}        480 {c |}{res}          7        0.34       99.56
+{txt}        600 {c |}{res}          2        0.10       99.66
+{txt}        720 {c |}{res}          2        0.10       99.76
+{txt}        840 {c |}{res}          2        0.10       99.85
+{txt}       9999 {c |}{res}          3        0.15      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      2,043      100.00
+
+-> tabulation of PAD660  
+
+    {txt}Minutes {c |}
+   vigorous {c |}
+recreationa {c |}
+          l {c |}
+ activities {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+         10 {c |}{res}         38        1.85        1.85
+{txt}         11 {c |}{res}          1        0.05        1.90
+{txt}         12 {c |}{res}          2        0.10        2.00
+{txt}         14 {c |}{res}          2        0.10        2.09
+{txt}         15 {c |}{res}         39        1.90        3.99
+{txt}         18 {c |}{res}          1        0.05        4.04
+{txt}         20 {c |}{res}         73        3.55        7.59
+{txt}         25 {c |}{res}         17        0.83        8.42
+{txt}         29 {c |}{res}          1        0.05        8.47
+{txt}         30 {c |}{res}        287       13.97       22.43
+{txt}         31 {c |}{res}          1        0.05       22.48
+{txt}         35 {c |}{res}          8        0.39       22.87
+{txt}         40 {c |}{res}         57        2.77       25.64
+{txt}         44 {c |}{res}          1        0.05       25.69
+{txt}         45 {c |}{res}        160        7.79       33.48
+{txt}         46 {c |}{res}          1        0.05       33.53
+{txt}         47 {c |}{res}          3        0.15       33.67
+{txt}         50 {c |}{res}         13        0.63       34.31
+{txt}         55 {c |}{res}          2        0.10       34.40
+{txt}         60 {c |}{res}        600       29.20       63.60
+{txt}         70 {c |}{res}          4        0.19       63.80
+{txt}         72 {c |}{res}          1        0.05       63.84
+{txt}         75 {c |}{res}         12        0.58       64.43
+{txt}         80 {c |}{res}          4        0.19       64.62
+{txt}         85 {c |}{res}          1        0.05       64.67
+{txt}         90 {c |}{res}        163        7.93       72.60
+{txt}        105 {c |}{res}          2        0.10       72.70
+{txt}        115 {c |}{res}          1        0.05       72.75
+{txt}        120 {c |}{res}        369       17.96       90.71
+{txt}        150 {c |}{res}          6        0.29       91.00
+{txt}        180 {c |}{res}        116        5.64       96.64
+{txt}        240 {c |}{res}         44        2.14       98.78
+{txt}        270 {c |}{res}          1        0.05       98.83
+{txt}        300 {c |}{res}         13        0.63       99.46
+{txt}        330 {c |}{res}          1        0.05       99.51
+{txt}        360 {c |}{res}          5        0.24       99.76
+{txt}        480 {c |}{res}          1        0.05       99.81
+{txt}        600 {c |}{res}          1        0.05       99.85
+{txt}       9999 {c |}{res}          3        0.15      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      2,055      100.00
+
+-> tabulation of PAD675  
+
+    {txt}Minutes {c |}
+   moderate {c |}
+recreationa {c |}
+          l {c |}
+ activities {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+         10 {c |}{res}         95        3.11        3.11
+{txt}         12 {c |}{res}          2        0.07        3.17
+{txt}         13 {c |}{res}          1        0.03        3.21
+{txt}         15 {c |}{res}        138        4.52        7.72
+{txt}         16 {c |}{res}          1        0.03        7.76
+{txt}         20 {c |}{res}        252        8.25       16.00
+{txt}         22 {c |}{res}          1        0.03       16.03
+{txt}         25 {c |}{res}         37        1.21       17.24
+{txt}         30 {c |}{res}        695       22.74       39.99
+{txt}         35 {c |}{res}         16        0.52       40.51
+{txt}         39 {c |}{res}          1        0.03       40.54
+{txt}         40 {c |}{res}         65        2.13       42.67
+{txt}         45 {c |}{res}        190        6.22       48.89
+{txt}         50 {c |}{res}         24        0.79       49.67
+{txt}         53 {c |}{res}          1        0.03       49.71
+{txt}         55 {c |}{res}          2        0.07       49.77
+{txt}         60 {c |}{res}        892       29.19       78.96
+{txt}         65 {c |}{res}          1        0.03       78.99
+{txt}         70 {c |}{res}          7        0.23       79.22
+{txt}         75 {c |}{res}          5        0.16       79.38
+{txt}         80 {c |}{res}          2        0.07       79.45
+{txt}         85 {c |}{res}          1        0.03       79.48
+{txt}         90 {c |}{res}        106        3.47       82.95
+{txt}        100 {c |}{res}          1        0.03       82.98
+{txt}        115 {c |}{res}          1        0.03       83.02
+{txt}        120 {c |}{res}        318       10.41       93.42
+{txt}        135 {c |}{res}          1        0.03       93.46
+{txt}        150 {c |}{res}          7        0.23       93.68
+{txt}        180 {c |}{res}         90        2.95       96.63
+{txt}        210 {c |}{res}          1        0.03       96.66
+{txt}        240 {c |}{res}         64        2.09       98.76
+{txt}        300 {c |}{res}         19        0.62       99.38
+{txt}        360 {c |}{res}          6        0.20       99.57
+{txt}        420 {c |}{res}          2        0.07       99.64
+{txt}        480 {c |}{res}          8        0.26       99.90
+{txt}        540 {c |}{res}          1        0.03       99.93
+{txt}        600 {c |}{res}          1        0.03       99.97
+{txt}        900 {c |}{res}          1        0.03      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      3,056      100.00
+
+-> tabulation of PAD680  
+
+    {txt}Minutes {c |}
+  sedentary {c |}
+   activity {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}          1        0.01        0.01
+{txt}          1 {c |}{res}          2        0.03        0.04
+{txt}          5 {c |}{res}          2        0.03        0.07
+{txt}         10 {c |}{res}          1        0.01        0.08
+{txt}         15 {c |}{res}          4        0.06        0.14
+{txt}         20 {c |}{res}          4        0.06        0.20
+{txt}         25 {c |}{res}          1        0.01        0.21
+{txt}         30 {c |}{res}         14        0.20        0.41
+{txt}         45 {c |}{res}          2        0.03        0.43
+{txt}         60 {c |}{res}        116        1.62        2.06
+{txt}         81 {c |}{res}          1        0.01        2.07
+{txt}         90 {c |}{res}         11        0.15        2.23
+{txt}        105 {c |}{res}          1        0.01        2.24
+{txt}        120 {c |}{res}        372        5.21        7.45
+{txt}        150 {c |}{res}          3        0.04        7.49
+{txt}        180 {c |}{res}        435        6.09       13.59
+{txt}        240 {c |}{res}        620        8.68       22.27
+{txt}        300 {c |}{res}        584        8.18       30.45
+{txt}        360 {c |}{res}        694        9.72       40.17
+{txt}        420 {c |}{res}        363        5.08       45.26
+{txt}        480 {c |}{res}      1,604       22.47       67.73
+{txt}        490 {c |}{res}          1        0.01       67.74
+{txt}        540 {c |}{res}        476        6.67       74.41
+{txt}        600 {c |}{res}        868       12.16       86.57
+{txt}        660 {c |}{res}        158        2.21       88.78
+{txt}        720 {c |}{res}        448        6.28       95.06
+{txt}        780 {c |}{res}         63        0.88       95.94
+{txt}        840 {c |}{res}        104        1.46       97.39
+{txt}        900 {c |}{res}         74        1.04       98.43
+{txt}        960 {c |}{res}         54        0.76       99.19
+{txt}       1020 {c |}{res}          8        0.11       99.30
+{txt}       1080 {c |}{res}         17        0.24       99.54
+{txt}       1140 {c |}{res}          1        0.01       99.55
+{txt}       1200 {c |}{res}          2        0.03       99.58
+{txt}       7777 {c |}{res}          1        0.01       99.59
+{txt}       9999 {c |}{res}         29        0.41      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      7,139      100.00
+
+-> tabulation of PAD733  
+
+    {txt}Minutes {c |}
+play active {c |}
+video games {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          5 {c |}{res}          2        0.25        0.25
+{txt}         10 {c |}{res}         10        1.25        1.50
+{txt}         15 {c |}{res}         10        1.25        2.76
+{txt}         20 {c |}{res}         20        2.51        5.26
+{txt}         25 {c |}{res}          1        0.13        5.39
+{txt}         30 {c |}{res}        137       17.17       22.56
+{txt}         35 {c |}{res}          1        0.13       22.68
+{txt}         40 {c |}{res}          5        0.63       23.31
+{txt}         45 {c |}{res}         16        2.01       25.31
+{txt}         49 {c |}{res}          1        0.13       25.44
+{txt}         60 {c |}{res}        329       41.23       66.67
+{txt}         90 {c |}{res}         13        1.63       68.30
+{txt}        120 {c |}{res}        170       21.30       89.60
+{txt}        180 {c |}{res}         54        6.77       96.37
+{txt}        240 {c |}{res}         19        2.38       98.75
+{txt}        300 {c |}{res}          1        0.13       98.87
+{txt}        360 {c |}{res}          3        0.38       99.25
+{txt}        420 {c |}{res}          2        0.25       99.50
+{txt}        480 {c |}{res}          1        0.13       99.62
+{txt}        600 {c |}{res}          1        0.13       99.75
+{txt}       9999 {c |}{res}          2        0.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}        798      100.00
+{txt}
+{com}. 
+. 
+. foreach x of varlist PAD615 PAD630 PAD645 PAD660 PAD675 PAD680 PAD733 {c -(}
+{txt}  2{com}.         capture drop `x'r
+{txt}  3{com}. {c )-}
+{txt}
+{com}. 
+. 
+. foreach x of varlist PAD615 PAD630 PAD645 PAD660 PAD675 PAD680 PAD733 {c -(}
+{txt}  2{com}.         gen `x'r=`x' if `x'~=9999
+{txt}  3{com}. {c )-}
+{txt}(9,009 missing values generated)
+(7,879 missing values generated)
+(8,135 missing values generated)
+(8,123 missing values generated)
+(7,119 missing values generated)
+(3,065 missing values generated)
+(9,379 missing values generated)
+
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **PAQ605          double  %10.0g                Vigorous work activity
+. **PAQ610          double  %10.0g                Number of days vigorous work
+. **PAQ620          double  %10.0g                Moderate work activity
+. **PAQ625          double  %10.0g                Number of days moderate work
+. **PAQ635          double  %10.0g                Walk or bicycle
+. **PAQ640          double  %10.0g                Number of days walk or bicycle
+. **PAQ650          double  %10.0g                Vigorous recreational activities
+. **PAQ655          double  %10.0g                Days vigorous recreational activities
+. **PAQ665          double  %10.0g                Moderate recreational activities
+. **PAQ670          double  %10.0g                Days moderate recreational activities
+. **PAQ706          double  %10.0g                Days physically active at least 60 min.
+. **PAQ710          double  %10.0g                Hours watch TV or videos past 30 days
+. **PAQ715          double  %10.0g                Hours use computer past 30 days
+. **PAQ722          double  %10.0g                Any physical activities past 7 days
+. 
+. 
+. su PAQ605 PAQ610 PAQ620 PAQ625 PAQ635 PAQ640 PAQ650 PAQ655 PAQ665 PAQ670 PAQ706 PAQ710 PAQ715 PAQ722
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 6}PAQ605 {c |}{res}      7,148    1.836738    .3752659          1          7
+{txt}{space 6}PAQ610 {c |}{res}      1,172    4.076792    3.304771          1         99
+{txt}{space 6}PAQ620 {c |}{res}      7,148    1.679771    .4874233          1          9
+{txt}{space 6}PAQ625 {c |}{res}      2,307    4.358474    4.137308          1         99
+{txt}{space 6}PAQ635 {c |}{res}      7,147    1.714566    .4602464          1          9
+{txt}{hline 13}{c +}{hline 57}
+{space 6}PAQ640 {c |}{res}      2,047    4.798241    1.910468          1          7
+{txt}{space 6}PAQ650 {c |}{res}      7,147    1.712887    .4610255          1          9
+{txt}{space 6}PAQ655 {c |}{res}      2,058    3.663265    3.407621          1         99
+{txt}{space 6}PAQ665 {c |}{res}      7,145    1.573828     .510158          1          9
+{txt}{space 6}PAQ670 {c |}{res}      3,059    3.636156    3.507445          1         99
+{txt}{hline 13}{c +}{hline 57}
+{space 6}PAQ706 {c |}{res}      2,989    5.802275    5.276052          0         99
+{txt}{space 6}PAQ710 {c |}{res}      9,448    2.516406    2.592166          0         99
+{txt}{space 6}PAQ715 {c |}{res}      9,448    3.160457    3.160951          0          8
+{txt}{space 6}PAQ722 {c |}{res}      2,707     1.19505    .4216138          1          9
+{txt}
+{com}. 
+. foreach x of varlist PAQ605 PAQ610 PAQ620 PAQ625 PAQ635 PAQ640 PAQ650 PAQ655 PAQ665 PAQ670 PAQ706 PAQ710 PAQ715 PAQ722 {c -(}
+{txt}  2{com}.         capture drop `x'r
+{txt}  3{com}. {c )-}
+{txt}
+{com}. 
+. 
+. 
+. 
+. 
+. foreach x of varlist PAQ605 PAQ610 PAQ620 PAQ625 PAQ635 PAQ640 PAQ650 PAQ655 PAQ665 PAQ670 PAQ706 PAQ710 PAQ715 PAQ722 {c -(}
+{txt}  2{com}.         gen `x'r=`x' if `x'~=9 | `x'~=99
+{txt}  3{com}. {c )-}
+{txt}(3,027 missing values generated)
+(9,003 missing values generated)
+(3,027 missing values generated)
+(7,868 missing values generated)
+(3,028 missing values generated)
+(8,128 missing values generated)
+(3,028 missing values generated)
+(8,117 missing values generated)
+(3,030 missing values generated)
+(7,116 missing values generated)
+(7,186 missing values generated)
+(727 missing values generated)
+(727 missing values generated)
+(7,468 missing values generated)
+
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. *Walking MET-min/week - use median time of each category*
+. capture drop walkperday
+{txt}
+{com}. gen walkperday = PAD645r
+{txt}(8,135 missing values generated)
+
+{com}. label var walkperday "walking minutes per day"
+{txt}
+{com}. 
+. *Frequency of Walking (no days per week) - use median time of each category* 
+. capture drop walkperweek
+{txt}
+{com}. gen walkperweek = PAQ640r
+{txt}(8,128 missing values generated)
+
+{com}. label var walkperweek "walking days per week"
+{txt}
+{com}. 
+. *Calculate walking MET-min/week*
+. capture drop walkMETmin
+{txt}
+{com}. gen walkMETmin = 3.3 * walkperday * walkperweek
+{txt}(8,135 missing values generated)
+
+{com}. label var walkMETmin "MET-min per week walking"
+{txt}
+{com}. 
+. *Moderate exercise MET-min/week*
+. capture drop modperday
+{txt}
+{com}. gen modperday = (PAD630r+PAD675r)
+{txt}(9,053 missing values generated)
+
+{com}. label var modperday "moderate exercise minutes per day"
+{txt}
+{com}. 
+. *Frequency of moderate exercise (no days per week)*
+. capture drop modperweek
+{txt}
+{com}. gen modperweek =  (PAQ625r+PAQ670r)
+{txt}(9,048 missing values generated)
+
+{com}. label var modperweek "moderate exercise days per week"
+{txt}
+{com}. 
+. *Calculate moderate exercise MET-min/week*
+. capture drop modMETmin
+{txt}
+{com}. gen modMETmin = 4.0 * modperday * modperweek
+{txt}(9,053 missing values generated)
+
+{com}. label var modMETmin "MET-min per week moderate exercise"
+{txt}
+{com}. 
+. *Vigorous exercise MET-min/week*
+. capture drop vigperday
+{txt}
+{com}. gen vigperday = (PAD615r+PAD660r)
+{txt}(9,782 missing values generated)
+
+{com}. label var vigperday "vigorous exercise minutes per day"
+{txt}
+{com}. 
+. *Frequency of vigorous exercise (no days per week)*
+. capture drop vigperweek
+{txt}
+{com}. gen vigperweek = (PAQ610r+PAQ655r)
+{txt}(9,781 missing values generated)
+
+{com}. label var vigperweek "vigorous exercise days per week"
+{txt}
+{com}. 
+. *Calculate vigorous exercise MET-min/week*
+. capture drop vigMETmin
+{txt}
+{com}. gen vigMETmin = 8.0 * vigperday * vigperweek
+{txt}(9,782 missing values generated)
+
+{com}. label var vigMETmin "MET-min per week vigorous exercise"
+{txt}
+{com}. 
+. 
+. ****Calculate TOTAL MET-min per week*******
+. capture drop METmin
+{txt}
+{com}. order modMETmin, before(vigMETmin)
+{txt}
+{com}. order walkMETmin, before(modMETmin)
+{txt}
+{com}. egen METmin = rowtotal(walkMETmin-vigMETmin)
+{txt}
+{com}. label var METmin "MET-min per week total exercise" // missing values exist - consider imputation
+{txt}
+{com}. 
+. 
+. capture drop PHYSICAL_days_average
+{txt}
+{com}. gen PHYSICAL_days_average=METmin
+{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. ****SELF-RATED HEALTH**
+. tab HSD010, missing 
+
+    {txt}General {c |}
+     health {c |}
+  condition {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        641        6.30        6.30
+{txt}          2 {c |}{res}      1,826       17.95       24.25
+{txt}          3 {c |}{res}      2,605       25.60       49.85
+{txt}          4 {c |}{res}      1,186       11.66       61.50
+{txt}          5 {c |}{res}        208        2.04       63.55
+{txt}          9 {c |}{res}          1        0.01       63.56
+{txt}          . {c |}{res}      3,708       36.44      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. capture drop SELF_RATED_HEALTH
+{txt}
+{com}. gen SELF_RATED_HEALTH=. 
+{txt}(10,175 missing values generated)
+
+{com}. replace SELF_RATED_HEALTH=1 if HSD010>=1 & HSD010<=3
+{txt}(5,072 real changes made)
+
+{com}. replace SELF_RATED_HEALTH=2 if HSD010>=4 & HSD010<=5
+{txt}(1,394 real changes made)
+
+{com}. 
+. tab SELF_RATED_HEALTH, missing
+
+{txt}SELF_RATED_ {c |}
+     HEALTH {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      5,072       49.85       49.85
+{txt}          2 {c |}{res}      1,394       13.70       63.55
+{txt}          . {c |}{res}      3,709       36.45      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. **CO-MORBIDITY INDEX**
+. tab MCQ160B 
+
+  {txt}Ever told {c |}
+        had {c |}
+ congestive {c |}
+      heart {c |}
+    failure {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        182        3.15        3.15
+{txt}          2 {c |}{res}      5,579       96.71       99.86
+{txt}          9 {c |}{res}          8        0.14      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      5,769      100.00
+{txt}
+{com}. tab MCQ160C 
+
+  {txt}Ever told {c |}
+    you had {c |}
+   coronary {c |}
+      heart {c |}
+    disease {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        232        4.02        4.02
+{txt}          2 {c |}{res}      5,519       95.67       99.69
+{txt}          9 {c |}{res}         18        0.31      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      5,769      100.00
+{txt}
+{com}. tab MCQ160D  
+
+  {txt}Ever told {c |}
+    you had {c |}
+angina/angi {c |}
+na pectoris {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        136        2.36        2.36
+{txt}          2 {c |}{res}      5,625       97.50       99.86
+{txt}          9 {c |}{res}          8        0.14      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      5,769      100.00
+{txt}
+{com}. tab MCQ160E
+
+  {txt}Ever told {c |}
+    you had {c |}
+      heart {c |}
+     attack {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        230        3.99        3.99
+{txt}          2 {c |}{res}      5,536       95.96       99.95
+{txt}          9 {c |}{res}          3        0.05      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      5,769      100.00
+{txt}
+{com}. tab MCQ160F 
+
+  {txt}Ever told {c |}
+  you had a {c |}
+     stroke {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        202        3.50        3.50
+{txt}          2 {c |}{res}      5,562       96.41       99.91
+{txt}          9 {c |}{res}          5        0.09      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      5,769      100.00
+{txt}
+{com}. tab MCQ220  
+
+  {txt}Ever told {c |}
+    you had {c |}
+  cancer or {c |}
+ malignancy {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}        547        9.48        9.48
+{txt}          2 {c |}{res}      5,222       90.52      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      5,769      100.00
+{txt}
+{com}. 
+. describe MCQ160B MCQ160C MCQ160D MCQ160E MCQ160F MCQ220
+
+{txt}Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+{hline}
+{p 0 48}{res}{bind:MCQ160B        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Ever told had congestive heart failure{p_end}
+{p 0 48}{bind:MCQ160C        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Ever told you had coronary heart disease{p_end}
+{p 0 48}{bind:MCQ160D        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Ever told you had angina/angina pectoris{p_end}
+{p 0 48}{bind:MCQ160E        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Ever told you had heart attack{p_end}
+{p 0 48}{bind:MCQ160F        }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Ever told you had a stroke{p_end}
+{p 0 48}{bind:MCQ220         }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}Ever told you had cancer or malignancy{p_end}
+{txt}
+{com}. 
+. **MCQ160B         double  %10.0g                Ever told had congestive heart failure
+. **MCQ160C         double  %10.0g                Ever told you had coronary heart disease
+. **MCQ160D         double  %10.0g                Ever told you had angina/angina pectoris
+. **MCQ160E         double  %10.0g                Ever told you had heart attack
+. **MCQ160F         double  %10.0g                Ever told you had a stroke
+. **MCQ220          double  %10.0g                Ever told you had cancer or malignancy
+. 
+. 
+. capture drop CVD_CANCER_HISTORY
+{txt}
+{com}. gen CVD_CANCER_HISTORY=.
+{txt}(10,175 missing values generated)
+
+{com}. replace CVD_CANCER_HISTORY=1 if (MCQ160B==1 | MCQ160C==1 | MCQ160D==1 | MCQ160E==1 | MCQ160F==1 | MCQ220==1) 
+{txt}(1,021 real changes made)
+
+{com}. replace CVD_CANCER_HISTORY=0 if CVD_CANCER_HISTORY==.
+{txt}(9,154 real changes made)
+
+{com}. 
+. tab CVD_CANCER_HISTORY
+
+{txt}CVD_CANCER_ {c |}
+    HISTORY {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      9,154       89.97       89.97
+{txt}          1 {c |}{res}      1,021       10.03      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     10,175      100.00
+{txt}
+{com}. 
+. 
+. ****************************BODY MASS INDEX***************************************************************
+. 
+. 
+. capture drop BMI
+{txt}
+{com}. gen BMI=BMXBMI
+{txt}(1,120 missing values generated)
+
+{com}. 
+. su BMI
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 9}BMI {c |}{res}      9,055    25.67824    7.955137       12.1       82.9
+{txt}
+{com}. histogram BMI
+{txt}(bin={res}39{txt}, start={res}12.1{txt}, width={res}1.8153846{txt})
+{res}{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. ****************************SBP and DBP**********************************************************
+. 
+. capture drop SBP
+{txt}
+{com}. gen SBP=(BPXSY1+BPXSY2+BPXSY3)/3 
+{txt}(3,201 missing values generated)
+
+{com}. 
+. capture drop DBP
+{txt}
+{com}. gen DBP=(BPXDI1+BPXDI2+BPXDI3)/3
+{txt}(3,201 missing values generated)
+
+{com}. 
+. su SBP DBP
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 9}SBP {c |}{res}      6,974    117.8005    17.52939   64.66666   228.6667
+{txt}{space 9}DBP {c |}{res}      6,974    65.17532    14.78382          0   116.6667
+{txt}
+{com}. 
+. histogram SBP
+{txt}(bin={res}38{txt}, start={res}64.666664{txt}, width={res}4.3157897{txt})
+{res}{txt}
+{com}. histogram DBP
+{txt}(bin={res}38{txt}, start={res}0{txt}, width={res}3.0701754{txt})
+{res}{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **************************** TOTAL CHOLESTEROL, MMOL/L**************************************************
+. 
+. capture drop TOTALCHOLESTEROLSI
+{txt}
+{com}. gen TOTALCHOLESTEROLSI=LBDTCSI
+{txt}(2,551 missing values generated)
+
+{com}. 
+. 
+. su TOTALCHOLESTEROLSI
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+TOTALCHOLE~I {c |}{res}      7,624     4.64272    1.059131       1.78      21.02
+{txt}
+{com}. histogram TOTALCHOLESTEROLSI
+{txt}(bin={res}38{txt}, start={res}1.78{txt}, width={res}.5063158{txt})
+{res}{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. ***************************HBA1C**************************************************************
+. 
+. capture drop HBA1C
+{txt}
+{com}. gen HBA1C=LBXGH
+{txt}(3,532 missing values generated)
+
+{com}. 
+. histogram HBA1C
+{txt}(bin={res}38{txt}, start={res}3.5{txt}, width={res}.36842105{txt})
+{res}{txt}
+{com}. 
+. save,replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **************************URINARY ALBUMIN:CREATININE RATIO*************************************************************
+. 
+. 
+. capture drop ACR
+{txt}
+{com}. gen ACR=URDACT if URDACT<1000
+{txt}(2,178 missing values generated)
+
+{com}. 
+. capture drop LnACR
+{txt}
+{com}. gen LnACR=ln(ACR)
+{txt}(2,178 missing values generated)
+
+{com}. 
+. su LnACR
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}LnACR {c |}{res}      7,997    2.287459    1.019772  -1.560648   6.886481
+{txt}
+{com}. histogram LnACR
+{txt}(bin={res}39{txt}, start={res}-1.5606477{txt}, width={res}.21659304{txt})
+{res}{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. *****************************NUTRITIONAL BIOMARKERS*******************************************************
+. 
+. **PLASMA 25(OH)D3, NMOL/L**
+. 
+. capture drop VitaminD_serum
+{txt}
+{com}. gen VitaminD_serum=LBXVD3MS
+{txt}(1,732 missing values generated)
+
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. **RBC FOLATE, NMOL/L**
+. 
+. capture drop folate_RBCSI
+{txt}
+{com}. gen folate_RBCSI=LBDRFOSI
+{txt}(1,715 missing values generated)
+
+{com}. 
+. su folate_RBCSI
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+folate_RBCSI {c |}{res}      8,460    1181.695    499.4187        114       6750
+{txt}
+{com}. histogram folate_RBCSI
+{txt}(bin={res}39{txt}, start={res}114{txt}, width={res}170.15385{txt})
+{res}{txt}
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. **PLASMA B-12, PMOL/L**
+. capture drop vitaminb12_serumsi
+{txt}
+{com}. gen vitaminb12_serumsi=LBDB12
+{txt}(4,728 missing values generated)
+
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+NHANES_NFL_MORTALITY_PAPER.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. capture log close
+{smcl}
+{com}{sf}{ul off}

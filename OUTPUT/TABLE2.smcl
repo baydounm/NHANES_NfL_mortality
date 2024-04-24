@@ -1,0 +1,993 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\TABLE2.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}18 Nov 2023, 12:08:28
+{txt}
+{com}. 
+. 
+. use finaldata_imputed,clear
+{txt}
+{com}. 
+. 
+. mi stset AGE_DEATH  [pweight = WTSSNH2Y], failure(MORTSTAT==1) enter(AGE) id(SEQN) scale(1)
+{res}
+{txt}Survival-time data settings
+
+{col 12}ID variable: {res}SEQN
+{col 10}{txt}Failure event: {res}MORTSTAT==1
+{col 1}{txt}Observed time interval: {res}(AGE_DEATH[_n-1], AGE_DEATH]
+{col 6}{txt}Enter on or after: {res}time AGE
+{col 6}{txt}Exit on or before: {res}failure
+{col 17}{txt}Weight: {res}[pweight=WTSSNH2Y]
+
+{txt}{hline 74}
+{res}     10,175{txt}  total observations
+{res}      4,262{txt}  event time missing (AGE_DEATH>=.){col 61}PROBABLE ERROR
+{res}          1{txt}  observation ends on or before {bf:enter()}
+{res}      3,842{txt}  weights invalid {col 61}PROBABLE ERROR
+{hline 74}
+{res}      2,070{txt}  observations remaining, representing
+{res}      2,070{txt}  subjects
+{res}         84{txt}  failures in single-failure-per-subject data
+{res} 12,191.917{txt}  total analysis time at risk and under observation
+                                                At risk from t = {res}        0
+                                     {txt}Earliest observed entry t = {res}       20
+                                          {txt}Last observed exit t = {res} 81.83334
+{txt}
+{com}. 
+. 
+. su AGE if SAMPLE_FINAL==1 & _mi_m==0
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 9}AGE {c |}{res}      2,071    46.87929    15.35647         20         75
+{txt}
+{com}. 
+. capture drop AGEcenter
+{txt}
+{com}. gen AGEcenter=.
+{txt}(61,050 missing values generated)
+
+{com}. replace AGEcenter=AGE-47
+{txt}(61,050 real changes made)
+
+{com}. 
+. 
+. **************************TABLE 2**********************************
+. 
+. **********OVERALL*************************
+. 
+. **MARRIED_LIVP HOUSEHOLDSIZE  EDUCATION SMOKE ALCOHOL DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average SELF_RATED_HEALTH CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  
+. 
+. 
+. //MODEL 1//
+. 
+. mi estimate, esampvaryok: svy, subpop(SAMPLE_FINAL): stcox ZLNNFL  SEX i.RACE_ETHN i.PIR invmills
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,070
+{txt}{col 47}Subpop. size{col 65}={res}  212,451,510
+{txt}{col 47}Average RVI{col 65}= {res}      0.0379
+{txt}{col 47}Largest FMI{col 65}= {res}      0.1143
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       11.84
+{txt}{col 47}        avg{col 65}= {res}       12.95
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   8{txt},{res}   13.2{txt}){col 65}= {res}       18.55
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}ZLNNFL {c |}{col 14}{res}{space 2} .6332591{col 26}{space 2} .0804207{col 37}{space 1}    7.87{col 46}{space 3}0.000{col 54}{space 4} .4599226{col 67}{space 3} .8065957
+{txt}{space 9}SEX {c |}{col 14}{res}{space 2} .0012499{col 26}{space 2} .2606488{col 37}{space 1}    0.00{col 46}{space 3}0.996{col 54}{space 4}-.5605555{col 67}{space 3} .5630552
+{txt}{space 12} {c |}
+{space 3}RACE_ETHN {c |}
+{space 10}1  {c |}{col 14}{res}{space 2}-.0476956{col 26}{space 2} .3189817{col 37}{space 1}   -0.15{col 46}{space 3}0.883{col 54}{space 4}-.7353156{col 67}{space 3} .6399244
+{txt}{space 10}2  {c |}{col 14}{res}{space 2}-1.367664{col 26}{space 2} .3620918{col 37}{space 1}   -3.78{col 46}{space 3}0.002{col 54}{space 4}-2.148517{col 67}{space 3}-.5868106
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} -.801238{col 26}{space 2} .3068684{col 37}{space 1}   -2.61{col 46}{space 3}0.021{col 54}{space 4}-1.463195{col 67}{space 3}-.1392809
+{txt}{space 12} {c |}
+{space 9}PIR {c |}
+{space 10}2  {c |}{col 14}{res}{space 2}-.2633494{col 26}{space 2} .2412763{col 37}{space 1}   -1.09{col 46}{space 3}0.297{col 54}{space 4}-.7898307{col 67}{space 3} .2631319
+{txt}{space 10}3  {c |}{col 14}{res}{space 2}-1.677637{col 26}{space 2} .3411803{col 37}{space 1}   -4.92{col 46}{space 3}0.000{col 54}{space 4}-2.420215{col 67}{space 3}-.9350585
+{txt}{space 12} {c |}
+{space 4}invmills {c |}{col 14}{res}{space 2} .0675945{col 26}{space 2} .0221331{col 37}{space 1}    3.05{col 46}{space 3}0.009{col 54}{space 4} .0198981{col 67}{space 3} .1152909
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. //MODEL 2//
+. mi estimate, esampvaryok: svy, subpop(SAMPLE_FINAL): stcox ZLNNFL  SEX  i.RACE_ETHN i.PIR MARRIED_LIVP HOUSEHOLDSIZE  i.EDUCATION i.SMOKE i.ALCOHOL i.DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average i.SELF_RATED_HEALTH i.CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi invmills 
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,070
+{txt}{col 47}Subpop. size{col 65}={res}  212,451,510
+{txt}{col 47}Average RVI{col 65}= {res}      1.2898
+{txt}{col 47}Largest FMI{col 65}= {res}      0.4055
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}        7.02
+{txt}{col 47}        avg{col 65}= {res}       12.15
+{txt}{col 47}        max{col 65}= {res}       13.31
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}  32{txt},{res}    7.2{txt}){col 65}= {res}      223.79
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 22}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                   _t{col 23}{c |} Coefficient{col 35}  Std. err.{col 47}      t{col 55}   P>|t|{col 63}     [95% con{col 76}f. interval]
+{hline 22}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 15}ZLNNFL {c |}{col 23}{res}{space 2} .5127025{col 35}{space 2} .0876957{col 46}{space 1}    5.85{col 55}{space 3}0.000{col 63}{space 4} .3224661{col 76}{space 3} .7029389
+{txt}{space 18}SEX {c |}{col 23}{res}{space 2} .3431853{col 35}{space 2} .3564251{col 46}{space 1}    0.96{col 55}{space 3}0.353{col 63}{space 4}-.4261347{col 76}{space 3} 1.112505
+{txt}{space 21} {c |}
+{space 12}RACE_ETHN {c |}
+{space 19}1  {c |}{col 23}{res}{space 2}-.1979338{col 35}{space 2} .4341745{col 46}{space 1}   -0.46{col 55}{space 3}0.656{col 63}{space 4}-1.134106{col 76}{space 3}  .738238
+{txt}{space 19}2  {c |}{col 23}{res}{space 2}-1.054193{col 35}{space 2} .4208059{col 46}{space 1}   -2.51{col 55}{space 3}0.026{col 63}{space 4} -1.96318{col 76}{space 3}-.1452052
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-.5090585{col 35}{space 2} .3514049{col 46}{space 1}   -1.45{col 55}{space 3}0.172{col 63}{space 4}-1.269637{col 76}{space 3} .2515203
+{txt}{space 21} {c |}
+{space 18}PIR {c |}
+{space 19}2  {c |}{col 23}{res}{space 2}-.1871455{col 35}{space 2} .3090572{col 46}{space 1}   -0.61{col 55}{space 3}0.557{col 63}{space 4}-.8633135{col 76}{space 3} .4890226
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-1.497621{col 35}{space 2} .3285223{col 46}{space 1}   -4.56{col 55}{space 3}0.002{col 63}{space 4}-2.266028{col 76}{space 3}-.7292144
+{txt}{space 21} {c |}
+{space 9}MARRIED_LIVP {c |}{col 23}{res}{space 2} .3530122{col 35}{space 2} .2480521{col 46}{space 1}    1.42{col 55}{space 3}0.179{col 63}{space 4}-.1837837{col 76}{space 3} .8898081
+{txt}{space 8}HOUSEHOLDSIZE {c |}{col 23}{res}{space 2}-.1328341{col 35}{space 2} .0913695{col 46}{space 1}   -1.45{col 55}{space 3}0.169{col 63}{space 4}-.3298659{col 76}{space 3} .0641978
+{txt}{space 21} {c |}
+{space 12}EDUCATION {c |}
+{space 19}2  {c |}{col 23}{res}{space 2}-.1329674{col 35}{space 2} .6258224{col 46}{space 1}   -0.21{col 55}{space 3}0.835{col 63}{space 4}-1.485758{col 76}{space 3} 1.219823
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} .6015898{col 35}{space 2} .5129294{col 46}{space 1}    1.17{col 55}{space 3}0.263{col 63}{space 4}-.5108355{col 76}{space 3} 1.714015
+{txt}{space 19}4  {c |}{col 23}{res}{space 2} .5676262{col 35}{space 2} .4909326{col 46}{space 1}    1.16{col 55}{space 3}0.269{col 63}{space 4}-.4944555{col 76}{space 3} 1.629708
+{txt}{space 19}5  {c |}{col 23}{res}{space 2} 1.286868{col 35}{space 2} .6100102{col 46}{space 1}    2.11{col 55}{space 3}0.056{col 63}{space 4}-.0365202{col 76}{space 3} 2.610255
+{txt}{space 21} {c |}
+{space 16}SMOKE {c |}
+{space 19}2  {c |}{col 23}{res}{space 2} .6575656{col 35}{space 2} .4113359{col 46}{space 1}    1.60{col 55}{space 3}0.133{col 63}{space 4} -.229015{col 76}{space 3} 1.544146
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} .6895655{col 35}{space 2} .3284905{col 46}{space 1}    2.10{col 55}{space 3}0.056{col 63}{space 4}-.0205448{col 76}{space 3} 1.399676
+{txt}{space 21} {c |}
+{space 12}2.ALCOHOL {c |}{col 23}{res}{space 2}-.4527189{col 35}{space 2} .4804319{col 46}{space 1}   -0.94{col 55}{space 3}0.364{col 63}{space 4}-1.494795{col 76}{space 3} .5893574
+{txt}{space 5}1.DRUG_USER_EVER {c |}{col 23}{res}{space 2} .2971155{col 35}{space 2} .2614055{col 46}{space 1}    1.14{col 55}{space 3}0.276{col 63}{space 4}-.2669465{col 76}{space 3} .8611776
+{txt}{space 12}DR12TKCAL {c |}{col 23}{res}{space 2} .0000308{col 35}{space 2} .0001399{col 46}{space 1}    0.22{col 55}{space 3}0.831{col 63}{space 4}-.0002866{col 76}{space 3} .0003481
+{txt}{space 5}DASH_TOTAL_SCORE {c |}{col 23}{res}{space 2}-.0211515{col 35}{space 2} .0973467{col 46}{space 1}   -0.22{col 55}{space 3}0.832{col 63}{space 4}-.2329008{col 76}{space 3} .1905978
+{txt}PHYSICAL_days_average {c |}{col 23}{res}{space 2}-.0000297{col 35}{space 2} .0000463{col 46}{space 1}   -0.64{col 55}{space 3}0.532{col 63}{space 4}-.0001295{col 76}{space 3} .0000701
+{txt}{space 2}2.SELF_RATED_HEALTH {c |}{col 23}{res}{space 2} .5379883{col 35}{space 2} .3793371{col 46}{space 1}    1.42{col 55}{space 3}0.180{col 63}{space 4}-.2812517{col 76}{space 3} 1.357228
+{txt}{space 1}1.CVD_CANCER_HISTORY {c |}{col 23}{res}{space 2} .0099975{col 35}{space 2} .4070872{col 46}{space 1}    0.02{col 55}{space 3}0.981{col 63}{space 4}-.8677565{col 76}{space 3} .8877515
+{txt}{space 18}BMI {c |}{col 23}{res}{space 2}-.0105166{col 35}{space 2}  .018753{col 46}{space 1}   -0.56{col 55}{space 3}0.585{col 63}{space 4}-.0514278{col 76}{space 3} .0303946
+{txt}{space 18}SBP {c |}{col 23}{res}{space 2}-.0089385{col 35}{space 2} .0090368{col 46}{space 1}   -0.99{col 55}{space 3}0.341{col 63}{space 4}-.0284899{col 76}{space 3} .0106128
+{txt}{space 18}DBP {c |}{col 23}{res}{space 2} .0099112{col 35}{space 2} .0134459{col 46}{space 1}    0.74{col 55}{space 3}0.485{col 63}{space 4}-.0218652{col 76}{space 3} .0416877
+{txt}{space 3}TOTALCHOLESTEROLSI {c |}{col 23}{res}{space 2}-.1950631{col 35}{space 2}   .07726{col 46}{space 1}   -2.52{col 55}{space 3}0.029{col 63}{space 4}-.3663511{col 76}{space 3}-.0237751
+{txt}{space 16}HBA1C {c |}{col 23}{res}{space 2}  .099496{col 35}{space 2} .1089332{col 46}{space 1}    0.91{col 55}{space 3}0.378{col 63}{space 4}-.1365015{col 76}{space 3} .3354934
+{txt}{space 16}LnACR {c |}{col 23}{res}{space 2} .3322179{col 35}{space 2} .1222479{col 46}{space 1}    2.72{col 55}{space 3}0.019{col 63}{space 4}  .065969{col 76}{space 3} .5984667
+{txt}{space 7}VitaminD_serum {c |}{col 23}{res}{space 2}-.0140825{col 35}{space 2} .0047614{col 46}{space 1}   -2.96{col 55}{space 3}0.011{col 63}{space 4}-.0243517{col 76}{space 3}-.0038132
+{txt}{space 9}folate_RBCSI {c |}{col 23}{res}{space 2} .0002437{col 35}{space 2} .0001695{col 46}{space 1}    1.44{col 55}{space 3}0.175{col 63}{space 4}-.0001237{col 76}{space 3} .0006111
+{txt}{space 3}vitaminb12_serumsi {c |}{col 23}{res}{space 2} .0002511{col 35}{space 2} .0000628{col 46}{space 1}    4.00{col 55}{space 3}0.002{col 63}{space 4} .0001114{col 76}{space 3} .0003908
+{txt}{space 13}invmills {c |}{col 23}{res}{space 2} .0846098{col 35}{space 2} .0195673{col 46}{space 1}    4.32{col 55}{space 3}0.001{col 63}{space 4} .0423882{col 76}{space 3} .1268314
+{txt}{hline 22}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. *********MEN*******************************
+. 
+. 
+. //MODEL 1//
+. mi estimate, esampvaryok: svy, subpop(MEN_FINAL): stcox ZLNNFL SEX i.RACE_ETHN i.PIR invmills
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}          989
+{txt}{col 47}Subpop. size{col 65}={res}  103,375,938
+{txt}{col 47}Average RVI{col 65}= {res}      0.1363
+{txt}{col 47}Largest FMI{col 65}= {res}      0.2357
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}        9.75
+{txt}{col 47}        avg{col 65}= {res}       12.32
+{txt}{col 47}        max{col 65}= {res}       13.31
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   7{txt},{res}   12.6{txt}){col 65}= {res}       25.07
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}ZLNNFL {c |}{col 14}{res}{space 2}   .64216{col 26}{space 2} .1496932{col 37}{space 1}    4.29{col 46}{space 3}0.001{col 54}{space 4} .3194812{col 67}{space 3} .9648388
+{txt}{space 9}SEX {c |}{col 14}{res}{space 2}        0{col 26}{txt}  (omitted)
+{space 12} {c |}
+{space 3}RACE_ETHN {c |}
+{space 10}1  {c |}{col 14}{res}{space 2}-.2330131{col 26}{space 2} .4779375{col 37}{space 1}   -0.49{col 46}{space 3}0.634{col 54}{space 4}-1.263633{col 67}{space 3} .7976071
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} -1.33758{col 26}{space 2} .5254633{col 37}{space 1}   -2.55{col 46}{space 3}0.024{col 54}{space 4}-2.473282{col 67}{space 3} -.201877
+{txt}{space 10}3  {c |}{col 14}{res}{space 2}-.8148208{col 26}{space 2} .4053563{col 37}{space 1}   -2.01{col 46}{space 3}0.066{col 54}{space 4}-1.691715{col 67}{space 3} .0620733
+{txt}{space 12} {c |}
+{space 9}PIR {c |}
+{space 10}2  {c |}{col 14}{res}{space 2} -.272767{col 26}{space 2} .2982509{col 37}{space 1}   -0.91{col 46}{space 3}0.380{col 54}{space 4}-.9303698{col 67}{space 3} .3848359
+{txt}{space 10}3  {c |}{col 14}{res}{space 2}-2.069006{col 26}{space 2} .4589149{col 37}{space 1}   -4.51{col 46}{space 3}0.001{col 54}{space 4}-3.095034{col 67}{space 3}-1.042978
+{txt}{space 12} {c |}
+{space 4}invmills {c |}{col 14}{res}{space 2} .0226984{col 26}{space 2} .0209368{col 37}{space 1}    1.08{col 46}{space 3}0.298{col 54}{space 4}-.0224274{col 67}{space 3} .0678241
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. //MODEL 2//
+. mi estimate, esampvaryok: svy, subpop(MEN_FINAL): stcox ZLNNFL SEX  i.RACE_ETHN i.PIR MARRIED_LIVP HOUSEHOLDSIZE  i.EDUCATION i.SMOKE i.ALCOHOL i.DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average i.SELF_RATED_HEALTH i.CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  invmills
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}          989
+{txt}{col 47}Subpop. size{col 65}={res}  103,375,938
+{txt}{col 47}Average RVI{col 65}= {res}      1.0760
+{txt}{col 47}Largest FMI{col 65}= {res}      0.3614
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}        7.68
+{txt}{col 47}        avg{col 65}= {res}       11.79
+{txt}{col 47}        max{col 65}= {res}       13.32
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}  31{txt},{res}    8.2{txt}){col 65}= {res}       41.20
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 22}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                   _t{col 23}{c |} Coefficient{col 35}  Std. err.{col 47}      t{col 55}   P>|t|{col 63}     [95% con{col 76}f. interval]
+{hline 22}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 15}ZLNNFL {c |}{col 23}{res}{space 2} .5338282{col 35}{space 2} .1524616{col 46}{space 1}    3.50{col 55}{space 3}0.004{col 63}{space 4} .2048377{col 76}{space 3} .8628187
+{txt}{space 18}SEX {c |}{col 23}{res}{space 2}        0{col 35}{txt}  (omitted)
+{space 21} {c |}
+{space 12}RACE_ETHN {c |}
+{space 19}1  {c |}{col 23}{res}{space 2} .0075624{col 35}{space 2} .5788488{col 46}{space 1}    0.01{col 55}{space 3}0.990{col 63}{space 4}-1.241108{col 76}{space 3} 1.256233
+{txt}{space 19}2  {c |}{col 23}{res}{space 2}-1.192465{col 35}{space 2} .7402534{col 46}{space 1}   -1.61{col 55}{space 3}0.132{col 63}{space 4}-2.795959{col 76}{space 3} .4110288
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-.3829978{col 35}{space 2} .9793424{col 46}{space 1}   -0.39{col 55}{space 3}0.702{col 63}{space 4}-2.503079{col 76}{space 3} 1.737083
+{txt}{space 21} {c |}
+{space 18}PIR {c |}
+{space 19}2  {c |}{col 23}{res}{space 2} .0663123{col 35}{space 2} .4478703{col 46}{space 1}    0.15{col 55}{space 3}0.885{col 63}{space 4}-.9074866{col 76}{space 3} 1.040111
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-2.310046{col 35}{space 2} .5296113{col 46}{space 1}   -4.36{col 55}{space 3}0.003{col 63}{space 4}-3.540115{col 76}{space 3}-1.079978
+{txt}{space 21} {c |}
+{space 9}MARRIED_LIVP {c |}{col 23}{res}{space 2} .8034654{col 35}{space 2} .3655002{col 46}{space 1}    2.20{col 55}{space 3}0.047{col 63}{space 4} .0116063{col 76}{space 3} 1.595324
+{txt}{space 8}HOUSEHOLDSIZE {c |}{col 23}{res}{space 2}-.0367508{col 35}{space 2} .1441189{col 46}{space 1}   -0.26{col 55}{space 3}0.803{col 63}{space 4}-.3479965{col 76}{space 3} .2744949
+{txt}{space 21} {c |}
+{space 12}EDUCATION {c |}
+{space 19}2  {c |}{col 23}{res}{space 2} .3143213{col 35}{space 2} .8760221{col 46}{space 1}    0.36{col 55}{space 3}0.726{col 63}{space 4}-1.609991{col 76}{space 3} 2.238633
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} .5144945{col 35}{space 2} .6842325{col 46}{space 1}    0.75{col 55}{space 3}0.470{col 63}{space 4}-1.015888{col 76}{space 3} 2.044877
+{txt}{space 19}4  {c |}{col 23}{res}{space 2} .3221209{col 35}{space 2} .8958846{col 46}{space 1}    0.36{col 55}{space 3}0.726{col 63}{space 4}-1.645344{col 76}{space 3} 2.289586
+{txt}{space 19}5  {c |}{col 23}{res}{space 2} 1.892827{col 35}{space 2} .8133818{col 46}{space 1}    2.33{col 55}{space 3}0.044{col 63}{space 4} .0636971{col 76}{space 3} 3.721958
+{txt}{space 21} {c |}
+{space 16}SMOKE {c |}
+{space 19}2  {c |}{col 23}{res}{space 2} 1.044821{col 35}{space 2} .9248643{col 46}{space 1}    1.13{col 55}{space 3}0.279{col 63}{space 4}-.9485878{col 76}{space 3} 3.038229
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} 1.326289{col 35}{space 2} .9590874{col 46}{space 1}    1.38{col 55}{space 3}0.190{col 63}{space 4} -.742343{col 76}{space 3} 3.394921
+{txt}{space 21} {c |}
+{space 12}2.ALCOHOL {c |}{col 23}{res}{space 2} -.137352{col 35}{space 2} .5405559{col 46}{space 1}   -0.25{col 55}{space 3}0.804{col 63}{space 4}-1.332518{col 76}{space 3} 1.057814
+{txt}{space 5}1.DRUG_USER_EVER {c |}{col 23}{res}{space 2}-.3828623{col 35}{space 2} .4582311{col 46}{space 1}   -0.84{col 55}{space 3}0.418{col 63}{space 4}-1.372143{col 76}{space 3} .6064186
+{txt}{space 12}DR12TKCAL {c |}{col 23}{res}{space 2} .0002783{col 35}{space 2} .0002212{col 46}{space 1}    1.26{col 55}{space 3}0.233{col 63}{space 4}-.0002043{col 76}{space 3} .0007608
+{txt}{space 5}DASH_TOTAL_SCORE {c |}{col 23}{res}{space 2} -.067813{col 35}{space 2} .1562632{col 46}{space 1}   -0.43{col 55}{space 3}0.676{col 63}{space 4}-.4293248{col 76}{space 3} .2936988
+{txt}PHYSICAL_days_average {c |}{col 23}{res}{space 2}-.0000391{col 35}{space 2} .0000618{col 46}{space 1}   -0.63{col 55}{space 3}0.537{col 63}{space 4}-.0001722{col 76}{space 3}  .000094
+{txt}{space 2}2.SELF_RATED_HEALTH {c |}{col 23}{res}{space 2} .5571239{col 35}{space 2} .5241415{col 46}{space 1}    1.06{col 55}{space 3}0.308{col 63}{space 4}-.5785771{col 76}{space 3} 1.692825
+{txt}{space 1}1.CVD_CANCER_HISTORY {c |}{col 23}{res}{space 2} .6049276{col 35}{space 2} .5336257{col 46}{space 1}    1.13{col 55}{space 3}0.277{col 63}{space 4}-.5459534{col 76}{space 3} 1.755809
+{txt}{space 18}BMI {c |}{col 23}{res}{space 2} .0347128{col 35}{space 2} .0273832{col 46}{space 1}    1.27{col 55}{space 3}0.230{col 63}{space 4}-.0252312{col 76}{space 3} .0946569
+{txt}{space 18}SBP {c |}{col 23}{res}{space 2} .0001076{col 35}{space 2} .0139233{col 46}{space 1}    0.01{col 55}{space 3}0.994{col 63}{space 4}-.0302292{col 76}{space 3} .0304445
+{txt}{space 18}DBP {c |}{col 23}{res}{space 2} .0057684{col 35}{space 2} .0188467{col 46}{space 1}    0.31{col 55}{space 3}0.767{col 63}{space 4}-.0373688{col 76}{space 3} .0489056
+{txt}{space 3}TOTALCHOLESTEROLSI {c |}{col 23}{res}{space 2}-.2470103{col 35}{space 2} .1284365{col 46}{space 1}   -1.92{col 55}{space 3}0.078{col 63}{space 4}-.5262967{col 76}{space 3}  .032276
+{txt}{space 16}HBA1C {c |}{col 23}{res}{space 2} .0107645{col 35}{space 2} .1779319{col 46}{space 1}    0.06{col 55}{space 3}0.953{col 63}{space 4}-.3749985{col 76}{space 3} .3965275
+{txt}{space 16}LnACR {c |}{col 23}{res}{space 2}  .296353{col 35}{space 2} .2110142{col 46}{space 1}    1.40{col 55}{space 3}0.185{col 63}{space 4}-.1616187{col 76}{space 3} .7543247
+{txt}{space 7}VitaminD_serum {c |}{col 23}{res}{space 2}-.0047156{col 35}{space 2}  .008206{col 46}{space 1}   -0.57{col 55}{space 3}0.575{col 63}{space 4}-.0224258{col 76}{space 3} .0129946
+{txt}{space 9}folate_RBCSI {c |}{col 23}{res}{space 2} .0003032{col 35}{space 2} .0003106{col 46}{space 1}    0.98{col 55}{space 3}0.347{col 63}{space 4}-.0003696{col 76}{space 3} .0009761
+{txt}{space 3}vitaminb12_serumsi {c |}{col 23}{res}{space 2}-.0001023{col 35}{space 2} .0003736{col 46}{space 1}   -0.27{col 55}{space 3}0.790{col 63}{space 4}-.0009427{col 76}{space 3} .0007382
+{txt}{space 13}invmills {c |}{col 23}{res}{space 2} .0343705{col 35}{space 2} .0289325{col 46}{space 1}    1.19{col 55}{space 3}0.256{col 63}{space 4}-.0280229{col 76}{space 3} .0967639
+{txt}{hline 22}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. *********WOMEN*******************************
+. //MODEL 1//
+. mi estimate, esampvaryok: svy, subpop(WOMEN_FINAL): stcox ZLNNFL SEX i.RACE_ETHN i.PIR invmills
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        1,081
+{txt}{col 47}Subpop. size{col 65}={res}  109,075,572
+{txt}{col 47}Average RVI{col 65}= {res}      0.0048
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0275
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.15
+{txt}{col 47}        avg{col 65}= {res}       13.29
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   7{txt},{res}   13.3{txt}){col 65}= {res}        3.80
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0175
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}ZLNNFL {c |}{col 14}{res}{space 2} .5022896{col 26}{space 2} .1317084{col 37}{space 1}    3.81{col 46}{space 3}0.002{col 54}{space 4} .2184492{col 67}{space 3} .7861299
+{txt}{space 9}SEX {c |}{col 14}{res}{space 2}        0{col 26}{txt}  (omitted)
+{space 12} {c |}
+{space 3}RACE_ETHN {c |}
+{space 10}1  {c |}{col 14}{res}{space 2} .2034399{col 26}{space 2} .3981428{col 37}{space 1}    0.51{col 46}{space 3}0.618{col 54}{space 4}-.6545987{col 67}{space 3} 1.061478
+{txt}{space 10}2  {c |}{col 14}{res}{space 2}-1.453182{col 26}{space 2} .6934969{col 37}{space 1}   -2.10{col 46}{space 3}0.056{col 54}{space 4}-2.947753{col 67}{space 3} .0413895
+{txt}{space 10}3  {c |}{col 14}{res}{space 2}-1.105741{col 26}{space 2} .7724006{col 37}{space 1}   -1.43{col 46}{space 3}0.175{col 54}{space 4}-2.770198{col 67}{space 3} .5587158
+{txt}{space 12} {c |}
+{space 9}PIR {c |}
+{space 10}2  {c |}{col 14}{res}{space 2}-.3098327{col 26}{space 2} .3611359{col 37}{space 1}   -0.86{col 46}{space 3}0.406{col 54}{space 4}-1.089134{col 67}{space 3} .4694683
+{txt}{space 10}3  {c |}{col 14}{res}{space 2}-1.246676{col 26}{space 2} .5324851{col 37}{space 1}   -2.34{col 46}{space 3}0.035{col 54}{space 4}-2.394835{col 67}{space 3}-.0985158
+{txt}{space 12} {c |}
+{space 4}invmills {c |}{col 14}{res}{space 2} .0820885{col 26}{space 2} .0412067{col 37}{space 1}    1.99{col 46}{space 3}0.067{col 54}{space 4}-.0067081{col 67}{space 3} .1708851
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. //MODEL 2//
+. mi estimate, esampvaryok: svy, subpop(WOMEN_FINAL): stcox ZLNNFL SEX  i.RACE_ETHN i.PIR MARRIED_LIVP HOUSEHOLDSIZE  i.EDUCATION i.SMOKE i.ALCOHOL i.DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average i.SELF_RATED_HEALTH i.CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  invmills
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        1,081
+{txt}{col 47}Subpop. size{col 65}={res}  109,075,572
+{txt}{col 47}Average RVI{col 65}= {res}      0.8873
+{txt}{col 47}Largest FMI{col 65}= {res}      0.4808
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}        5.97
+{txt}{col 47}        avg{col 65}= {res}       12.32
+{txt}{col 47}        max{col 65}= {res}       13.30
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}  31{txt},{res}    9.1{txt}){col 65}= {res}       26.85
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 22}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                   _t{col 23}{c |} Coefficient{col 35}  Std. err.{col 47}      t{col 55}   P>|t|{col 63}     [95% con{col 76}f. interval]
+{hline 22}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 15}ZLNNFL {c |}{col 23}{res}{space 2}  .604262{col 35}{space 2} .2298324{col 46}{space 1}    2.63{col 55}{space 3}0.021{col 63}{space 4} .1077415{col 76}{space 3} 1.100782
+{txt}{space 18}SEX {c |}{col 23}{res}{space 2}        0{col 35}{txt}  (omitted)
+{space 21} {c |}
+{space 12}RACE_ETHN {c |}
+{space 19}1  {c |}{col 23}{res}{space 2}-.0284696{col 35}{space 2} .6391648{col 46}{space 1}   -0.04{col 55}{space 3}0.965{col 63}{space 4}-1.411441{col 76}{space 3} 1.354501
+{txt}{space 19}2  {c |}{col 23}{res}{space 2}-1.007618{col 35}{space 2} .5452809{col 46}{space 1}   -1.85{col 55}{space 3}0.088{col 63}{space 4}-2.188683{col 76}{space 3} .1734468
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-1.516312{col 35}{space 2} 1.116714{col 46}{space 1}   -1.36{col 55}{space 3}0.198{col 63}{space 4}-3.931733{col 76}{space 3} .8991095
+{txt}{space 21} {c |}
+{space 18}PIR {c |}
+{space 19}2  {c |}{col 23}{res}{space 2}-.0657658{col 35}{space 2} .4373761{col 46}{space 1}   -0.15{col 55}{space 3}0.883{col 63}{space 4}-1.013174{col 76}{space 3} .8816428
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-.6933765{col 35}{space 2} .5118381{col 46}{space 1}   -1.35{col 55}{space 3}0.199{col 63}{space 4}-1.803526{col 76}{space 3} .4167726
+{txt}{space 21} {c |}
+{space 9}MARRIED_LIVP {c |}{col 23}{res}{space 2} .2909784{col 35}{space 2} .3098354{col 46}{space 1}    0.94{col 55}{space 3}0.365{col 63}{space 4}-.3785909{col 76}{space 3} .9605477
+{txt}{space 8}HOUSEHOLDSIZE {c |}{col 23}{res}{space 2}-.3310128{col 35}{space 2} .1636995{col 46}{space 1}   -2.02{col 55}{space 3}0.064{col 63}{space 4}-.6845952{col 76}{space 3} .0225697
+{txt}{space 21} {c |}
+{space 12}EDUCATION {c |}
+{space 19}2  {c |}{col 23}{res}{space 2}-.2489556{col 35}{space 2} 1.335697{col 46}{space 1}   -0.19{col 55}{space 3}0.855{col 63}{space 4}-3.137537{col 76}{space 3} 2.639625
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} 1.038251{col 35}{space 2}  1.04492{col 46}{space 1}    0.99{col 55}{space 3}0.339{col 63}{space 4} -1.22402{col 76}{space 3} 3.300522
+{txt}{space 19}4  {c |}{col 23}{res}{space 2} .8711511{col 35}{space 2} .9603637{col 46}{space 1}    0.91{col 55}{space 3}0.381{col 63}{space 4}-1.208415{col 76}{space 3} 2.950717
+{txt}{space 19}5  {c |}{col 23}{res}{space 2} 1.133412{col 35}{space 2} 1.094334{col 46}{space 1}    1.04{col 55}{space 3}0.320{col 63}{space 4}-1.234483{col 76}{space 3} 3.501308
+{txt}{space 21} {c |}
+{space 16}SMOKE {c |}
+{space 19}2  {c |}{col 23}{res}{space 2} .1742977{col 35}{space 2} .3116159{col 46}{space 1}    0.56{col 55}{space 3}0.585{col 63}{space 4}-.4977678{col 76}{space 3} .8463633
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} .2973442{col 35}{space 2} .3428313{col 46}{space 1}    0.87{col 55}{space 3}0.402{col 63}{space 4}-.4475214{col 76}{space 3}  1.04221
+{txt}{space 21} {c |}
+{space 12}2.ALCOHOL {c |}{col 23}{res}{space 2}-.5931032{col 35}{space 2} .6265872{col 46}{space 1}   -0.95{col 55}{space 3}0.361{col 63}{space 4}-1.946636{col 76}{space 3}  .760429
+{txt}{space 5}1.DRUG_USER_EVER {c |}{col 23}{res}{space 2} 1.315291{col 35}{space 2} .6366077{col 46}{space 1}    2.07{col 55}{space 3}0.059{col 63}{space 4}-.0579598{col 76}{space 3} 2.688543
+{txt}{space 12}DR12TKCAL {c |}{col 23}{res}{space 2}-.0004866{col 35}{space 2} .0003864{col 46}{space 1}   -1.26{col 55}{space 3}0.255{col 63}{space 4}-.0014332{col 76}{space 3}   .00046
+{txt}{space 5}DASH_TOTAL_SCORE {c |}{col 23}{res}{space 2} .0344436{col 35}{space 2} .1451723{col 46}{space 1}    0.24{col 55}{space 3}0.817{col 63}{space 4} -.287535{col 76}{space 3} .3564221
+{txt}PHYSICAL_days_average {c |}{col 23}{res}{space 2}-.0000688{col 35}{space 2}  .000092{col 46}{space 1}   -0.75{col 55}{space 3}0.467{col 63}{space 4} -.000267{col 76}{space 3} .0001294
+{txt}{space 2}2.SELF_RATED_HEALTH {c |}{col 23}{res}{space 2} .6202484{col 35}{space 2} .5639249{col 46}{space 1}    1.10{col 55}{space 3}0.292{col 63}{space 4}-.6022901{col 76}{space 3} 1.842787
+{txt}{space 1}1.CVD_CANCER_HISTORY {c |}{col 23}{res}{space 2}-.5927774{col 35}{space 2} .4137828{col 46}{space 1}   -1.43{col 55}{space 3}0.177{col 63}{space 4}-1.491431{col 76}{space 3} .3058765
+{txt}{space 18}BMI {c |}{col 23}{res}{space 2}-.0329912{col 35}{space 2}  .028156{col 46}{space 1}   -1.17{col 55}{space 3}0.264{col 63}{space 4}-.0944594{col 76}{space 3}  .028477
+{txt}{space 18}SBP {c |}{col 23}{res}{space 2}-.0157417{col 35}{space 2} .0135518{col 46}{space 1}   -1.16{col 55}{space 3}0.267{col 63}{space 4}-.0451661{col 76}{space 3} .0136827
+{txt}{space 18}DBP {c |}{col 23}{res}{space 2}-.0089207{col 35}{space 2} .0222449{col 46}{space 1}   -0.40{col 55}{space 3}0.697{col 63}{space 4}-.0585217{col 76}{space 3} .0406803
+{txt}{space 3}TOTALCHOLESTEROLSI {c |}{col 23}{res}{space 2}-.2580255{col 35}{space 2} .1826896{col 46}{space 1}   -1.41{col 55}{space 3}0.181{col 63}{space 4}-.6528296{col 76}{space 3} .1367786
+{txt}{space 16}HBA1C {c |}{col 23}{res}{space 2} .1657313{col 35}{space 2} .1209115{col 46}{space 1}    1.37{col 55}{space 3}0.197{col 63}{space 4}-.0989504{col 76}{space 3}  .430413
+{txt}{space 16}LnACR {c |}{col 23}{res}{space 2} .4089002{col 35}{space 2} .2330801{col 46}{space 1}    1.75{col 55}{space 3}0.105{col 63}{space 4} -.098422{col 76}{space 3} .9162225
+{txt}{space 7}VitaminD_serum {c |}{col 23}{res}{space 2}-.0203279{col 35}{space 2} .0069999{col 46}{space 1}   -2.90{col 55}{space 3}0.012{col 63}{space 4}-.0354704{col 76}{space 3}-.0051855
+{txt}{space 9}folate_RBCSI {c |}{col 23}{res}{space 2} .0004731{col 35}{space 2} .0003141{col 46}{space 1}    1.51{col 55}{space 3}0.156{col 63}{space 4}-.0002054{col 76}{space 3} .0011517
+{txt}{space 3}vitaminb12_serumsi {c |}{col 23}{res}{space 2} .0002188{col 35}{space 2} .0000822{col 46}{space 1}    2.66{col 55}{space 3}0.020{col 63}{space 4} .0000408{col 76}{space 3} .0003967
+{txt}{space 13}invmills {c |}{col 23}{res}{space 2} .1232247{col 35}{space 2} .0303674{col 46}{space 1}    4.06{col 55}{space 3}0.001{col 63}{space 4} .0574497{col 76}{space 3} .1889998
+{txt}{hline 22}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. 
+. 
+. 
+. *******BY SEX********************************
+. 
+. 
+. //MODEL 1//
+. 
+. mi estimate, esampvaryok: svy, subpop(SAMPLE_FINAL): stcox c.ZLNNFL##SEX i.RACE_ETHN i.PIR invmills
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,070
+{txt}{col 47}Subpop. size{col 65}={res}  212,451,510
+{txt}{col 47}Average RVI{col 65}= {res}      0.0408
+{txt}{col 47}Largest FMI{col 65}= {res}      0.1100
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       11.91
+{txt}{col 47}        avg{col 65}= {res}       13.02
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   9{txt},{res}   13.1{txt}){col 65}= {res}       19.43
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      t{col 46}   P>|t|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}ZLNNFL {c |}{col 14}{res}{space 2} .6980187{col 26}{space 2} .1660866{col 37}{space 1}    4.20{col 46}{space 3}0.001{col 54}{space 4}  .340092{col 67}{space 3} 1.055945
+{txt}{space 7}2.SEX {c |}{col 14}{res}{space 2} .1480986{col 26}{space 2} .3542263{col 37}{space 1}    0.42{col 46}{space 3}0.683{col 54}{space 4}-.6154664{col 67}{space 3} .9116636
+{txt}{space 12} {c |}
+SEX#c.ZLNNFL {c |}
+{space 10}2  {c |}{col 14}{res}{space 2}-.1337234{col 26}{space 2} .2529248{col 37}{space 1}   -0.53{col 46}{space 3}0.606{col 54}{space 4}-.6788179{col 67}{space 3} .4113711
+{txt}{space 12} {c |}
+{space 3}RACE_ETHN {c |}
+{space 10}1  {c |}{col 14}{res}{space 2}-.0393014{col 26}{space 2} .3324076{col 37}{space 1}   -0.12{col 46}{space 3}0.908{col 54}{space 4}-.7558553{col 67}{space 3} .6772526
+{txt}{space 10}2  {c |}{col 14}{res}{space 2}-1.347185{col 26}{space 2}  .373621{col 37}{space 1}   -3.61{col 46}{space 3}0.003{col 54}{space 4}-2.152913{col 67}{space 3}-.5414566
+{txt}{space 10}3  {c |}{col 14}{res}{space 2}-.8652612{col 26}{space 2} .2680442{col 37}{space 1}   -3.23{col 46}{space 3}0.006{col 54}{space 4}-1.443531{col 67}{space 3}-.2869915
+{txt}{space 12} {c |}
+{space 9}PIR {c |}
+{space 10}2  {c |}{col 14}{res}{space 2}-.2649762{col 26}{space 2} .2460012{col 37}{space 1}   -1.08{col 46}{space 3}0.303{col 54}{space 4}-.8014107{col 67}{space 3} .2714584
+{txt}{space 10}3  {c |}{col 14}{res}{space 2}-1.641281{col 26}{space 2} .3719637{col 37}{space 1}   -4.41{col 46}{space 3}0.001{col 54}{space 4}  -2.4497{col 67}{space 3}-.8328628
+{txt}{space 12} {c |}
+{space 4}invmills {c |}{col 14}{res}{space 2} .0668732{col 26}{space 2} .0226258{col 37}{space 1}    2.96{col 46}{space 3}0.011{col 54}{space 4}  .018115{col 67}{space 3} .1156315
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. //MODEL 2//
+. mi estimate, esampvaryok: svy, subpop(SAMPLE_FINAL): stcox c.ZLNNFL##SEX  i.RACE_ETHN i.PIR MARRIED_LIVP HOUSEHOLDSIZE  i.EDUCATION i.SMOKE i.ALCOHOL i.DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average i.SELF_RATED_HEALTH i.CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  invmills
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,070
+{txt}{col 47}Subpop. size{col 65}={res}  212,451,510
+{txt}{col 47}Average RVI{col 65}= {res}      1.3389
+{txt}{col 47}Largest FMI{col 65}= {res}      0.4044
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}        7.04
+{txt}{col 47}        avg{col 65}= {res}       12.21
+{txt}{col 47}        max{col 65}= {res}       13.31
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}  33{txt},{res}    6.9{txt}){col 65}= {res}      212.49
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 22}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                   _t{col 23}{c |} Coefficient{col 35}  Std. err.{col 47}      t{col 55}   P>|t|{col 63}     [95% con{col 76}f. interval]
+{hline 22}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 15}ZLNNFL {c |}{col 23}{res}{space 2}  .433454{col 35}{space 2} .1514694{col 46}{space 1}    2.86{col 55}{space 3}0.013{col 63}{space 4} .1063373{col 76}{space 3} .7605706
+{txt}{space 16}2.SEX {c |}{col 23}{res}{space 2} .1569553{col 35}{space 2} .4369613{col 46}{space 1}    0.36{col 55}{space 3}0.725{col 63}{space 4}-.7852227{col 76}{space 3} 1.099133
+{txt}{space 21} {c |}
+{space 9}SEX#c.ZLNNFL {c |}
+{space 19}2  {c |}{col 23}{res}{space 2} .1977681{col 35}{space 2} .2643779{col 46}{space 1}    0.75{col 55}{space 3}0.467{col 63}{space 4}-.3720607{col 76}{space 3}  .767597
+{txt}{space 21} {c |}
+{space 12}RACE_ETHN {c |}
+{space 19}1  {c |}{col 23}{res}{space 2}-.2014635{col 35}{space 2} .4312195{col 46}{space 1}   -0.47{col 55}{space 3}0.648{col 63}{space 4}-1.131227{col 76}{space 3} .7283003
+{txt}{space 19}2  {c |}{col 23}{res}{space 2}-1.069309{col 35}{space 2} .4215363{col 46}{space 1}   -2.54{col 55}{space 3}0.025{col 63}{space 4}-1.979988{col 76}{space 3}-.1586301
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-.4734096{col 35}{space 2} .3537763{col 46}{space 1}   -1.34{col 55}{space 3}0.204{col 63}{space 4}-1.238774{col 76}{space 3} .2919548
+{txt}{space 21} {c |}
+{space 18}PIR {c |}
+{space 19}2  {c |}{col 23}{res}{space 2}-.1987694{col 35}{space 2} .3096529{col 46}{space 1}   -0.64{col 55}{space 3}0.533{col 63}{space 4} -.876536{col 76}{space 3} .4789971
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-1.536708{col 35}{space 2} .3375701{col 46}{space 1}   -4.55{col 55}{space 3}0.002{col 63}{space 4} -2.32073{col 76}{space 3}-.7526847
+{txt}{space 21} {c |}
+{space 9}MARRIED_LIVP {c |}{col 23}{res}{space 2} .3472793{col 35}{space 2} .2487169{col 46}{space 1}    1.40{col 55}{space 3}0.186{col 63}{space 4}-.1911086{col 76}{space 3} .8856671
+{txt}{space 8}HOUSEHOLDSIZE {c |}{col 23}{res}{space 2}-.1298038{col 35}{space 2} .0941568{col 46}{space 1}   -1.38{col 55}{space 3}0.191{col 63}{space 4}-.3328166{col 76}{space 3} .0732089
+{txt}{space 21} {c |}
+{space 12}EDUCATION {c |}
+{space 19}2  {c |}{col 23}{res}{space 2}-.1050161{col 35}{space 2} .6228619{col 46}{space 1}   -0.17{col 55}{space 3}0.869{col 63}{space 4}-1.451187{col 76}{space 3} 1.241154
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} .6249399{col 35}{space 2}  .514475{col 46}{space 1}    1.21{col 55}{space 3}0.247{col 63}{space 4}-.4914399{col 76}{space 3}  1.74132
+{txt}{space 19}4  {c |}{col 23}{res}{space 2} .5849984{col 35}{space 2}  .489045{col 46}{space 1}    1.20{col 55}{space 3}0.253{col 63}{space 4}-.4736041{col 76}{space 3} 1.643601
+{txt}{space 19}5  {c |}{col 23}{res}{space 2} 1.348856{col 35}{space 2} .5973557{col 46}{space 1}    2.26{col 55}{space 3}0.043{col 63}{space 4} .0511408{col 76}{space 3} 2.646572
+{txt}{space 21} {c |}
+{space 16}SMOKE {c |}
+{space 19}2  {c |}{col 23}{res}{space 2} .6738216{col 35}{space 2} .4056839{col 46}{space 1}    1.66{col 55}{space 3}0.120{col 63}{space 4}-.2006088{col 76}{space 3} 1.548252
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} .7035658{col 35}{space 2} .3156143{col 46}{space 1}    2.23{col 55}{space 3}0.044{col 63}{space 4}    .0216{col 76}{space 3} 1.385532
+{txt}{space 21} {c |}
+{space 12}2.ALCOHOL {c |}{col 23}{res}{space 2}-.4491946{col 35}{space 2}  .490991{col 46}{space 1}   -0.91{col 55}{space 3}0.377{col 63}{space 4}-1.511483{col 76}{space 3} .6130934
+{txt}{space 5}1.DRUG_USER_EVER {c |}{col 23}{res}{space 2} .3160625{col 35}{space 2} .2619861{col 46}{space 1}    1.21{col 55}{space 3}0.249{col 63}{space 4}-.2493286{col 76}{space 3} .8814535
+{txt}{space 12}DR12TKCAL {c |}{col 23}{res}{space 2} .0000131{col 35}{space 2} .0001437{col 46}{space 1}    0.09{col 55}{space 3}0.929{col 63}{space 4} -.000308{col 76}{space 3} .0003342
+{txt}{space 5}DASH_TOTAL_SCORE {c |}{col 23}{res}{space 2} -.021094{col 35}{space 2} .0984231{col 46}{space 1}   -0.21{col 55}{space 3}0.834{col 63}{space 4}-.2352242{col 76}{space 3} .1930362
+{txt}PHYSICAL_days_average {c |}{col 23}{res}{space 2}-.0000305{col 35}{space 2} .0000471{col 46}{space 1}   -0.65{col 55}{space 3}0.528{col 63}{space 4}-.0001322{col 76}{space 3} .0000711
+{txt}{space 2}2.SELF_RATED_HEALTH {c |}{col 23}{res}{space 2} .5123162{col 35}{space 2} .3729534{col 46}{space 1}    1.37{col 55}{space 3}0.193{col 63}{space 4}-.2930024{col 76}{space 3} 1.317635
+{txt}{space 1}1.CVD_CANCER_HISTORY {c |}{col 23}{res}{space 2}-.0168099{col 35}{space 2} .4332328{col 46}{space 1}   -0.04{col 55}{space 3}0.970{col 63}{space 4}-.9510087{col 76}{space 3} .9173889
+{txt}{space 18}BMI {c |}{col 23}{res}{space 2}-.0104279{col 35}{space 2} .0189688{col 46}{space 1}   -0.55{col 55}{space 3}0.593{col 63}{space 4}-.0518393{col 76}{space 3} .0309834
+{txt}{space 18}SBP {c |}{col 23}{res}{space 2}-.0106686{col 35}{space 2} .0082669{col 46}{space 1}   -1.29{col 55}{space 3}0.220{col 63}{space 4} -.028567{col 76}{space 3} .0072298
+{txt}{space 18}DBP {c |}{col 23}{res}{space 2}   .01032{col 35}{space 2} .0135991{col 46}{space 1}    0.76{col 55}{space 3}0.473{col 63}{space 4}-.0218038{col 76}{space 3} .0424438
+{txt}{space 3}TOTALCHOLESTEROLSI {c |}{col 23}{res}{space 2}  -.20423{col 35}{space 2} .0754575{col 46}{space 1}   -2.71{col 55}{space 3}0.022{col 63}{space 4}-.3719048{col 76}{space 3}-.0365552
+{txt}{space 16}HBA1C {c |}{col 23}{res}{space 2} .1068178{col 35}{space 2} .0993993{col 46}{space 1}    1.07{col 55}{space 3}0.303{col 63}{space 4}-.1088202{col 76}{space 3} .3224559
+{txt}{space 16}LnACR {c |}{col 23}{res}{space 2} .3361996{col 35}{space 2} .1261505{col 46}{space 1}    2.67{col 55}{space 3}0.021{col 63}{space 4} .0614016{col 76}{space 3} .6109976
+{txt}{space 7}VitaminD_serum {c |}{col 23}{res}{space 2}-.0147926{col 35}{space 2} .0050445{col 46}{space 1}   -2.93{col 55}{space 3}0.011{col 63}{space 4}-.0256726{col 76}{space 3}-.0039126
+{txt}{space 9}folate_RBCSI {c |}{col 23}{res}{space 2} .0002438{col 35}{space 2} .0001666{col 46}{space 1}    1.46{col 55}{space 3}0.168{col 63}{space 4}-.0001175{col 76}{space 3} .0006052
+{txt}{space 3}vitaminb12_serumsi {c |}{col 23}{res}{space 2} .0002498{col 35}{space 2} .0000628{col 46}{space 1}    3.98{col 55}{space 3}0.003{col 63}{space 4} .0001096{col 76}{space 3}   .00039
+{txt}{space 13}invmills {c |}{col 23}{res}{space 2} .0876085{col 35}{space 2} .0176532{col 46}{space 1}    4.96{col 55}{space 3}0.000{col 63}{space 4} .0494992{col 76}{space 3} .1257177
+{txt}{hline 22}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. *******BY SEX AND AGE********************************
+. 
+. 
+. //MODEL 1//
+. 
+. mi estimate, esampvaryok: svy, subpop(SAMPLE_FINAL): stcox c.ZLNNFL##SEX##c.AGEcenter i.RACE_ETHN i.PIR invmills
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,070
+{txt}{col 47}Subpop. size{col 65}={res}  212,451,510
+{txt}{col 47}Average RVI{col 65}= {res}      0.1165
+{txt}{col 47}Largest FMI{col 65}= {res}      0.1107
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       11.90
+{txt}{col 47}        avg{col 65}= {res}       13.07
+{txt}{col 47}        max{col 65}= {res}       13.32
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}  13{txt},{res}   12.8{txt}){col 65}= {res}      225.24
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 25}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                      _t{col 26}{c |} Coefficient{col 38}  Std. err.{col 50}      t{col 58}   P>|t|{col 66}     [95% con{col 79}f. interval]
+{hline 25}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 18}ZLNNFL {c |}{col 26}{res}{space 2} .6900521{col 38}{space 2}  .142651{col 49}{space 1}    4.84{col 58}{space 3}0.000{col 66}{space 4} .3826342{col 79}{space 3}   .99747
+{txt}{space 19}2.SEX {c |}{col 26}{res}{space 2}-.0453796{col 38}{space 2} .4165781{col 49}{space 1}   -0.11{col 58}{space 3}0.915{col 66}{space 4}-.9434434{col 79}{space 3} .8526843
+{txt}{space 24} {c |}
+{space 12}SEX#c.ZLNNFL {c |}
+{space 22}2  {c |}{col 26}{res}{space 2} .0388431{col 38}{space 2} .2476986{col 49}{space 1}    0.16{col 58}{space 3}0.878{col 66}{space 4} -.495074{col 79}{space 3} .5727602
+{txt}{space 24} {c |}
+{space 15}AGEcenter {c |}{col 26}{res}{space 2}-.1157633{col 38}{space 2} .0734853{col 49}{space 1}   -1.58{col 58}{space 3}0.139{col 66}{space 4}-.2741289{col 79}{space 3} .0426024
+{txt}{space 24} {c |}
+{space 4}c.ZLNNFL#c.AGEcenter {c |}{col 26}{res}{space 2}  .006998{col 38}{space 2} .0031428{col 49}{space 1}    2.23{col 58}{space 3}0.044{col 66}{space 4} .0002218{col 79}{space 3} .0137741
+{txt}{space 24} {c |}
+{space 9}SEX#c.AGEcenter {c |}
+{space 22}2  {c |}{col 26}{res}{space 2} .0387173{col 38}{space 2} .0200259{col 49}{space 1}    1.93{col 58}{space 3}0.075{col 66}{space 4}-.0044519{col 79}{space 3} .0818865
+{txt}{space 24} {c |}
+SEX#c.ZLNNFL#c.AGEcenter {c |}
+{space 22}2  {c |}{col 26}{res}{space 2} -.023233{col 38}{space 2} .0165893{col 49}{space 1}   -1.40{col 58}{space 3}0.184{col 66}{space 4}-.0589835{col 79}{space 3} .0125175
+{txt}{space 24} {c |}
+{space 15}RACE_ETHN {c |}
+{space 22}1  {c |}{col 26}{res}{space 2}-.0376105{col 38}{space 2} .3408113{col 49}{space 1}   -0.11{col 58}{space 3}0.914{col 66}{space 4}-.7722869{col 79}{space 3} .6970659
+{txt}{space 22}2  {c |}{col 26}{res}{space 2}-1.377145{col 38}{space 2} .3803828{col 49}{space 1}   -3.62{col 58}{space 3}0.003{col 66}{space 4}-2.197513{col 79}{space 3}-.5567772
+{txt}{space 22}3  {c |}{col 26}{res}{space 2}-.9353204{col 38}{space 2} .2353684{col 49}{space 1}   -3.97{col 58}{space 3}0.002{col 66}{space 4}-1.443888{col 79}{space 3}-.4267533
+{txt}{space 24} {c |}
+{space 21}PIR {c |}
+{space 22}2  {c |}{col 26}{res}{space 2}-.3177415{col 38}{space 2} .2574464{col 49}{space 1}   -1.23{col 58}{space 3}0.241{col 66}{space 4}-.8791956{col 79}{space 3} .2437126
+{txt}{space 22}3  {c |}{col 26}{res}{space 2}-1.639636{col 38}{space 2} .3610523{col 49}{space 1}   -4.54{col 58}{space 3}0.001{col 66}{space 4}-2.425423{col 79}{space 3}-.8538484
+{txt}{space 24} {c |}
+{space 16}invmills {c |}{col 26}{res}{space 2} .0686648{col 38}{space 2}  .019639{col 49}{space 1}    3.50{col 58}{space 3}0.004{col 66}{space 4} .0263414{col 79}{space 3} .1109882
+{txt}{hline 25}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. //MODEL 2//
+. mi estimate, esampvaryok: svy, subpop(SAMPLE_FINAL): stcox c.ZLNNFL##SEX##c.AGEcenter  i.RACE_ETHN i.PIR MARRIED_LIVP HOUSEHOLDSIZE  i.EDUCATION i.SMOKE i.ALCOHOL i.DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average i.SELF_RATED_HEALTH i.CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  invmills
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,070
+{txt}{col 47}Subpop. size{col 65}={res}  212,451,510
+{txt}{col 47}Average RVI{col 65}= {res}      1.5867
+{txt}{col 47}Largest FMI{col 65}= {res}      0.4054
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}        7.02
+{txt}{col 47}        avg{col 65}= {res}       12.27
+{txt}{col 47}        max{col 65}= {res}       13.30
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}  37{txt},{res}    5.9{txt}){col 65}= {res}      171.37
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 25}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                      _t{col 26}{c |} Coefficient{col 38}  Std. err.{col 50}      t{col 58}   P>|t|{col 66}     [95% con{col 79}f. interval]
+{hline 25}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 18}ZLNNFL {c |}{col 26}{res}{space 2} .4993105{col 38}{space 2} .1444552{col 49}{space 1}    3.46{col 58}{space 3}0.004{col 66}{space 4} .1875074{col 79}{space 3} .8111136
+{txt}{space 19}2.SEX {c |}{col 26}{res}{space 2} -.239885{col 38}{space 2} .5135384{col 49}{space 1}   -0.47{col 58}{space 3}0.648{col 66}{space 4}-1.347204{col 79}{space 3} .8674341
+{txt}{space 24} {c |}
+{space 12}SEX#c.ZLNNFL {c |}
+{space 22}2  {c |}{col 26}{res}{space 2} .0649398{col 38}{space 2} .2578502{col 49}{space 1}    0.25{col 58}{space 3}0.805{col 66}{space 4} -.491405{col 79}{space 3} .6212847
+{txt}{space 24} {c |}
+{space 15}AGEcenter {c |}{col 26}{res}{space 2}-.1683712{col 38}{space 2} .0687561{col 49}{space 1}   -2.45{col 58}{space 3}0.029{col 66}{space 4}-.3165673{col 79}{space 3}-.0201752
+{txt}{space 24} {c |}
+{space 4}c.ZLNNFL#c.AGEcenter {c |}{col 26}{res}{space 2}-.0016337{col 38}{space 2} .0064568{col 49}{space 1}   -0.25{col 58}{space 3}0.804{col 66}{space 4}-.0155724{col 79}{space 3} .0123051
+{txt}{space 24} {c |}
+{space 9}SEX#c.AGEcenter {c |}
+{space 22}2  {c |}{col 26}{res}{space 2} .0545333{col 38}{space 2} .0161762{col 49}{space 1}    3.37{col 58}{space 3}0.005{col 66}{space 4} .0195822{col 79}{space 3} .0894845
+{txt}{space 24} {c |}
+SEX#c.ZLNNFL#c.AGEcenter {c |}
+{space 22}2  {c |}{col 26}{res}{space 2}-.0008815{col 38}{space 2} .0183381{col 49}{space 1}   -0.05{col 58}{space 3}0.962{col 66}{space 4}-.0404677{col 79}{space 3} .0387047
+{txt}{space 24} {c |}
+{space 15}RACE_ETHN {c |}
+{space 22}1  {c |}{col 26}{res}{space 2}-.1344198{col 38}{space 2} .4308111{col 49}{space 1}   -0.31{col 58}{space 3}0.760{col 66}{space 4}-1.063133{col 79}{space 3} .7942934
+{txt}{space 22}2  {c |}{col 26}{res}{space 2}-1.076982{col 38}{space 2} .3767704{col 49}{space 1}   -2.86{col 58}{space 3}0.014{col 66}{space 4}-1.891699{col 79}{space 3}-.2622641
+{txt}{space 22}3  {c |}{col 26}{res}{space 2}-.6342469{col 38}{space 2} .3616835{col 49}{space 1}   -1.75{col 58}{space 3}0.104{col 66}{space 4}-1.418651{col 79}{space 3} .1501575
+{txt}{space 24} {c |}
+{space 21}PIR {c |}
+{space 22}2  {c |}{col 26}{res}{space 2}-.1661027{col 38}{space 2}  .328046{col 49}{space 1}   -0.51{col 58}{space 3}0.622{col 66}{space 4}-.8850998{col 79}{space 3} .5528944
+{txt}{space 22}3  {c |}{col 26}{res}{space 2}-1.576463{col 38}{space 2} .3261112{col 49}{space 1}   -4.83{col 58}{space 3}0.002{col 66}{space 4}-2.347109{col 79}{space 3}-.8058182
+{txt}{space 24} {c |}
+{space 12}MARRIED_LIVP {c |}{col 26}{res}{space 2} .2217449{col 38}{space 2} .2713098{col 49}{space 1}    0.82{col 58}{space 3}0.429{col 66}{space 4}-.3651819{col 79}{space 3} .8086716
+{txt}{space 11}HOUSEHOLDSIZE {c |}{col 26}{res}{space 2}-.1721564{col 38}{space 2} .0870856{col 49}{space 1}   -1.98{col 58}{space 3}0.069{col 66}{space 4}-.3600745{col 79}{space 3} .0157617
+{txt}{space 24} {c |}
+{space 15}EDUCATION {c |}
+{space 22}2  {c |}{col 26}{res}{space 2}-.1630856{col 38}{space 2} .6815231{col 49}{space 1}   -0.24{col 58}{space 3}0.815{col 66}{space 4}-1.633608{col 79}{space 3} 1.307437
+{txt}{space 22}3  {c |}{col 26}{res}{space 2}  .540163{col 38}{space 2} .6009941{col 49}{space 1}    0.90{col 58}{space 3}0.385{col 66}{space 4}-.7597405{col 79}{space 3} 1.840067
+{txt}{space 22}4  {c |}{col 26}{res}{space 2} .4823188{col 38}{space 2} .5381616{col 49}{space 1}    0.90{col 58}{space 3}0.386{col 66}{space 4}-.6803271{col 79}{space 3} 1.644965
+{txt}{space 22}5  {c |}{col 26}{res}{space 2} 1.306221{col 38}{space 2} .6383103{col 49}{space 1}    2.05{col 58}{space 3}0.062{col 66}{space 4}-.0761744{col 79}{space 3} 2.688616
+{txt}{space 24} {c |}
+{space 19}SMOKE {c |}
+{space 22}2  {c |}{col 26}{res}{space 2} .7669441{col 38}{space 2} .4052257{col 49}{space 1}    1.89{col 58}{space 3}0.080{col 66}{space 4}-.1066438{col 79}{space 3} 1.640532
+{txt}{space 22}3  {c |}{col 26}{res}{space 2} .6553666{col 38}{space 2}  .313047{col 49}{space 1}    2.09{col 58}{space 3}0.056{col 66}{space 4}-.0208246{col 79}{space 3} 1.331558
+{txt}{space 24} {c |}
+{space 15}2.ALCOHOL {c |}{col 26}{res}{space 2}-.5311076{col 38}{space 2} .5056059{col 49}{space 1}   -1.05{col 58}{space 3}0.313{col 66}{space 4} -1.62311{col 79}{space 3} .5608944
+{txt}{space 8}1.DRUG_USER_EVER {c |}{col 26}{res}{space 2} .2115134{col 38}{space 2} .2334271{col 49}{space 1}    0.91{col 58}{space 3}0.382{col 66}{space 4}-.2933092{col 79}{space 3} .7163359
+{txt}{space 15}DR12TKCAL {c |}{col 26}{res}{space 2} 7.98e-07{col 38}{space 2} .0001517{col 49}{space 1}    0.01{col 58}{space 3}0.996{col 66}{space 4}-.0003378{col 79}{space 3} .0003394
+{txt}{space 8}DASH_TOTAL_SCORE {c |}{col 26}{res}{space 2}-.0282009{col 38}{space 2} .0975948{col 49}{space 1}   -0.29{col 58}{space 3}0.777{col 66}{space 4}-.2403558{col 79}{space 3}  .183954
+{txt}{space 3}PHYSICAL_days_average {c |}{col 26}{res}{space 2}-.0000342{col 38}{space 2} .0000473{col 49}{space 1}   -0.72{col 58}{space 3}0.482{col 66}{space 4}-.0001362{col 79}{space 3} .0000677
+{txt}{space 5}2.SELF_RATED_HEALTH {c |}{col 26}{res}{space 2} .5736164{col 38}{space 2} .4032979{col 49}{space 1}    1.42{col 58}{space 3}0.179{col 66}{space 4}-.2986528{col 79}{space 3} 1.445886
+{txt}{space 4}1.CVD_CANCER_HISTORY {c |}{col 26}{res}{space 2} .0447099{col 38}{space 2} .3967572{col 49}{space 1}    0.11{col 58}{space 3}0.912{col 66}{space 4}-.8109888{col 79}{space 3} .9004086
+{txt}{space 21}BMI {c |}{col 26}{res}{space 2}-.0133659{col 38}{space 2}  .019013{col 49}{space 1}   -0.70{col 58}{space 3}0.496{col 66}{space 4}-.0549586{col 79}{space 3} .0282268
+{txt}{space 21}SBP {c |}{col 26}{res}{space 2}-.0110429{col 38}{space 2} .0083106{col 49}{space 1}   -1.33{col 58}{space 3}0.207{col 66}{space 4}-.0290308{col 79}{space 3}  .006945
+{txt}{space 21}DBP {c |}{col 26}{res}{space 2} .0092247{col 38}{space 2} .0135554{col 49}{space 1}    0.68{col 58}{space 3}0.516{col 66}{space 4}-.0221611{col 79}{space 3} .0406105
+{txt}{space 6}TOTALCHOLESTEROLSI {c |}{col 26}{res}{space 2} -.242943{col 38}{space 2} .0768012{col 49}{space 1}   -3.16{col 58}{space 3}0.011{col 66}{space 4}-.4153674{col 79}{space 3}-.0705185
+{txt}{space 19}HBA1C {c |}{col 26}{res}{space 2} .0784107{col 38}{space 2} .1007893{col 49}{space 1}    0.78{col 58}{space 3}0.451{col 66}{space 4}-.1405714{col 79}{space 3} .2973928
+{txt}{space 19}LnACR {c |}{col 26}{res}{space 2} .3985537{col 38}{space 2} .1332414{col 49}{space 1}    2.99{col 58}{space 3}0.011{col 66}{space 4} .1084745{col 79}{space 3} .6886329
+{txt}{space 10}VitaminD_serum {c |}{col 26}{res}{space 2}-.0154321{col 38}{space 2} .0053024{col 49}{space 1}   -2.91{col 58}{space 3}0.012{col 66}{space 4}-.0268684{col 79}{space 3}-.0039957
+{txt}{space 12}folate_RBCSI {c |}{col 26}{res}{space 2} .0002509{col 38}{space 2} .0001672{col 49}{space 1}    1.50{col 58}{space 3}0.159{col 66}{space 4}-.0001133{col 79}{space 3} .0006151
+{txt}{space 6}vitaminb12_serumsi {c |}{col 26}{res}{space 2} .0002576{col 38}{space 2} .0000626{col 49}{space 1}    4.12{col 58}{space 3}0.003{col 66}{space 4} .0001163{col 79}{space 3} .0003988
+{txt}{space 16}invmills {c |}{col 26}{res}{space 2} .0850866{col 38}{space 2} .0181137{col 49}{space 1}    4.70{col 58}{space 3}0.000{col 66}{space 4} .0459658{col 79}{space 3} .1242075
+{txt}{hline 25}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. *******BY AGE********************************
+. 
+. 
+. //MODEL 1//
+. 
+. mi estimate, esampvaryok: svy, subpop(SAMPLE_FINAL): stcox c.ZLNNFL##c.AGEcenter i.RACE_ETHN SEX i.PIR invmills
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,070
+{txt}{col 47}Subpop. size{col 65}={res}  212,451,510
+{txt}{col 47}Average RVI{col 65}= {res}      0.0578
+{txt}{col 47}Largest FMI{col 65}= {res}      0.1195
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       11.76
+{txt}{col 47}        avg{col 65}= {res}       13.00
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}  10{txt},{res}   13.1{txt}){col 65}= {res}       16.27
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 21}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                  _t{col 22}{c |} Coefficient{col 34}  Std. err.{col 46}      t{col 54}   P>|t|{col 62}     [95% con{col 75}f. interval]
+{hline 21}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 14}ZLNNFL {c |}{col 22}{res}{space 2} .6539153{col 34}{space 2} .0843805{col 45}{space 1}    7.75{col 54}{space 3}0.000{col 62}{space 4} .4720542{col 75}{space 3} .8357764
+{txt}{space 11}AGEcenter {c |}{col 22}{res}{space 2}-.0980587{col 34}{space 2} .0791744{col 45}{space 1}   -1.24{col 54}{space 3}0.237{col 62}{space 4}-.2686812{col 75}{space 3} .0725638
+{txt}{space 20} {c |}
+c.ZLNNFL#c.AGEcenter {c |}{col 22}{res}{space 2}-.0025065{col 34}{space 2}  .003743{col 45}{space 1}   -0.67{col 54}{space 3}0.515{col 62}{space 4}-.0105729{col 75}{space 3} .0055599
+{txt}{space 20} {c |}
+{space 11}RACE_ETHN {c |}
+{space 18}1  {c |}{col 22}{res}{space 2}-.0528831{col 34}{space 2} .3184804{col 45}{space 1}   -0.17{col 54}{space 3}0.871{col 62}{space 4}-.7394283{col 75}{space 3}  .633662
+{txt}{space 18}2  {c |}{col 22}{res}{space 2}-1.380389{col 34}{space 2} .3579142{col 45}{space 1}   -3.86{col 54}{space 3}0.002{col 62}{space 4} -2.15229{col 75}{space 3}-.6084873
+{txt}{space 18}3  {c |}{col 22}{res}{space 2}-.8715008{col 34}{space 2} .2922308{col 45}{space 1}   -2.98{col 54}{space 3}0.011{col 62}{space 4}-1.502224{col 75}{space 3}-.2407781
+{txt}{space 20} {c |}
+{space 17}SEX {c |}{col 22}{res}{space 2} .0136292{col 34}{space 2} .2624038{col 45}{space 1}    0.05{col 54}{space 3}0.959{col 62}{space 4}-.5519786{col 75}{space 3} .5792369
+{txt}{space 20} {c |}
+{space 17}PIR {c |}
+{space 18}2  {c |}{col 22}{res}{space 2}-.2706328{col 34}{space 2} .2412678{col 45}{space 1}   -1.12{col 54}{space 3}0.284{col 62}{space 4}-.7975266{col 75}{space 3} .2562611
+{txt}{space 18}3  {c |}{col 22}{res}{space 2}-1.691081{col 34}{space 2}  .332945{col 45}{space 1}   -5.08{col 54}{space 3}0.000{col 62}{space 4}-2.416553{col 75}{space 3}-.9656086
+{txt}{space 20} {c |}
+{space 12}invmills {c |}{col 22}{res}{space 2} .0662807{col 34}{space 2} .0206451{col 45}{space 1}    3.21{col 54}{space 3}0.007{col 62}{space 4}  .021791{col 75}{space 3} .1107704
+{txt}{hline 21}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. //MODEL 2//
+. mi estimate, esampvaryok: svy, subpop(SAMPLE_FINAL): stcox c.ZLNNFL##c.AGEcenter  i.RACE_ETHN SEX i.PIR MARRIED_LIVP HOUSEHOLDSIZE  i.EDUCATION i.SMOKE i.ALCOHOL i.DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average i.SELF_RATED_HEALTH i.CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  invmills
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       2,085
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  212,496,041
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        2,070
+{txt}{col 47}Subpop. size{col 65}={res}  212,451,510
+{txt}{col 47}Average RVI{col 65}= {res}      1.3375
+{txt}{col 47}Largest FMI{col 65}= {res}      0.3698
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}        7.56
+{txt}{col 47}        avg{col 65}= {res}       12.24
+{txt}{col 47}        max{col 65}= {res}       13.31
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}  34{txt},{res}    7.0{txt}){col 65}= {res}      204.12
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 22}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                   _t{col 23}{c |} Coefficient{col 35}  Std. err.{col 47}      t{col 55}   P>|t|{col 63}     [95% con{col 76}f. interval]
+{hline 22}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 15}ZLNNFL {c |}{col 23}{res}{space 2} .5648612{col 35}{space 2} .0958259{col 46}{space 1}    5.89{col 55}{space 3}0.000{col 63}{space 4} .3572345{col 76}{space 3} .7724878
+{txt}{space 12}AGEcenter {c |}{col 23}{res}{space 2}-.1257118{col 35}{space 2} .0685446{col 46}{space 1}   -1.83{col 55}{space 3}0.089{col 63}{space 4}-.2734409{col 76}{space 3} .0220173
+{txt}{space 21} {c |}
+{space 1}c.ZLNNFL#c.AGEcenter {c |}{col 23}{res}{space 2}-.0059556{col 35}{space 2}  .003954{col 46}{space 1}   -1.51{col 55}{space 3}0.156{col 63}{space 4} -.014485{col 76}{space 3} .0025738
+{txt}{space 21} {c |}
+{space 12}RACE_ETHN {c |}
+{space 19}1  {c |}{col 23}{res}{space 2}-.2042491{col 35}{space 2} .4491488{col 46}{space 1}   -0.45{col 55}{space 3}0.657{col 63}{space 4}-1.172638{col 76}{space 3} .7641403
+{txt}{space 19}2  {c |}{col 23}{res}{space 2}-1.122862{col 35}{space 2} .4240791{col 46}{space 1}   -2.65{col 55}{space 3}0.020{col 63}{space 4}-2.039312{col 76}{space 3}-.2064112
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-.6269293{col 35}{space 2}  .350773{col 46}{space 1}   -1.79{col 55}{space 3}0.098{col 63}{space 4}-1.386504{col 76}{space 3} .1326452
+{txt}{space 21} {c |}
+{space 18}SEX {c |}{col 23}{res}{space 2}  .327108{col 35}{space 2} .3850371{col 46}{space 1}    0.85{col 55}{space 3}0.411{col 63}{space 4}-.5037817{col 76}{space 3} 1.157998
+{txt}{space 21} {c |}
+{space 18}PIR {c |}
+{space 19}2  {c |}{col 23}{res}{space 2}-.1947324{col 35}{space 2} .3200833{col 46}{space 1}   -0.61{col 55}{space 3}0.554{col 63}{space 4}-.8935309{col 76}{space 3} .5040661
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-1.535112{col 35}{space 2} .3315806{col 46}{space 1}   -4.63{col 55}{space 3}0.002{col 63}{space 4}-2.307642{col 76}{space 3} -.762582
+{txt}{space 21} {c |}
+{space 9}MARRIED_LIVP {c |}{col 23}{res}{space 2} .3427657{col 35}{space 2} .2666448{col 46}{space 1}    1.29{col 55}{space 3}0.221{col 63}{space 4} -.233907{col 76}{space 3} .9194385
+{txt}{space 8}HOUSEHOLDSIZE {c |}{col 23}{res}{space 2}-.1569741{col 35}{space 2} .0866139{col 46}{space 1}   -1.81{col 55}{space 3}0.093{col 63}{space 4}-.3437705{col 76}{space 3} .0298223
+{txt}{space 21} {c |}
+{space 12}EDUCATION {c |}
+{space 19}2  {c |}{col 23}{res}{space 2} -.154051{col 35}{space 2} .6077928{col 46}{space 1}   -0.25{col 55}{space 3}0.804{col 63}{space 4}-1.467817{col 76}{space 3} 1.159715
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} .5139762{col 35}{space 2} .5193071{col 46}{space 1}    0.99{col 55}{space 3}0.341{col 63}{space 4}-.6125279{col 76}{space 3}  1.64048
+{txt}{space 19}4  {c |}{col 23}{res}{space 2} .5189602{col 35}{space 2} .4861349{col 46}{space 1}    1.07{col 55}{space 3}0.306{col 63}{space 4}-.5335119{col 76}{space 3} 1.571432
+{txt}{space 19}5  {c |}{col 23}{res}{space 2} 1.268404{col 35}{space 2} .6086205{col 46}{space 1}    2.08{col 55}{space 3}0.058{col 63}{space 4}-.0526976{col 76}{space 3} 2.589506
+{txt}{space 21} {c |}
+{space 16}SMOKE {c |}
+{space 19}2  {c |}{col 23}{res}{space 2}  .706393{col 35}{space 2} .4111532{col 46}{space 1}    1.72{col 55}{space 3}0.109{col 63}{space 4}-.1798537{col 76}{space 3}  1.59264
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} .6648512{col 35}{space 2}  .326264{col 46}{space 1}    2.04{col 55}{space 3}0.062{col 63}{space 4}-.0399783{col 76}{space 3} 1.369681
+{txt}{space 21} {c |}
+{space 12}2.ALCOHOL {c |}{col 23}{res}{space 2}  -.46849{col 35}{space 2} .4933572{col 46}{space 1}   -0.95{col 55}{space 3}0.360{col 63}{space 4}-1.535422{col 76}{space 3} .5984418
+{txt}{space 5}1.DRUG_USER_EVER {c |}{col 23}{res}{space 2} .2387852{col 35}{space 2} .2537403{col 46}{space 1}    0.94{col 55}{space 3}0.364{col 63}{space 4} -.308937{col 76}{space 3} .7865074
+{txt}{space 12}DR12TKCAL {c |}{col 23}{res}{space 2} .0000448{col 35}{space 2} .0001423{col 46}{space 1}    0.31{col 55}{space 3}0.760{col 63}{space 4}-.0002793{col 76}{space 3} .0003689
+{txt}{space 5}DASH_TOTAL_SCORE {c |}{col 23}{res}{space 2}-.0185073{col 35}{space 2} .1003732{col 46}{space 1}   -0.18{col 55}{space 3}0.857{col 63}{space 4}-.2364958{col 76}{space 3} .1994812
+{txt}PHYSICAL_days_average {c |}{col 23}{res}{space 2}-.0000307{col 35}{space 2} .0000455{col 46}{space 1}   -0.68{col 55}{space 3}0.511{col 63}{space 4}-.0001289{col 76}{space 3} .0000674
+{txt}{space 2}2.SELF_RATED_HEALTH {c |}{col 23}{res}{space 2} .5599139{col 35}{space 2} .3951768{col 46}{space 1}    1.42{col 55}{space 3}0.180{col 63}{space 4}-.2935559{col 76}{space 3} 1.413384
+{txt}{space 1}1.CVD_CANCER_HISTORY {c |}{col 23}{res}{space 2} .0159822{col 35}{space 2} .4025729{col 46}{space 1}    0.04{col 55}{space 3}0.969{col 63}{space 4}-.8520849{col 76}{space 3} .8840494
+{txt}{space 18}BMI {c |}{col 23}{res}{space 2}-.0122976{col 35}{space 2} .0190719{col 46}{space 1}   -0.64{col 55}{space 3}0.531{col 63}{space 4}-.0538464{col 76}{space 3} .0292512
+{txt}{space 18}SBP {c |}{col 23}{res}{space 2} -.008475{col 35}{space 2} .0087619{col 46}{space 1}   -0.97{col 55}{space 3}0.351{col 63}{space 4}-.0274356{col 76}{space 3} .0104855
+{txt}{space 18}DBP {c |}{col 23}{res}{space 2} .0094797{col 35}{space 2} .0127261{col 46}{space 1}    0.74{col 55}{space 3}0.479{col 63}{space 4}-.0201301{col 76}{space 3} .0390895
+{txt}{space 3}TOTALCHOLESTEROLSI {c |}{col 23}{res}{space 2}-.1930832{col 35}{space 2} .0726272{col 46}{space 1}   -2.66{col 55}{space 3}0.024{col 63}{space 4}-.3544266{col 76}{space 3}-.0317399
+{txt}{space 16}HBA1C {c |}{col 23}{res}{space 2} .0854693{col 35}{space 2} .1029842{col 46}{space 1}    0.83{col 55}{space 3}0.422{col 63}{space 4}-.1376909{col 76}{space 3} .3086295
+{txt}{space 16}LnACR {c |}{col 23}{res}{space 2} .3523258{col 35}{space 2} .1207848{col 46}{space 1}    2.92{col 55}{space 3}0.013{col 63}{space 4} .0893495{col 76}{space 3} .6153021
+{txt}{space 7}VitaminD_serum {c |}{col 23}{res}{space 2}-.0144604{col 35}{space 2} .0046717{col 46}{space 1}   -3.10{col 55}{space 3}0.008{col 63}{space 4} -.024536{col 76}{space 3}-.0043847
+{txt}{space 9}folate_RBCSI {c |}{col 23}{res}{space 2} .0002176{col 35}{space 2} .0001652{col 46}{space 1}    1.32{col 55}{space 3}0.211{col 63}{space 4}-.0001407{col 76}{space 3} .0005758
+{txt}{space 3}vitaminb12_serumsi {c |}{col 23}{res}{space 2} .0002602{col 35}{space 2} .0000648{col 46}{space 1}    4.02{col 55}{space 3}0.003{col 63}{space 4} .0001155{col 76}{space 3}  .000405
+{txt}{space 13}invmills {c |}{col 23}{res}{space 2} .0874817{col 35}{space 2} .0194985{col 46}{space 1}    4.49{col 55}{space 3}0.001{col 63}{space 4} .0453778{col 76}{space 3} .1295857
+{txt}{hline 22}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. *******BY AGE AMONG MEN********************************
+. 
+. 
+. //MODEL 1//
+. 
+. mi estimate, esampvaryok: svy, subpop(SAMPLE_FINAL): stcox c.ZLNNFL##c.AGEcenter i.RACE_ETHN i.PIR invmills if SEX==1
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}         999
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  103,420,469
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}          989
+{txt}{col 47}Subpop. size{col 65}={res}  103,375,938
+{txt}{col 47}Average RVI{col 65}= {res}      0.1404
+{txt}{col 47}Largest FMI{col 65}= {res}      0.2460
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}        9.58
+{txt}{col 47}        avg{col 65}= {res}       12.51
+{txt}{col 47}        max{col 65}= {res}       13.30
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   9{txt},{res}   12.6{txt}){col 65}= {res}       27.41
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 21}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                  _t{col 22}{c |} Coefficient{col 34}  Std. err.{col 46}      t{col 54}   P>|t|{col 62}     [95% con{col 75}f. interval]
+{hline 21}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 14}ZLNNFL {c |}{col 22}{res}{space 2} .6251187{col 34}{space 2} .1403689{col 45}{space 1}    4.45{col 54}{space 3}0.001{col 62}{space 4}  .322564{col 75}{space 3} .9276735
+{txt}{space 11}AGEcenter {c |}{col 22}{res}{space 2} -.090845{col 34}{space 2} .0990543{col 45}{space 1}   -0.92{col 54}{space 3}0.375{col 62}{space 4}-.3044129{col 75}{space 3} .1227229
+{txt}{space 20} {c |}
+c.ZLNNFL#c.AGEcenter {c |}{col 22}{res}{space 2} .0062116{col 34}{space 2} .0031459{col 45}{space 1}    1.97{col 54}{space 3}0.070{col 62}{space 4}-.0005729{col 75}{space 3} .0129962
+{txt}{space 20} {c |}
+{space 11}RACE_ETHN {c |}
+{space 18}1  {c |}{col 22}{res}{space 2} -.253614{col 34}{space 2} .4986751{col 45}{space 1}   -0.51{col 54}{space 3}0.619{col 62}{space 4}-1.328998{col 75}{space 3} .8217703
+{txt}{space 18}2  {c |}{col 22}{res}{space 2}-1.361134{col 34}{space 2} .5356611{col 45}{space 1}   -2.54{col 54}{space 3}0.025{col 62}{space 4}-2.519197{col 75}{space 3}-.2030721
+{txt}{space 18}3  {c |}{col 22}{res}{space 2}-.9101069{col 34}{space 2} .4506679{col 45}{space 1}   -2.02{col 54}{space 3}0.065{col 62}{space 4}-1.885929{col 75}{space 3} .0657154
+{txt}{space 20} {c |}
+{space 17}PIR {c |}
+{space 18}2  {c |}{col 22}{res}{space 2}-.3155279{col 34}{space 2} .3188588{col 45}{space 1}   -0.99{col 54}{space 3}0.343{col 62}{space 4}-1.016371{col 75}{space 3} .3853153
+{txt}{space 18}3  {c |}{col 22}{res}{space 2}-2.071992{col 34}{space 2} .4640074{col 45}{space 1}   -4.47{col 54}{space 3}0.001{col 62}{space 4}-3.112099{col 75}{space 3}-1.031884
+{txt}{space 20} {c |}
+{space 12}invmills {c |}{col 22}{res}{space 2} .0242231{col 34}{space 2} .0179464{col 45}{space 1}    1.35{col 54}{space 3}0.200{col 62}{space 4} -.014463{col 75}{space 3} .0629093
+{txt}{hline 21}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. //MODEL 2//
+. mi estimate, esampvaryok: svy, subpop(SAMPLE_FINAL): stcox c.ZLNNFL##c.AGEcenter  i.RACE_ETHN i.PIR MARRIED_LIVP HOUSEHOLDSIZE  i.EDUCATION i.SMOKE i.ALCOHOL i.DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average i.SELF_RATED_HEALTH i.CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  invmills if SEX==1
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}         999
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  103,420,469
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}          989
+{txt}{col 47}Subpop. size{col 65}={res}  103,375,938
+{txt}{col 47}Average RVI{col 65}= {res}      1.2301
+{txt}{col 47}Largest FMI{col 65}= {res}      0.3438
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}        7.96
+{txt}{col 47}        avg{col 65}= {res}       11.90
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}  33{txt},{res}    7.5{txt}){col 65}= {res}       24.70
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0001
+
+{txt}{hline 22}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                   _t{col 23}{c |} Coefficient{col 35}  Std. err.{col 47}      t{col 55}   P>|t|{col 63}     [95% con{col 76}f. interval]
+{hline 22}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 15}ZLNNFL {c |}{col 23}{res}{space 2} .5336479{col 35}{space 2} .1550054{col 46}{space 1}    3.44{col 55}{space 3}0.004{col 63}{space 4} .1988712{col 76}{space 3} .8684247
+{txt}{space 12}AGEcenter {c |}{col 23}{res}{space 2}-.2437781{col 35}{space 2} .1235919{col 46}{space 1}   -1.97{col 55}{space 3}0.070{col 63}{space 4}-.5103688{col 76}{space 3} .0228126
+{txt}{space 21} {c |}
+{space 1}c.ZLNNFL#c.AGEcenter {c |}{col 23}{res}{space 2}-.0037915{col 35}{space 2} .0076346{col 46}{space 1}   -0.50{col 55}{space 3}0.628{col 63}{space 4}-.0202643{col 76}{space 3} .0126813
+{txt}{space 21} {c |}
+{space 12}RACE_ETHN {c |}
+{space 19}1  {c |}{col 23}{res}{space 2}-.0433621{col 35}{space 2} .6094254{col 46}{space 1}   -0.07{col 55}{space 3}0.944{col 63}{space 4}-1.357528{col 76}{space 3} 1.270803
+{txt}{space 19}2  {c |}{col 23}{res}{space 2}-1.320387{col 35}{space 2}  .755109{col 46}{space 1}   -1.75{col 55}{space 3}0.105{col 63}{space 4}-2.956017{col 76}{space 3} .3152428
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-.6691357{col 35}{space 2}  1.07985{col 46}{space 1}   -0.62{col 55}{space 3}0.546{col 63}{space 4} -3.00478{col 76}{space 3} 1.666509
+{txt}{space 21} {c |}
+{space 18}PIR {c |}
+{space 19}2  {c |}{col 23}{res}{space 2} .0996594{col 35}{space 2}  .465805{col 46}{space 1}    0.21{col 55}{space 3}0.834{col 63}{space 4} -.914291{col 76}{space 3}  1.11361
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-2.501233{col 35}{space 2} .6027361{col 46}{space 1}   -4.15{col 55}{space 3}0.003{col 63}{space 4}-3.881521{col 76}{space 3}-1.120944
+{txt}{space 21} {c |}
+{space 9}MARRIED_LIVP {c |}{col 23}{res}{space 2} .9039144{col 35}{space 2} .4074268{col 46}{space 1}    2.22{col 55}{space 3}0.045{col 63}{space 4} .0226682{col 76}{space 3} 1.785161
+{txt}{space 8}HOUSEHOLDSIZE {c |}{col 23}{res}{space 2} -.046731{col 35}{space 2} .1473223{col 46}{space 1}   -0.32{col 55}{space 3}0.756{col 63}{space 4}-.3650595{col 76}{space 3} .2715976
+{txt}{space 21} {c |}
+{space 12}EDUCATION {c |}
+{space 19}2  {c |}{col 23}{res}{space 2} .1642442{col 35}{space 2} .9502625{col 46}{space 1}    0.17{col 55}{space 3}0.866{col 63}{space 4}-1.916317{col 76}{space 3} 2.244805
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}   .39088{col 35}{space 2} .7031054{col 46}{space 1}    0.56{col 55}{space 3}0.591{col 63}{space 4}-1.181128{col 76}{space 3} 1.962888
+{txt}{space 19}4  {c |}{col 23}{res}{space 2}  .198306{col 35}{space 2} .9339197{col 46}{space 1}    0.21{col 55}{space 3}0.836{col 63}{space 4}-1.852616{col 76}{space 3} 2.249228
+{txt}{space 19}5  {c |}{col 23}{res}{space 2} 1.961489{col 35}{space 2} .8011251{col 46}{space 1}    2.45{col 55}{space 3}0.038{col 63}{space 4} .1399491{col 76}{space 3} 3.783028
+{txt}{space 21} {c |}
+{space 16}SMOKE {c |}
+{space 19}2  {c |}{col 23}{res}{space 2} 1.232026{col 35}{space 2} .9401573{col 46}{space 1}    1.31{col 55}{space 3}0.212{col 63}{space 4}-.7941965{col 76}{space 3} 3.258248
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} 1.375869{col 35}{space 2} .9517879{col 46}{space 1}    1.45{col 55}{space 3}0.171{col 63}{space 4}-.6760602{col 76}{space 3} 3.427798
+{txt}{space 21} {c |}
+{space 12}2.ALCOHOL {c |}{col 23}{res}{space 2}-.0778768{col 35}{space 2} .5286387{col 46}{space 1}   -0.15{col 55}{space 3}0.885{col 63}{space 4}-1.224838{col 76}{space 3} 1.069084
+{txt}{space 5}1.DRUG_USER_EVER {c |}{col 23}{res}{space 2}-.3401372{col 35}{space 2} .4276637{col 46}{space 1}   -0.80{col 55}{space 3}0.441{col 63}{space 4}-1.265471{col 76}{space 3} .5851965
+{txt}{space 12}DR12TKCAL {c |}{col 23}{res}{space 2} .0002881{col 35}{space 2} .0002074{col 46}{space 1}    1.39{col 55}{space 3}0.191{col 63}{space 4}-.0001649{col 76}{space 3}  .000741
+{txt}{space 5}DASH_TOTAL_SCORE {c |}{col 23}{res}{space 2}-.0761963{col 35}{space 2} .1566947{col 46}{space 1}   -0.49{col 55}{space 3}0.640{col 63}{space 4}-.4374438{col 76}{space 3} .2850511
+{txt}PHYSICAL_days_average {c |}{col 23}{res}{space 2}-.0000377{col 35}{space 2} .0000592{col 46}{space 1}   -0.64{col 55}{space 3}0.535{col 63}{space 4}-.0001653{col 76}{space 3} .0000898
+{txt}{space 2}2.SELF_RATED_HEALTH {c |}{col 23}{res}{space 2} .5579357{col 35}{space 2} .5315973{col 46}{space 1}    1.05{col 55}{space 3}0.315{col 63}{space 4}-.5996779{col 76}{space 3} 1.715549
+{txt}{space 1}1.CVD_CANCER_HISTORY {c |}{col 23}{res}{space 2}  .673071{col 35}{space 2} .5556093{col 46}{space 1}    1.21{col 55}{space 3}0.247{col 63}{space 4}-.5253221{col 76}{space 3} 1.871464
+{txt}{space 18}BMI {c |}{col 23}{res}{space 2} .0352959{col 35}{space 2} .0283181{col 46}{space 1}    1.25{col 55}{space 3}0.238{col 63}{space 4}-.0267771{col 76}{space 3} .0973689
+{txt}{space 18}SBP {c |}{col 23}{res}{space 2} .0017697{col 35}{space 2} .0130264{col 46}{space 1}    0.14{col 55}{space 3}0.894{col 63}{space 4}-.0267683{col 76}{space 3} .0303077
+{txt}{space 18}DBP {c |}{col 23}{res}{space 2} .0028531{col 35}{space 2} .0184005{col 46}{space 1}    0.16{col 55}{space 3}0.881{col 63}{space 4}-.0396165{col 76}{space 3} .0453227
+{txt}{space 3}TOTALCHOLESTEROLSI {c |}{col 23}{res}{space 2}-.2433698{col 35}{space 2}  .145413{col 46}{space 1}   -1.67{col 55}{space 3}0.120{col 63}{space 4}-.5597346{col 76}{space 3}  .072995
+{txt}{space 16}HBA1C {c |}{col 23}{res}{space 2} .0276021{col 35}{space 2} .1783821{col 46}{space 1}    0.15{col 55}{space 3}0.880{col 63}{space 4}-.3601475{col 76}{space 3} .4153518
+{txt}{space 16}LnACR {c |}{col 23}{res}{space 2} .3262602{col 35}{space 2} .2079627{col 46}{space 1}    1.57{col 55}{space 3}0.142{col 63}{space 4}-.1253654{col 76}{space 3} .7778859
+{txt}{space 7}VitaminD_serum {c |}{col 23}{res}{space 2}-.0051731{col 35}{space 2} .0090956{col 46}{space 1}   -0.57{col 55}{space 3}0.579{col 63}{space 4}-.0247886{col 76}{space 3} .0144424
+{txt}{space 9}folate_RBCSI {c |}{col 23}{res}{space 2} .0003633{col 35}{space 2} .0003662{col 46}{space 1}    0.99{col 55}{space 3}0.340{col 63}{space 4}-.0004311{col 76}{space 3} .0011578
+{txt}{space 3}vitaminb12_serumsi {c |}{col 23}{res}{space 2}-.0001029{col 35}{space 2} .0004792{col 46}{space 1}   -0.21{col 55}{space 3}0.834{col 63}{space 4}-.0011594{col 76}{space 3} .0009537
+{txt}{space 13}invmills {c |}{col 23}{res}{space 2} .0542715{col 35}{space 2} .0289526{col 46}{space 1}    1.87{col 55}{space 3}0.084{col 63}{space 4}-.0083245{col 76}{space 3} .1168676
+{txt}{hline 22}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. *******BY AGE AMONG WOMEN********************************
+. 
+. 
+. //MODEL 1//
+. 
+. mi estimate, esampvaryok: svy, subpop(SAMPLE_FINAL): stcox c.ZLNNFL##c.AGEcenter i.RACE_ETHN i.PIR invmills if SEX==2
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       1,086
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  109,075,572
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        1,081
+{txt}{col 47}Subpop. size{col 65}={res}  109,075,572
+{txt}{col 47}Average RVI{col 65}= {res}      0.0131
+{txt}{col 47}Largest FMI{col 65}= {res}      0.0337
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}       13.07
+{txt}{col 47}        avg{col 65}= {res}       13.28
+{txt}{col 47}        max{col 65}= {res}       13.33
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}   9{txt},{res}   13.3{txt}){col 65}= {res}        4.89
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0049
+
+{txt}{hline 21}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                  _t{col 22}{c |} Coefficient{col 34}  Std. err.{col 46}      t{col 54}   P>|t|{col 62}     [95% con{col 75}f. interval]
+{hline 21}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 14}ZLNNFL {c |}{col 22}{res}{space 2}  .718136{col 34}{space 2} .2632191{col 45}{space 1}    2.73{col 54}{space 3}0.017{col 62}{space 4}  .150838{col 75}{space 3} 1.285434
+{txt}{space 11}AGEcenter {c |}{col 22}{res}{space 2}-.0971731{col 34}{space 2}  .100946{col 45}{space 1}   -0.96{col 54}{space 3}0.353{col 62}{space 4}-.3147027{col 75}{space 3} .1203566
+{txt}{space 20} {c |}
+c.ZLNNFL#c.AGEcenter {c |}{col 22}{res}{space 2}-.0155364{col 34}{space 2} .0190988{col 45}{space 1}   -0.81{col 54}{space 3}0.430{col 62}{space 4}-.0566952{col 75}{space 3} .0256225
+{txt}{space 20} {c |}
+{space 11}RACE_ETHN {c |}
+{space 18}1  {c |}{col 22}{res}{space 2} .1952356{col 34}{space 2} .3896339{col 45}{space 1}    0.50{col 54}{space 3}0.624{col 62}{space 4} -.644477{col 75}{space 3} 1.034948
+{txt}{space 18}2  {c |}{col 22}{res}{space 2}-1.496899{col 34}{space 2} .7318634{col 45}{space 1}   -2.05{col 54}{space 3}0.061{col 62}{space 4}-3.074197{col 75}{space 3} .0803999
+{txt}{space 18}3  {c |}{col 22}{res}{space 2}-1.078792{col 34}{space 2} .7670124{col 45}{space 1}   -1.41{col 54}{space 3}0.182{col 62}{space 4}-2.731647{col 75}{space 3} .5740628
+{txt}{space 20} {c |}
+{space 17}PIR {c |}
+{space 18}2  {c |}{col 22}{res}{space 2}-.3632549{col 34}{space 2} .3408612{col 45}{space 1}   -1.07{col 54}{space 3}0.306{col 62}{space 4}-1.099266{col 75}{space 3} .3727559
+{txt}{space 18}3  {c |}{col 22}{res}{space 2}-1.285743{col 34}{space 2} .5236677{col 45}{space 1}   -2.46{col 54}{space 3}0.029{col 62}{space 4}-2.415041{col 75}{space 3}-.1564452
+{txt}{space 20} {c |}
+{space 12}invmills {c |}{col 22}{res}{space 2} .0897847{col 34}{space 2} .0486893{col 45}{space 1}    1.84{col 54}{space 3}0.088{col 62}{space 4}-.0151361{col 75}{space 3} .1947055
+{txt}{hline 21}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. //MODEL 2//
+. mi estimate, esampvaryok: svy, subpop(SAMPLE_FINAL): stcox c.ZLNNFL##c.AGEcenter  i.RACE_ETHN i.PIR MARRIED_LIVP HOUSEHOLDSIZE  i.EDUCATION i.SMOKE i.ALCOHOL i.DRUG_USER_EVER DR12TKCAL DASH_TOTAL_SCORE PHYSICAL_days_average i.SELF_RATED_HEALTH i.CVD_CANCER_HISTORY BMI SBP DBP TOTALCHOLESTEROLSI HBA1C LnACR VitaminD_serum folate_RBCSI vitaminb12_serumsi  invmills if SEX==2
+{res}
+{txt}Multiple-imputation estimates{col 47}Imputations{col 65}= {res}           5
+{txt}Survey: Cox regression{col 47}Number of obs{col 65}= {res}       1,086
+
+{txt}{col 1}Number of strata{col 19}= {res}       15{txt}{col 47}Population size{col 65}={res}  109,075,572
+{txt}{col 1}Number of PSUs{col 19}= {res}       30{txt}{col 47}Subpop. no. obs{col 65}={res}        1,081
+{txt}{col 47}Subpop. size{col 65}={res}  109,075,572
+{txt}{col 47}Average RVI{col 65}= {res}      0.8562
+{txt}{col 47}Largest FMI{col 65}= {res}      0.4379
+{txt}{col 47}Complete DF{col 65}= {res}          15
+{txt}DF adjustment:{ralign 15: {res:Small sample}}{col 47}DF:     min{col 65}= {res}        6.55
+{txt}{col 47}        avg{col 65}= {res}       12.33
+{txt}{col 47}        max{col 65}= {res}       13.29
+{txt}Model F test:{ralign 16: {res:Equal FMI}}{col 47}F({res}  33{txt},{res}    9.3{txt}){col 65}= {res}       30.84
+{txt}Within VCE type: {ralign 12:{res:Linearized}}{col 47}Prob > F{col 65}= {res}      0.0000
+
+{txt}{hline 22}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                   _t{col 23}{c |} Coefficient{col 35}  Std. err.{col 47}      t{col 55}   P>|t|{col 63}     [95% con{col 76}f. interval]
+{hline 22}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 15}ZLNNFL {c |}{col 23}{res}{space 2} .5420466{col 35}{space 2} .2592598{col 46}{space 1}    2.09{col 55}{space 3}0.058{col 63}{space 4}-.0222074{col 76}{space 3} 1.106301
+{txt}{space 12}AGEcenter {c |}{col 23}{res}{space 2}-.1318661{col 35}{space 2} .0903913{col 46}{space 1}   -1.46{col 55}{space 3}0.168{col 63}{space 4}-.3267143{col 76}{space 3}  .062982
+{txt}{space 21} {c |}
+{space 1}c.ZLNNFL#c.AGEcenter {c |}{col 23}{res}{space 2} .0074373{col 35}{space 2}  .026961{col 46}{space 1}    0.28{col 55}{space 3}0.787{col 63}{space 4}-.0509193{col 76}{space 3} .0657939
+{txt}{space 21} {c |}
+{space 12}RACE_ETHN {c |}
+{space 19}1  {c |}{col 23}{res}{space 2}-.0454359{col 35}{space 2} .7084081{col 46}{space 1}   -0.06{col 55}{space 3}0.950{col 63}{space 4}-1.576355{col 76}{space 3} 1.485483
+{txt}{space 19}2  {c |}{col 23}{res}{space 2}-1.007259{col 35}{space 2} .4941669{col 46}{space 1}   -2.04{col 55}{space 3}0.063{col 63}{space 4}-2.080186{col 76}{space 3} .0656691
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-1.580932{col 35}{space 2}  1.15293{col 46}{space 1}   -1.37{col 55}{space 3}0.194{col 63}{space 4}-4.074765{col 76}{space 3} .9129017
+{txt}{space 21} {c |}
+{space 18}PIR {c |}
+{space 19}2  {c |}{col 23}{res}{space 2}-.0393831{col 35}{space 2} .4291157{col 46}{space 1}   -0.09{col 55}{space 3}0.928{col 63}{space 4}-.9698381{col 76}{space 3} .8910719
+{txt}{space 19}3  {c |}{col 23}{res}{space 2}-.6703996{col 35}{space 2} .5123939{col 46}{space 1}   -1.31{col 55}{space 3}0.214{col 63}{space 4} -1.78174{col 76}{space 3}  .440941
+{txt}{space 21} {c |}
+{space 9}MARRIED_LIVP {c |}{col 23}{res}{space 2} .2729122{col 35}{space 2} .3253825{col 46}{space 1}    0.84{col 55}{space 3}0.417{col 63}{space 4}-.4298449{col 76}{space 3} .9756693
+{txt}{space 8}HOUSEHOLDSIZE {c |}{col 23}{res}{space 2}-.3729817{col 35}{space 2} .1934394{col 46}{space 1}   -1.93{col 55}{space 3}0.076{col 63}{space 4}-.7903247{col 76}{space 3} .0443613
+{txt}{space 21} {c |}
+{space 12}EDUCATION {c |}
+{space 19}2  {c |}{col 23}{res}{space 2}-.3298829{col 35}{space 2} 1.345339{col 46}{space 1}   -0.25{col 55}{space 3}0.810{col 63}{space 4}-3.240638{col 76}{space 3} 2.580872
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} .9617986{col 35}{space 2} .9473404{col 46}{space 1}    1.02{col 55}{space 3}0.329{col 63}{space 4}-1.089099{col 76}{space 3} 3.012696
+{txt}{space 19}4  {c |}{col 23}{res}{space 2} .7494666{col 35}{space 2}  .883808{col 46}{space 1}    0.85{col 55}{space 3}0.412{col 63}{space 4}-1.165298{col 76}{space 3} 2.664231
+{txt}{space 19}5  {c |}{col 23}{res}{space 2} 1.025595{col 35}{space 2} 1.023406{col 46}{space 1}    1.00{col 55}{space 3}0.335{col 63}{space 4}-1.188466{col 76}{space 3} 3.239655
+{txt}{space 21} {c |}
+{space 16}SMOKE {c |}
+{space 19}2  {c |}{col 23}{res}{space 2} .2187854{col 35}{space 2} .3415306{col 46}{space 1}    0.64{col 55}{space 3}0.533{col 63}{space 4}-.5180549{col 76}{space 3} .9556256
+{txt}{space 19}3  {c |}{col 23}{res}{space 2} .2064302{col 35}{space 2} .3410095{col 46}{space 1}    0.61{col 55}{space 3}0.556{col 63}{space 4}-.5353778{col 76}{space 3} .9482383
+{txt}{space 21} {c |}
+{space 12}2.ALCOHOL {c |}{col 23}{res}{space 2}-.6038477{col 35}{space 2} .6422413{col 46}{space 1}   -0.94{col 55}{space 3}0.364{col 63}{space 4}-1.990522{col 76}{space 3} .7828268
+{txt}{space 5}1.DRUG_USER_EVER {c |}{col 23}{res}{space 2} 1.232934{col 35}{space 2} .6680838{col 46}{space 1}    1.85{col 55}{space 3}0.087{col 63}{space 4} -.207954{col 76}{space 3} 2.673821
+{txt}{space 12}DR12TKCAL {c |}{col 23}{res}{space 2}-.0005214{col 35}{space 2} .0003881{col 46}{space 1}   -1.34{col 55}{space 3}0.224{col 63}{space 4} -.001452{col 76}{space 3} .0004091
+{txt}{space 5}DASH_TOTAL_SCORE {c |}{col 23}{res}{space 2} .0264862{col 35}{space 2}  .156375{col 46}{space 1}    0.17{col 55}{space 3}0.869{col 63}{space 4} -.319431{col 76}{space 3} .3724034
+{txt}PHYSICAL_days_average {c |}{col 23}{res}{space 2}-.0000697{col 35}{space 2} .0000927{col 46}{space 1}   -0.75{col 55}{space 3}0.465{col 63}{space 4}-.0002696{col 76}{space 3} .0001302
+{txt}{space 2}2.SELF_RATED_HEALTH {c |}{col 23}{res}{space 2} .6317276{col 35}{space 2} .5857722{col 46}{space 1}    1.08{col 55}{space 3}0.301{col 63}{space 4}-.6380145{col 76}{space 3}  1.90147
+{txt}{space 1}1.CVD_CANCER_HISTORY {c |}{col 23}{res}{space 2}-.5889951{col 35}{space 2} .4151073{col 46}{space 1}   -1.42{col 55}{space 3}0.181{col 63}{space 4}-1.492248{col 76}{space 3} .3142575
+{txt}{space 18}BMI {c |}{col 23}{res}{space 2}-.0358616{col 35}{space 2} .0292814{col 46}{space 1}   -1.22{col 55}{space 3}0.244{col 63}{space 4}-.0997545{col 76}{space 3} .0280314
+{txt}{space 18}SBP {c |}{col 23}{res}{space 2}-.0148226{col 35}{space 2} .0136256{col 46}{space 1}   -1.09{col 55}{space 3}0.297{col 63}{space 4}-.0444147{col 76}{space 3} .0147695
+{txt}{space 18}DBP {c |}{col 23}{res}{space 2} -.011161{col 35}{space 2} .0237054{col 46}{space 1}   -0.47{col 55}{space 3}0.647{col 63}{space 4}-.0636795{col 76}{space 3} .0413575
+{txt}{space 3}TOTALCHOLESTEROLSI {c |}{col 23}{res}{space 2}-.2483468{col 35}{space 2} .1820931{col 46}{space 1}   -1.36{col 55}{space 3}0.196{col 63}{space 4}-.6416691{col 76}{space 3} .1449754
+{txt}{space 16}HBA1C {c |}{col 23}{res}{space 2} .1621363{col 35}{space 2} .1222982{col 46}{space 1}    1.33{col 55}{space 3}0.210{col 63}{space 4}-.1047081{col 76}{space 3} .4289807
+{txt}{space 16}LnACR {c |}{col 23}{res}{space 2} .4288186{col 35}{space 2} .2522644{col 46}{space 1}    1.70{col 55}{space 3}0.115{col 63}{space 4}-.1204849{col 76}{space 3} .9781222
+{txt}{space 7}VitaminD_serum {c |}{col 23}{res}{space 2}-.0209739{col 35}{space 2} .0071372{col 46}{space 1}   -2.94{col 55}{space 3}0.012{col 63}{space 4}-.0364363{col 76}{space 3}-.0055115
+{txt}{space 9}folate_RBCSI {c |}{col 23}{res}{space 2} .0004641{col 35}{space 2} .0003167{col 46}{space 1}    1.47{col 55}{space 3}0.167{col 63}{space 4}-.0002202{col 76}{space 3} .0011485
+{txt}{space 3}vitaminb12_serumsi {c |}{col 23}{res}{space 2} .0002293{col 35}{space 2} .0000799{col 46}{space 1}    2.87{col 55}{space 3}0.014{col 63}{space 4} .0000553{col 76}{space 3} .0004032
+{txt}{space 13}invmills {c |}{col 23}{res}{space 2} .1120627{col 35}{space 2} .0454754{col 46}{space 1}    2.46{col 55}{space 3}0.029{col 63}{space 4} .0132272{col 76}{space 3} .2108982
+{txt}{hline 22}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. 
+. capture log close
+{smcl}
+{com}{sf}{ul off}

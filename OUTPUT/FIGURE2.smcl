@@ -1,0 +1,224 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 2 Nov 2022, 10:29:27
+{txt}
+{com}. 
+. 
+. *****************************FIGURE 2: KAPLAN-MEIER CURVES, ABOVE AND BELOW MEDIAN NFL*********************************************************
+. 
+. 
+. use finaldata_imputed,clear
+{txt}
+{com}. 
+. mi extract 0
+{txt}
+{com}. 
+. save finaldata_unimputed, replace
+{txt}{p 0 4 2}
+file {bf}
+finaldata_unimputed.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. 
+. 
+. svyset SDMVPSU [pweight=WTSSNH2Y], strata(SDMVSTRA) vce(linearized) singleunit(missing)
+
+{txt}Sampling weights:{col 19}{res}WTSSNH2Y
+             {txt}VCE:{col 19}{res}linearized
+     {txt}Single unit:{col 19}{res}missing
+        {txt}Strata 1:{col 19}{res}SDMVSTRA
+ {txt}Sampling unit 1:{col 19}{res}SDMVPSU
+           {txt}FPC 1:{col 19}<zero>
+{p2colreset}{...}
+
+{com}. 
+. stset AGE_DEATH  [pweight = WTSSNH2Y] , failure(MORTSTAT==1) enter(AGE) id(SEQN) scale(1)
+
+{txt}Survival-time data settings
+
+{col 12}ID variable: {res}SEQN
+{col 10}{txt}Failure event: {res}MORTSTAT==1
+{col 1}{txt}Observed time interval: {res}(AGE_DEATH[_n-1], AGE_DEATH]
+{col 6}{txt}Enter on or after: {res}time AGE
+{col 6}{txt}Exit on or before: {res}failure
+{col 17}{txt}Weight: {res}[pweight=WTSSNH2Y]
+
+{txt}{hline 74}
+{res}     10,175{txt}  total observations
+{res}      4,262{txt}  event time missing (AGE_DEATH>=.){col 61}PROBABLE ERROR
+{res}          1{txt}  observation ends on or before {bf:enter()}
+{res}      3,842{txt}  weights invalid {col 61}PROBABLE ERROR
+{hline 74}
+{res}      2,070{txt}  observations remaining, representing
+{res}      2,070{txt}  subjects
+{res}         84{txt}  failures in single-failure-per-subject data
+{res} 12,191.917{txt}  total analysis time at risk and under observation
+                                                At risk from t = {res}        0
+                                     {txt}Earliest observed entry t = {res}       20
+                                          {txt}Last observed exit t = {res} 81.83334
+{txt}
+{com}. 
+. 
+. **OVERALL**
+. sts test LNNFLMEDIAN if SAMPLE_FINAL==1
+{txt}note: sampling weights detected; using Cox regression-based test.
+
+{col 10}Failure {bf:_d}: {res}MORTSTAT==1
+{col 4}{txt}Analysis time {bf:_t}: {res}AGE_DEATH
+{col 3}{txt}Enter on or after: {res}time AGE
+{col 9}{txt}ID variable: {res}SEQN
+{col 14}{txt}Weight: {res}[pweight=WTSSNH2Y]
+
+{txt}Equality of survivor functions
+Cox regression-based test
+
+{col 12} {c |}  Observed       Expected     Relative
+LNNFLMEDIAN {c |}    events         events       hazard
+{hline 12}{c +}{hline 38}
+          1 {c |}{res}1303167.79     2424014.19       0.5100
+          {txt}2 {c |}{res}6094120.30     4973273.89       1.3885
+{txt}{hline 12}{c +}{hline 38}
+      Total {c |}{res}7397288.10     7397288.10       1.0000
+
+                              {txt}Wald chi2(1) =   {res}6.62
+                              {txt}Pr>chi2      = {res}0.0101
+
+{txt}{p 0 6 2 54}Note: Reporting Wald model test from Cox regression on {bf:LNNFLMEDIAN}.{p_end}
+
+{com}. 
+. 
+. 
+. sts graph if SAMPLE_FINAL==1, by(LNNFLMEDIAN) scheme(sj)
+
+{col 10}{txt}Failure {bf:_d}: {res}MORTSTAT==1
+{col 4}{txt}Analysis time {bf:_t}: {res}AGE_DEATH
+{col 3}{txt}Enter on or after: {res}time AGE
+{col 9}{txt}ID variable: {res}SEQN
+{col 14}{txt}Weight: {res}[pweight=WTSSNH2Y]
+{txt}
+{com}. graph save "E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2A.gph",replace
+{res}{txt}file {bf:E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2A.gph} saved
+
+{com}. 
+. **MEN*******************************
+. 
+. sts test LNNFLMEDIAN if SAMPLE_FINAL==1 & SEX==1
+{txt}note: sampling weights detected; using Cox regression-based test.
+
+{col 10}Failure {bf:_d}: {res}MORTSTAT==1
+{col 4}{txt}Analysis time {bf:_t}: {res}AGE_DEATH
+{col 3}{txt}Enter on or after: {res}time AGE
+{col 9}{txt}ID variable: {res}SEQN
+{col 14}{txt}Weight: {res}[pweight=WTSSNH2Y]
+
+{txt}Equality of survivor functions
+Cox regression-based test
+
+{col 12} {c |}  Observed       Expected     Relative
+LNNFLMEDIAN {c |}    events         events       hazard
+{hline 12}{c +}{hline 38}
+          1 {c |}{res} 683757.13     1218933.08       0.5405
+          {txt}2 {c |}{res}2942581.06     2407405.12       1.3656
+{txt}{hline 12}{c +}{hline 38}
+      Total {c |}{res}3626338.20     3626338.20       1.0000
+
+                              {txt}Wald chi2(1) =   {res}2.80
+                              {txt}Pr>chi2      = {res}0.0945
+
+{txt}{p 0 6 2 54}Note: Reporting Wald model test from Cox regression on {bf:LNNFLMEDIAN}.{p_end}
+
+{com}. 
+. 
+. 
+. sts graph if SAMPLE_FINAL==1 & SEX==1, by(LNNFLMEDIAN) scheme(sj)
+
+{col 10}{txt}Failure {bf:_d}: {res}MORTSTAT==1
+{col 4}{txt}Analysis time {bf:_t}: {res}AGE_DEATH
+{col 3}{txt}Enter on or after: {res}time AGE
+{col 9}{txt}ID variable: {res}SEQN
+{col 14}{txt}Weight: {res}[pweight=WTSSNH2Y]
+{txt}
+{com}. graph save "E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2B.gph",replace
+{res}{txt}file {bf:E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2B.gph} saved
+
+{com}. 
+. 
+. **WOMEN*******************************
+. 
+. 
+. sts test LNNFLMEDIAN if SAMPLE_FINAL==1 & SEX==2
+{txt}note: sampling weights detected; using Cox regression-based test.
+
+{col 10}Failure {bf:_d}: {res}MORTSTAT==1
+{col 4}{txt}Analysis time {bf:_t}: {res}AGE_DEATH
+{col 3}{txt}Enter on or after: {res}time AGE
+{col 9}{txt}ID variable: {res}SEQN
+{col 14}{txt}Weight: {res}[pweight=WTSSNH2Y]
+
+{txt}Equality of survivor functions
+Cox regression-based test
+
+{col 12} {c |}  Observed       Expected     Relative
+LNNFLMEDIAN {c |}    events         events       hazard
+{hline 12}{c +}{hline 38}
+          1 {c |}{res} 619410.66     1143650.44       0.5096
+          {txt}2 {c |}{res}3151539.24     2627299.44       1.3411
+{txt}{hline 12}{c +}{hline 38}
+      Total {c |}{res}3770949.90     3770949.90       1.0000
+
+                              {txt}Wald chi2(1) =   {res}3.46
+                              {txt}Pr>chi2      = {res}0.0629
+
+{txt}{p 0 6 2 54}Note: Reporting Wald model test from Cox regression on {bf:LNNFLMEDIAN}.{p_end}
+
+{com}. 
+. 
+. 
+. sts graph if SAMPLE_FINAL==1 & SEX==2, by(LNNFLMEDIAN) scheme(sj)
+
+{col 10}{txt}Failure {bf:_d}: {res}MORTSTAT==1
+{col 4}{txt}Analysis time {bf:_t}: {res}AGE_DEATH
+{col 3}{txt}Enter on or after: {res}time AGE
+{col 9}{txt}ID variable: {res}SEQN
+{col 14}{txt}Weight: {res}[pweight=WTSSNH2Y]
+{txt}
+{com}. graph save "E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2C.gph",replace
+{res}{txt}file {bf:E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2C.gph} saved
+
+{com}. 
+. 
+. ***BAR GRAPH****
+. 
+. graph box LNNFL [pweight = WTSSNH2Y], over(LNNFLMEDIAN) over(SEX) scheme(sj)
+{res}{txt}
+{com}. graph save "E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2D.gph",replace
+{res}{txt}file {bf:E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2D.gph} saved
+
+{com}. 
+. ****GRAPH COMBINE***
+. 
+. graph combine "E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2A.gph"  "E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2B.gph"  "E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2C.gph"  ///
+> "E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2D.gph" 
+{res}{txt}
+{com}. 
+. 
+. graph save "E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2.gph",replace
+{res}{txt}file {bf:E:\16GBBACKUPUSB\BACKUP_USB_SEPTEMBER2014\May Baydoun_folder\NHANES_NFL_MORTALITY_PAPER\OUTPUT\FIGURE2.gph} saved
+
+{com}. 
+. save, replace
+{txt}{p 0 4 2}
+file {bf}
+finaldata_unimputed.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. capture log close
+{smcl}
+{com}{sf}{ul off}
